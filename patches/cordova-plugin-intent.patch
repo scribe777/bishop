@@ -1,0 +1,35 @@
+--- plugins/com.napolitano.cordova.plugin.intent/src/android/IntentPlugin.java	2017-11-12 16:41:58.326684245 -0700
++++ patches/IntentPlugin.java	2017-11-12 16:41:25.781747329 -0700
+@@ -11,6 +11,7 @@
+ import android.content.ClipData;
+ import android.content.Intent;
+ import android.os.Build;
++import android.os.Bundle;
+ import android.util.Log;
+ 
+ import org.apache.cordova.CallbackContext;
+@@ -149,7 +150,16 @@
+             }
+ 
+             intentJSON.put("type", intent.getType());
+-            intentJSON.put("extras", intent.getExtras());
++            Bundle extraBundle = intent.getExtras();
++            if (extraBundle != null) {
++                JSONObject extras = new JSONObject();
++                for (String k : extraBundle.keySet()) {
++                    Object o = extraBundle.get(k);
++                    extras.put(k, o);
++                }
++                intentJSON.put("extras", extras);
++            }
++            
+             intentJSON.put("action", intent.getAction());
+             intentJSON.put("categories", intent.getCategories());
+             intentJSON.put("flags", intent.getFlags());
+@@ -167,4 +177,4 @@
+         }
+     }
+ 
+-}
+\ No newline at end of file
++}

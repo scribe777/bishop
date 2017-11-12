@@ -8,8 +8,10 @@ debug: refreshplugins copyfromplatform
 
 release: refreshplugins copyfromplatform
 	find platforms/android/res/ -name screen.png -exec rm {} \;
-	cordova build --release
-	cp platforms/android/build/outputs/apk/release/android-release.apk bishop.apk
+	cordova build android --release
+	#try both unsigned and signed; prefer signed if available
+	cp platforms/android/build/outputs/apk/android-release-unsigned.apk bishop.apk || true
+	cp platforms/android/build/outputs/apk/release/android-release.apk bishop.apk || true
 
 install: 
 	adb install -r bishop.apk
@@ -24,6 +26,13 @@ refreshplugins:
 copyfromplatform:
 	cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/
 
+refreshplatforms:
+	cordova platform remove ios
+	cordova platform remove android
+	cordova platform add android
+	cordova platform add ios
+
 setup:
 	cordova plugin add cordova-custom-config
 	cordova plugin add cordova-plugin-intent
+	patch -p0 < patches/cordova-plugin-intent.patch
