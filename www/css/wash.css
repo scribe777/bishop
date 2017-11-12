@@ -1,0 +1,999 @@
+/* General - Site wide style */
+
+
+
+h2 {
+	margin: 1em .5em 0 .5em;
+	font-family: "Trebuchet MS", verdana, lucida, arial, helvetica, sans-serif;
+	font-size: 1.4em;
+}
+
+h3 {
+	margin: 1em .5em .5em 1em;
+	font-family: "Trebuchet MS", verdana, lucida, arial, helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 1.0em;
+}
+
+a:link {
+	color:#000099;
+}
+
+.wordsOfJesus {
+	color: #bb0000;
+}
+
+.copyLine {
+	margin: 1em 0px .5em 0px;
+	padding: 0px 0px 0px 0px;
+	border-top: 1px solid #7F673C;
+	font-weight: bold;
+	font-style: italic;
+}
+
+.promoLine {
+	margin: 1em 0px .5em 0px;
+	padding: 10px 0px 0px 0px;
+	font-weight: bold;
+}
+
+.word-layer { /* The layer which appears after clicking on a word */
+	visibility: hidden;
+	position: absolute;
+	left: 50px;
+	top: 50px;
+	width: 350px;
+	background-color: #EEEEEE;
+	margin-left: 0;
+	overflow: visible;
+	z-index: 6;
+	border: 1px #000000;
+	border-style: solid;
+	padding: 7px;
+	color: #000000;
+	font-size: x-small;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	word-spacing: normal;
+	letter-spacing: normal;
+	vertical-align: baseline;
+	text-transform: none;
+	text-align: left;
+	text-indent: 0;
+	line-height: normal;
+}
+
+
+
+/* Formating options for the grammatical highlighting */
+span.curWord { /* The clicked word */
+	text-decoration: underline;
+	font-weight: bold;
+	background: #C5D6EA;
+}
+span.sameLemmaMorph { /* The other words with the same morph code */
+	text-decoration: underline;
+	font-weight: bold;
+}
+span.sameLemma { /* The other words with the same lemma on the page */
+	font-weight: bold;
+}
+.word-layer.span.sameLemma { /* The other words with the same lemma on the page */
+	font-weight: bold;
+}
+
+.fn {
+	cursor: pointer;
+	vertical-align: super;
+	margin-left: 0;
+	overflow: visible;
+	padding: 7px 7px 7px 7px;
+	color: #0000FF;
+	font-size: x-small;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-transform: none;
+	text-align: left;
+	text-indent: 0;
+	line-height: normal;
+}
+
+
+
+#aboutPromo {
+	margin: 1em 0px .5em 0px;
+	padding: 10px 0px 0px 0px;
+	border-top: 1px solid #7F673C;
+	font-weight: bold;
+}
+
+#about .q {
+	font-weight: bold;
+	font-style: italic;
+}
+
+#about h3 {
+	margin: 1em 0px .5em 0px;
+	padding: 0px 0px 0px 0px;
+	border-bottom: 1px solid #ccc; 
+}
+
+#about ul {
+	margin: 12px 0px 2em 0px;
+	padding: 5px 0em 3px 2em;
+}
+
+
+/* Mast Head */
+
+#header {
+	background-image: url(images/osislogo.png);
+	background-position: left top;
+	background-repeat: no-repeat;
+	font-family: "Trebuchet MS", verdana, lucida, arial, helvetica, sans-serif;
+	height:60px;
+}
+
+
+#header h1 {
+	font-family: georgia, palatino, Times New Roman, Times, Serif;
+	font-weight: normal;
+	font-size: 2.0em;
+	line-height: 2.0em;
+	text-transform: uppercase;
+	padding: 0px 0px 0px 70px;
+	margin: 0px 0px 0px 0px;
+}
+
+
+/* Main Navigation */
+
+#navlist {
+	border-bottom: 1px solid #ccc;
+	margin: -15px 0 0 0;
+	padding-bottom: 19px;
+	padding-left: 70px;
+}
+
+#navlist ul, #navlist li {
+	display: inline;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#navlist a:link, #navlist a:visited {
+	background: #E8EBF0;
+	border: 1px solid #ccc;
+	color: #666;
+	float: left;
+	font-family: "Trebuchet MS", verdana, lucida, arial, helvetica, sans-serif;
+	font-size: 1.0em;
+	font-weight: normal;
+	line-height: 1.4em;
+	margin-right: 8px;
+	padding: 1px 5px 0px 5px;
+	text-decoration: none;
+}
+
+#navlist a:link#current, #navlist a:visited#current {
+	background: #fff;
+	border-bottom: 1px solid #fff;
+	color: #000;
+}
+
+#navlist a:hover { 
+	color: #ff0000;
+	background: #C5D6EA;
+}
+
+#navlist li#skip {display:none;}
+
+
+/* Layout */
+
+#content-wrap{
+margin: 5px 0px 0px 0px;
+padding: 0px 0px 0px 0px;
+border-top: 1px solid #ccc;
+
+}
+
+#printer {
+width:14em;
+float:right;
+clear:right;
+margin: 0px 0px 0px 0px;
+padding: 0px 0 0px 1em;
+border-left: 1px solid #ccc;
+}
+
+#content-sub-1{
+width:12.5em;
+float:left;
+margin: 0px 0em 0px 0px;
+padding: 0px 0.5em 20px 0px;
+border-right: 1px solid #ccc;
+clear:left;
+}
+
+#content-sub-2{
+width:14em;
+float:right;
+clear:right;
+margin: 0px 0px 0px 0px;
+padding: 0px 0 20px 1em;
+border-left: 1px solid #ccc;
+}
+
+#content-main {
+margin: 0px 0px 0px 0px;
+padding: 15px 15px 20px 15px;
+width:auto;
+font-family:cardo,tahoma,code2000,code2001,arial unicode ms,arial,sans serif,serif;
+}
+
+#footer{
+clear:both;
+margin: 0px 0px 0px 0px;
+border-top: 1px solid #ccc;
+text-align: center;
+}
+
+#footer img {
+border:0;
+margin: 0px 20px 0px 20px;
+}
+
+
+/* ****** Individual Sections ****** */
+
+/* Quick Search */
+
+#quicksearch {
+padding: 0px 0px 0px 0px;
+}
+
+#quicksearch form{
+margin: 0px 0px 1em 0px;
+padding: 0px 0px 0px 0px;
+}
+
+#quicksearch form fieldset{
+border: 1px solid #ccc;
+padding: 3px;
+}
+
+/* External Links */
+
+#externallinks{
+padding: 0;
+margin: 0;
+}
+
+#externallinks ul{
+padding: 0;
+margin: 0;
+background: #E8EBF0;
+border-bottom: 8px solid white;
+}
+
+#externallinks li{
+list-style: none;
+margin: 0;
+border-top: 1px solid #ccc;
+text-align: left;
+border-bottom: 1px solid #E8EBF0;
+}
+#externallinks li a{
+display: block;
+padding: 0.25em 0.5em 0.25em 0.75em;
+border-right: .5em solid #ccc;
+background: #E8EBF0;
+text-decoration: none;
+}
+#externallinks ul {text-indent: 0em;
+padding: 0px;
+margin: 0px}
+
+#externallinks li a:link { color: #000; }
+#externallinks li a:visited { color: #000; }
+
+#externallinks li a:hover{
+border-color: #8EABCD;
+color: #f00;
+background: #C5D6EA;
+}
+
+
+/* OSIS Library */
+
+#library{
+margin: 0px -0.5em 0px 0px;
+padding: 0px 0 0px 0px;
+}
+
+#library ul, #library li {list-style-type: none;}
+
+#library ul {text-indent: 0em;
+padding: 0px 0px 0px 0px;
+margin: 0px 0px 0px 0px;}
+
+#library ul ul {
+padding: 0px 0px 0px 0px;
+margin: 0px 0px 0px 0px;
+background-color: #E8EBF0;
+border-top: 1px solid #ccc;
+border-left: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+}
+
+#library li{
+margin: .5em 0px 0px 5px;
+border-bottom: 1px solid #C5D6EA;
+}
+
+#library li a:hover {
+text-decoration: underline;
+color:#f00;
+}
+
+#library li.closed {
+margin: .5em 0px 0px 0px;
+background-image: url(images/wash_plus.png)
+;
+background-repeat: no-repeat;
+border-left: 0px solid #fff;
+border-bottom: 1px solid #fff;
+}
+#library li.open {
+margin: .5em 0px 0px 0px;
+background-image: url(images/wash_minus.png);
+background-repeat: no-repeat;
+background-color: #C5D6EA;
+border-bottom: 1px solid #C5D6EA;
+border-top: 5px solid #C5D6EA;
+border-left: 0px solid #C5D6EA;
+border-bottom: 1px solid #C5D6EA;
+}
+
+#library li a {
+display:block;
+padding: 0px 0px 0px 0px;
+text-decoration: none;
+color:#000099;}
+
+#library li.closed a {
+padding: 0px 0px 0px 15px;
+color:#000099}
+
+#library li.open a {
+padding: 0px 0px 0px 15px;
+color:#000099}
+
+
+
+
+/*   Translations   */
+
+#translations {
+margin: 0px -0.5em 0px 0px;
+padding: 0px 0 0px 0px;
+}
+
+#translations ul, #translations li {
+list-style-type: none;
+}
+
+
+#translations ul {
+background: #E8EBF0;
+text-indent: 0em;
+padding: 0px;
+margin: 0px 0px 10px 0px;
+}
+
+#translations li{
+list-style: none;
+margin: 0;
+border-top: 1px solid #ccc;
+text-align: left;
+border-bottom: 1px solid #E8EBF0;
+}
+
+
+#translations li a{
+display: block;
+padding: 0.25em 0.5em 0.25em 0.75em;
+background: #E8EBF0;
+text-decoration: none;
+}
+
+#translations li a:link { color: #000; }
+#translations li a:visited { color: #000; }
+
+#translations li a:hover{
+border-color: #8EABCD;
+color: #f00;
+background: #C5D6EA;
+}
+
+#translations h3 {
+background: #C5D6EA;
+margin: 0px 0px 0px 0px;
+padding: 2px 0.5em 2px 0.5em;
+text-align: center;
+border-top: 2px solid #ccc;
+
+}
+
+#translations p {
+background: #C5D6EA;
+margin: 0px 0px 0px 0px;
+padding: 2px 0.5em 2px 0.5em;
+text-align: center;
+
+}
+
+#translations p a {color:#000099;}
+
+#translations hr {display:none;}
+
+/*   Devotionals   */
+
+#devotionals {
+margin: 0px -0.5em 0px 0px;
+padding: 0px 0 0px 0px;
+}
+
+#devotionals ul, #devotionals li {
+list-style-type: none;
+}
+
+
+#devotionals ul {
+background: #E8EBF0;
+text-indent: 0em;
+padding: 0px;
+margin: 0px 0px 0px 0px;
+}
+
+#devotionals li{
+list-style: none;
+margin: 0;
+border-top: 1px solid #ccc;
+text-align: left;
+border-bottom: 1px solid #E8EBF0;
+}
+
+#devotionals li a{
+display: block;
+padding: 0.25em 0.5em 0.25em 0.75em;
+background: #E8EBF0;
+text-decoration: none;
+}
+
+#devotionals li a:link { color: #000; }
+#devotionals li a:visited { color: #000; }
+
+#devotionals li a:hover{
+border-color: #8EABCD;
+color: #f00;
+background: #C5D6EA;
+}
+
+#devotionals h3 {
+background: #C5D6EA;
+margin: 0px 0px 0px 0px;
+padding: 2px 0.5em 2px 0.5em;
+text-align: center;
+border-top: 2px solid #ccc;
+}
+
+#devotionals p {
+background: #C5D6EA;
+margin: 0px 0px 0px 0px;
+padding: 2px 0.5em 2px 0.5em;
+text-align: center;
+font-style: italic;
+}
+
+/*   Study Tools  */
+
+#studytools {
+margin: 0px 0px 0px -1em;
+padding: 0px 0px 0px 0px;
+}
+
+#studytools ul, #studytools li {
+list-style-type: none;
+}
+
+#studytools ul {
+background: #E8EBF0;
+text-indent: 0em;
+padding: 0px;
+margin: 0px 0px 10px 0px;
+}
+
+#studytools li{
+list-style: none;
+margin: 0;
+border-top: 1px solid #ccc;
+text-align: left;
+border-bottom: 1px solid #E8EBF0;
+}
+
+#studytools li a{
+display: block;
+padding: 0.25em 0.5em 0.25em 0.75em;
+background: #E8EBF0;
+text-decoration: none;
+}
+
+#studytools li a:link { color: #000; }
+#studytools li a:visited { color: #000; }
+
+#studytools li a:hover{
+border-color: #8EABCD;
+color: #f00;
+background: #C5D6EA;
+}
+
+#studytools h3 {
+background: #C5D6EA;
+margin: 0px 0px 0px 0px;
+padding: 2px 0.5em 2px 0.5em;
+text-align: center;
+border-top: 2px solid #ccc;
+}
+
+#studytools p {
+background: #C5D6EA;
+margin: 0px 0px 0px 0px;
+padding: 2px 0.5em 2px 0.5em;
+text-align: center;
+font-style: italic;
+}
+
+/*   Commentaries  */
+
+#commentaries {
+margin: 0px 0px 0px -1em;
+padding: 0px 0px 0px 0px;
+}
+
+#commentaries ul, #commentaries li {
+list-style-type: none;
+}
+
+#commentaries ul {
+background: #E8EBF0;
+text-indent: 0em;
+padding: 0px;
+margin: 0px 0px 10px 0px;
+
+}
+
+#commentaries li{
+list-style: none;
+margin: 0;
+border-top: 1px solid #ccc;
+text-align: left;
+border-bottom: 1px solid #E8EBF0;
+}
+#commentaries li a{
+display: block;
+padding: 0.25em 0.5em 0.25em 0.75em;
+background: #E8EBF0;
+text-decoration: none;
+}
+
+#commentaries li a:link { color: #000; }
+#commentaries li a:visited { color: #000; }
+
+#commentaries li a:hover{
+border-color: #8EABCD;
+color: #f00;
+background: #C5D6EA;
+}
+
+#commentaries h3 {
+background: #C5D6EA;
+margin: 0px 0px 0px 0px;
+padding: 2px 0.5em 2px 0.5em;
+text-align: center;
+border-top: 2px solid #ccc;
+}
+
+#commentaries p {
+background: #C5D6EA;
+margin: 0px 0px 0px 0px;
+padding: 2px 0.5em 2px 0.5em;
+text-align: center;
+font-style: italic;
+}
+
+#commentaries p a {color:#000099;}
+
+#commentaries hr {display:none;}
+
+
+
+
+#welcome, #about, #help, #preferences, #powersearch, #daily, #genbook   {
+margin: 0px 14em 0px 11.5em;
+padding: 0px .5em 0px .5em;
+}
+
+/*   Search Results   */
+
+#searchresults {
+margin: 0px 14em 0px 11.5em;
+padding: 0 0 0px 0;
+}
+
+dt {
+margin: 0px 0px 0px 0px;
+padding: 0px 2px 0px 2px;
+background: #eee;
+border-top: 1px solid #ccc;
+font-size: 1em;
+line-height: 1.8em;
+}
+
+dt span {
+float: right;
+margin: -1.8em 0 0 0;
+font-style: italic;
+}
+body.rtol dt span {
+float:left;}
+dd {
+background: #fff;
+margin: 0px 0px 0px 0px;
+padding: 2px 5px 5px 3em;
+}
+
+dt a {
+text-decoration: none;
+display:block;
+color:#000;
+font-size:1.1em;
+}
+
+dt a:hover {
+text-decoration: none;
+background-color: #C5D6EA;
+color:#f00;
+text-decoration: underline;
+}
+
+
+#searchresults ul {
+background: #eee;
+border-top: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+margin: 0px 0px 0px 0px;
+padding: 0px 0px 0px 0px;
+text-indent: 0px;
+}
+
+#searchresults ul li {
+display: inline;
+list-style-type: none;
+line-height: 2em;
+font-size: 1em;
+margin: 0px 1.1em 0px 0px;
+}
+
+#searchresults ul li a {
+color:#000;
+}
+
+#searchresults ul li a:hover {
+color:#f00;
+}
+
+
+/* Passage Study */
+
+#passagestudy{
+font-size: 1em;
+line-height: 1.4em;
+margin: 0px 14em 0px 11.5em;
+padding: 0 0 0px 0;
+}
+
+#passagestudy div{
+	padding: 2px .5em 0px .5em;
+}
+
+
+
+ span.versenum{
+	font-size: 0.8em;
+	width:3em;
+}
+
+ span.versenum a {
+	text-decoration: none;
+	color:navy;
+	vertical-align:top;
+}
+
+ span.versenum a:hover {
+	text-decoration: underline;
+	color:#ff0000;
+}
+
+div.lexiconentry {
+	background-color: #FFFFEF;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
+
+.eusnum a {
+	text-decoration: none;
+}
+
+.eusnum a:hover {
+	text-decoration: underline;
+	color:#ff0000;
+}
+.eusnum {
+	font-size: .65em;
+	line-height: 0.3em;
+}
+
+.currentverse {
+	background-color: #eee;
+	font-family:cardo,tahoma,code2000,code2001,arial unicode ms,arial,sans serif,serif;
+}
+.verse,.intro {
+	font-family:cardo,tahoma,code2000,code2001,arial unicode ms,arial,sans serif,serif;
+}
+
+.intro {
+	border-bottom: 1px solid #ccc;
+}
+
+.clk {
+	cursor:hand;
+}
+
+#passagestudy  ul {
+background: #eee;
+border-top: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+margin: 0px 0px 5px 7px;
+padding: 0px 0px 0px 0em;
+text-indent: 0px;
+text-align: center;
+vertical-align:middle;
+}
+
+#passagestudy  ul li {
+display: inline;
+list-style-type: none;
+line-height: 2em;
+font-size: 1em;
+margin: 0px 1.1em 0px 0px;
+}
+
+#passagestudy  ul li h3 {
+display: inline;
+list-style-type: none;
+line-height: 2em;
+font-size: 1.3em;
+margin: 0px 1.1em 0px 0px;
+}
+
+#passagestudy  ul li a {
+color:#000;
+}
+
+#passagestudy  ul li a:hover {
+color:#f00;
+}
+
+/* Parallel Display */
+
+#paralleldisplay {
+font-size: 1em;
+line-height: 1.4em;
+margin: 0px 0em 0px 0em;
+padding: 0 0 0px 0;
+}
+
+#paralleldisplay p {
+padding: 0px .5em 0px .5em;
+}
+
+
+#paralleldisplay  ul {
+background: #eee;
+border-top: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+margin: 0px 0px 5px 0px;
+padding: 0px 0px 0px 1em;
+text-indent: 0px;
+text-align: center;
+vertical-align: middle;
+}
+
+#paralleldisplay  ul li {
+display: inline;
+list-style-type: none;
+line-height: 2em;
+font-size: 1em;
+margin: 0px 1.1em 0px 0px;
+}
+
+#paralleldisplay  ul li h3 {
+display: inline;
+list-style-type: none;
+line-height: 2em;
+font-size: 1.3em;
+margin: 0px 1.1em 0px 0px;
+}
+
+#paralleldisplay  ul li a {
+color:#000;
+}
+
+#paralleldisplay  ul li a:hover {
+color:#f00;
+}
+
+#paralleldisplay td {
+ vertical-align: top;
+}
+
+#paralleldisplay td {
+	padding: 0px .5em 0px .5em;
+}
+
+#paralleldisplay td.currentverse {
+	background-color: #eee;
+}
+
+/*   GenBook navigation tree  */
+#genbooknav {
+margin:0px 5px;
+padding:0px 5px;
+}
+
+#genbooknav ul, #genbooknav li {
+list-style-type: none;
+}
+
+#genbooknav ul {
+text-indent:0em;
+padding:0px 0px 0px 0px;
+margin:0px 0px 0px 0px;
+}
+
+#genbooknav li {
+margin:0px 0px 0px 0px;
+padding:0px 0px 0px 0px;
+border-bottom:1px solid white;
+}
+
+#genbooknav #current {
+margin:0px 0px 0px 0px;
+padding:0px 0px 0px 0px;
+border-bottom:1px solid white;
+font-weight:bold;
+}
+
+#genbooknav ul ul {
+text-indent:0em;
+padding:0px;
+margin:0px 0px 0px 15px;
+}
+
+#genbooknav li img {
+border:0px;
+}
+
+#genbooknav li a {
+text-decoration:none;
+color:#000
+}
+
+#genbooknav li a:hover {
+text-decoration:underline;
+color:#f00;
+}
+
+/*  RtoL stuff */
+body.rtol #header {background-position: right top;}
+
+body.rtol #navlist   {unicode-bidi: embed;
+	direction: rtl;
+	padding-right: 200px}
+
+body.rtol div#introhelp{
+	unicode-bidi: embed;
+	direction: rtl;
+	text-align:right;
+}
+body.rtol div#printer{
+	unicode-bidi: embed;
+	direction: rtl;
+	text-align:right;
+}
+body.rtol div#content-sub-1{
+	unicode-bidi: embed;
+	direction: rtl;
+	text-align:right;
+}
+body.rtol div#content-sub-2 {
+	unicode-bidi: embed;
+	direction: rtl;
+	text-align:right;
+}
+
+body.rtol #navlist a {float:right;}
+
+body.rtol #externallinks li a{
+	padding: 0.25em 0.5em 0.25em 0.75em;
+	border-left: .5em solid #ccc;
+	border-right: none;
+}
+
+body.rtol #header h1 {
+	text-align: right;
+	padding: 0px 70px 0px 0px;
+}
+body.rtol h2, body.rtol h3, body.rtol li, body.rtol ul, body.rtol form, body.rtol a {
+	unicode-bidi:embed;
+	direction:rtl;
+	text-align:right;
+}
+body.rtol .word-layer {
+	margin-right: 0;
+	text-align: right;
+}
+
+body.rtol .fn {
+	text-align: right;
+	margin-right: 0;
+}
+
+body.rtol #content-main p{
+text-align:right
+}
+body.rtol #library li{
+	margin: .5em 5px 0px 0px;
+	background-position:right;
+}
+
+body.rtol #library li a {
+padding: 0 20px;}
+
+body.rtol #translations li{
+text-align:right;
+}
+body.rtol #studytools li{
+text-align:right;}
+body.rtol #commentaries li{
+text-align:right}
+
+body.rtol #powersearch {text-align:right;}
+
+
+
+
+
+
+
+
+*.div * {font-family: faruma; font-size:14px;}
+*.fa * {font-family: lotus tahoma nazli;}
+div.en  {text-align:left;}

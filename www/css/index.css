@@ -1,0 +1,323 @@
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+body {
+    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    height:100%;
+    width:100%;
+    margin:0px;
+    padding:0px;
+    overflow:hidden;
+}
+
+@font-face {
+	font-family: 'AntinoouWeb';
+	font-weight: normal;
+	font-style: normal;
+	src: url('../fonts/antinoou-webfont.woff') format('woff');
+}
+
+@font-face {
+	font-family: GentiumPlus;
+	font-style: normal;
+	src: url('../fonts/GentiumPlus-R.woff') format('woff');
+}
+@font-face {
+	font-family: GentiumPlus;
+	font-style: italic;
+	src: url('../fonts/GentiumPlus-I.woff') format('woff');
+}
+
+body,td,div,span,p{
+        font-family: 'SBL Greek', 'GentiumPlus', 'AntinoouWeb', SymbolGreekU, SymbolGreekTU, SymbolGreekMetU, SymbolGreekTMetU, OdysseaU, OdysseaUBSU, TeubnerLSU, TeubnerLSCU, TeubnerVerticalU, TeubnerVerticalCU, GraecaUBSU, GraecaUBSMetU, GraecaU, HellenicaU, HellenicaCU, GreekSansLSU, GreekSansLSConU, PayneU, UncialLSU;
+}
+
+.app {
+	height: 100%;
+	width: 100%;
+	overflow:hidden;
+}
+
+#main {
+	height: 100%;
+	width: 100%;
+	overflow:hidden;
+}
+
+/* Landscape layout (with min-width) */
+@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
+    #main {
+	height: 100%;
+	width: 100%;
+	overflow:hidden;
+    }
+}
+
+#popup {
+	top:0px;
+	float:left;
+	height:100%;
+	width:100%;
+	background-color:#202020;
+	position:absolute;
+	opacity:0.90;
+	overflow-y: auto;
+	color: #000000;
+	margin: 0px 0px 0px 0px;
+	z-index:10;
+}
+
+.center {
+	margin-left:auto;
+	margin-right:auto;
+}
+
+
+.menupanel {
+	top:0px;
+	width:18em;
+	float:left;
+	height:100%;
+	background-color:#303030;
+	position:absolute;
+	overflow-y: auto;
+	left:-18em;
+	opacity:0.90;
+	z-index:5;
+}
+.menutab {
+	background-image:url('../img/slidebaricon.png');
+	background-repeat:no-repeat;
+	background-size:33% 25%;
+	background-position:left top;
+	height:6em;
+	width:6em;
+	float:left;
+	position:absolute;
+	top:.5em;
+	left:0;
+	text-decoration:none;
+}
+
+table.clean {
+	border-collapse: collapse;
+}
+
+table.clean td, table.clean th {
+	padding: 5px 4px;
+	border: 1px solid #CCC;
+}
+
+table.nobottom td, table.nobottom th {
+	border-bottom: none;
+}
+
+.slidemenu {
+	height:2.2em;
+	line-height:2.2em;
+	font-size: 150%;
+	width:100%;
+	z-index:7;
+}
+.slidemenu td, .slidemenu th {
+	padding: 0px 0px 0px .2em;
+	border: 1px solid #000;
+	color: #EEEEEE;
+	z-index:9;
+}
+.slidemenu select {
+	width:5.5em;
+}
+
+.searchPanel,.bibleSyncPanel,.bookmarkPanel {
+	height:0em;
+	overflow:hidden;
+	width:100%;
+}
+
+#bibleSyncResults,#searchResults,#bookmarkResults {
+	width:100%;
+	height:100%;
+	top:0px;
+	background-color:#444444;
+	overflow-y: auto;
+	opacity:0.90;
+}
+
+#searchExpression {
+	float:left;
+	width:79%;
+}
+
+#searchButton {
+	float:right;
+	width:20%;
+}
+
+.keySelector, .keySelector td, .keySelector th {
+	margin: 0px 0px 0px -.2em;
+	font-size: 95%;
+	background-color: #b9baba;
+	color: #000000;
+}
+.about {
+	padding: 0px 1em 0px 1em;
+	margin: 0px -1em 0px -1em;
+	border: 1px solid #000;
+	border-radius: .75em;
+	background-color: #FFF;
+	position:absolute;
+	overflow-y: auto;
+	height:90%;
+	width:80%;
+	top:5%;
+	left:10%;
+	z-index:10;
+}
+
+table.clean thead, table.clean tfoot {
+	background-color: #CCC;
+}
+
+table.clean tr.rowodd {
+	background-color: #FFF;
+}
+
+table.clean tr.roweven {
+	background-color: #F2F2F2;
+}
+
+#textDisplay {
+	position:absolute;
+	overflow-y: auto;
+	height:100%;
+	width:100%;
+	color: #000000;
+	background-color: #ffffff;
+	margin: 0px 0px 0px 0px;
+	-webkit-user-select: text;
+}
+
+#footerBuffer {
+	height:0;
+}
+#footnotes {
+	position:absolute;
+	overflow-y: auto;
+	bottom:0;
+	height:0;
+	width:100%;
+	color: #000000;
+	background-color: #ffffff;
+	margin: 0px 0px 0px 0px;
+	z-index: 4;
+	-webkit-user-select: text;
+}
+
+#client {
+	position:absolute;
+	overflow-y: auto;
+	height:100%;
+	width:100%;
+	color: #000000;
+	background-color: #ffffff;
+	margin: 0px 0px 0px 0px;
+	-webkit-user-select: text;
+}
+.client {
+	position:absolute;
+	overflow-y: auto;
+	height:100%;
+	width:100%;
+	color: #000000;
+	background-color: #ffffff;
+	margin: 0px 0px 0px 0px;
+	-webkit-user-select: text;
+}
+
+.bookButton {
+	display: inline-block;
+	font-size: 180%;
+	width: 3.4em;
+	height: 2.2em;
+	line-height: 2.2em;
+	border: 1px solid #000;
+	color: #EEEEEE;
+	text-align: center;
+	margin:0px;
+}
+
+.ntBook {
+	border: 1px solid #0B0;
+}
+
+.otBook {
+	border: 1px solid #00B;
+}
+
+
+.instDelta {
+	width:1em;
+}
+.instName {
+	width: 7em;
+	overflow: hidden;
+}
+
+.instDesc {
+	width: 100%;
+}
+
+.wizardButton {
+	position: absolute;
+	width: 50%;
+	height: 20%;
+	bottom: 0px;
+	right: 0px;
+}
+/* Dropdown Button */
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: .2em;
+    padding-bottom: .2em;
+    border: none;
+    cursor: pointer;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #3e8e41;
+}
+
+/* Dropdown Content (Hidden by Default) */
+#aux {
+    position: absolute;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
