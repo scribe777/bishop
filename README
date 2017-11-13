@@ -1,0 +1,38 @@
+To get started, have sword checked out at the same level as bishop, e.g.,
+
+~/src/sword
+~/src/bishop
+
+##########  Prepare SWORD Cordova plugin ###############################
+cd ~/src/sword/bindings/java-jni
+make
+cd ../Android
+# run Android Studio and open project ~/src/sword/bindings/Android/SWORD
+# once project is loaded, choose Build | Rebuild Project
+# once building is complete, continue in shell...
+make
+
+##########  Build bishop ###############################
+
+# first time after checkout
+
+make setup
+make refreshplatforms
+
+make
+#plug your phone in
+make install
+
+######### WARNING!!!!  The Makefile copies files from platforms/android/assets/www/ into www/ ###############
+# I know this seems wrong, but it is right if you are using and IDE
+# All Cordova support in IDEs that I've seen have you go into the platforms/
+# folder and open the project files under there.  This means that if you
+# run debug and edit from your IDE, you will be editing under the platforms/ folder
+# so the Makefile copies source from there.  This just means that if you are NOT using
+# an IDE, simply still edit the files in platform/android/assets/www/ instead of www/
+# or change the Makefile to remove the 'copyfromplatform' target.
+#
+#########  Again, I realize this isn't ideal and I am guessing IDEs will become more aware of
+# cordova/phonegap/ionic in the future and support projects at the root instead of
+# under platforms/ 
+

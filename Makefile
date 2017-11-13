@@ -9,8 +9,9 @@ debug: refreshplugins copyfromplatform
 release: refreshplugins copyfromplatform
 	find platforms/android/res/ -name screen.png -exec rm {} \;
 	cordova build android --release
-	#try both unsigned and signed; prefer signed if available
+	#try both unsigned and signed, old and new paths; prefer signed new path if available
 	cp platforms/android/build/outputs/apk/android-release-unsigned.apk bishop.apk || true
+	cp platforms/android/build/outputs/apk/android-release.apk bishop.apk || true
 	cp platforms/android/build/outputs/apk/release/android-release.apk bishop.apk || true
 
 install: 
