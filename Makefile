@@ -14,7 +14,7 @@ runandroid:
 	cordova emulate android
 
 
-debug: refreshplugins copysourcefromplatform${PLATFORM} build copydebug${PLATFORM}
+debug: refreshplugins copysourcefromplatform${PLATFORM} copydebug${PLATFORM} run
 
 build:
 	cordova build
@@ -76,7 +76,7 @@ refreshplatformios:
 	cordova platform remove ios
 	cordova platform add ios
 
-setup: clearplugins refreshplaform addplugins
+setup: clearplugins refreshplatform addplugins
 
 addplugins:
 	cordova plugin add cordova-custom-config
@@ -86,12 +86,11 @@ addplugins:
 	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose
 
 clearplugins:
+	cordova plugin remove cordova-plugin-whitelist || true
 	cordova plugin remove cordova-custom-config || true
 	cordova plugin remove cordova-plugin-intent || true
-	cordova plugin remove cordova-plugin-add-swift-support || true
 	cordova plugin remove org.crosswire.sword.cordova.SWORD || true
-	cordova plugin remove com.napolitano.cordova.plugin.intent
-
+	cordova plugin remove cordova-plugin-add-swift-support || true
 
 back:
 	cp platforms/ios/Bishop/Plugins/org.crosswire.sword.cordova.SWORD/SWORD.swift ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/src/ios/SWORD.swift 
