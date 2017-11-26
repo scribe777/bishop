@@ -78,6 +78,10 @@ refreshplatformios:
 
 setup: clearplugins refreshplatform addplugins
 
+###
+# Plugins should not be committed to config.xml
+# make setup adds them in the right order after platform
+#
 addplugins:
 	cordova plugin add cordova-custom-config
 	cordova plugin add cordova-plugin-intent

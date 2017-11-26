@@ -120,7 +120,7 @@ console.log('wordSearch renderText mod2 complete.');
 		var lemma = $(word).attr('data-lemma');
 		var morph = $(word).attr('data-morph').replace(/-/g, '\\-');
 		$('#aux').html(
-		    `<a href="#" onclick="return false;"><b style="white-space:nowrap">Show all occurances of ` + lemma + `:</b></a>` +
+		    `<a href="#" onclick="return false;"><b style="white-space:nowrap">Show all occurrences of ` + lemma + `:</b></a>` +
 		    `<a href="#" onclick="verseStudy.wordSearch('`+app.lastDisplayMods[0].name+`', '`+lemma+`', '`+app.lastDisplayMods[1].name+`', '`+morph+`'); return false;">... any morphology in ` + app.lastDisplayMods[0].name + `</a>` +
 //		    `<a href="#" onclick="verseStudy.wordSearch('`+app.lastDisplayMods[0].name+`', '`+lemma+'@'+morph+`', '`+app.lastDisplayMods[1].name+`', '`+morph+`'); return false;">... same morphology in ` + app.lastDisplayMods[0].name + `</a>` + 
 		    `<a href="#" onclick="verseStudy.wordSearch('LXX', '`+lemma+`', '` + app.lastDisplayMods[0].name +`', '`+morph+`'); return false;">... any morphology in LXX</a>` +
