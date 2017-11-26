@@ -265,7 +265,7 @@ console.log('app.firstTime: ' + app.firstTime);
 					masterModule.getVerseKey(function(vk) {
 						var t = '<div class="center"><div class="bookButton" onclick="app.selectKey(); return false;">'+bookName+'</div> ';
 						for (var i = 1; i <= vk.chapterMax; ++i) {
-							t += '<div class="bookButton" onclick="app.setCurrentKey(\''+bookName+'.'+i+'.1\'); app.displayCurrentChapter(); app.popupHide(); return false;">'+i+'</div> ';
+							t += '<div class="bookButton" onclick="app.setCurrentKey(\''+bookName+'.'+i+'.1\', function() { app.displayCurrentChapter(); app.popupHide(); return false; });">'+i+'</div> ';
 						}
 						t += '</div>';
 						app.popupShow(t);
