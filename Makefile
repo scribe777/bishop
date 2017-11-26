@@ -64,7 +64,7 @@ copysourcefromplatformandroid:
 	cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/
 
 copysourcefromplatformios:
-	echo copy platforms/ios source files to www/
+	cp -a platforms/ios//build/emulator/Bishop.app/www/js www/
 
 refreshplatform: refreshplatform${PLATFORM}
 
