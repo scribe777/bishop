@@ -34,9 +34,5 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <engine name="android" spec="^6.4.0" />
-    <engine name="ios" spec="^4.5.4" />
-    <plugin name="com.napolitano.cordova.plugin.intent" spec="~0.1.2" />
-    <plugin name="cordova-custom-config" spec="^4.0.2" />
-    <plugin name="cordova-plugin-add-swift-support" spec="^1.7.0" />
-    <plugin name="org.crosswire.sword.cordova.SWORD" spec="../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD" />
+    <engine name="ios" spec="~4.5.4" />
 </widget>
