@@ -1,6 +1,6 @@
 PLATFORM=ios
 
-all: debug
+all: release
 
 rinstall: release uninstall install
 
@@ -15,9 +15,17 @@ runandroid:
 
 
 debug: refreshplugins copysourcefromplatform${PLATFORM} copydebug${PLATFORM} run
+release: refreshplugins copysourcefromplatform${PLATFORM} buildrelease${PLATFORM} copyrelease${PLATFORM}
 
 build:
 	cordova build
+
+buildreleaseandroid:
+	find platforms/android/res/ -name screen.png -exec rm {} \;
+	cordova build android --release
+
+buildreleaseios:
+	cordova build --device --release ios
 
 copydebugandroid:
 	cp platforms/android/build/outputs/apk/android-debug.apk bishop.apk || true
@@ -25,11 +33,6 @@ copydebugandroid:
 copydebugios:
 	echo should copy ios debug app to root folder
 
-release: refreshplugins copysourcefromplatform${PLATFORM} buildrelease copyrelease${PLATFORM}
-
-buildrelease:
-	find platforms/android/res/ -name screen.png -exec rm {} \;
-	cordova build android --release
 
 copyreleaseandroid:
 	#try both unsigned and signed, old and new paths; prefer signed new path if available
@@ -61,10 +64,10 @@ refreshplugins:
 	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose
 
 copysourcefromplatformandroid:
-	cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/
+	cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/ || true
 
 copysourcefromplatformios:
-	cp -a platforms/ios//build/emulator/Bishop.app/www/js www/
+	echo nothing to do because xcode somehow edits files at top level www/
 
 refreshplatform: refreshplatform${PLATFORM}
 

@@ -13,6 +13,25 @@ var verseStudy = {
 			}
 		});
 	},
+    
+    
+    setupMenu: function() {
+        var t  = '<table style="width:100%"><tbody><tr>';
+        t += '<td style="height:100%"><button class="dropbtn dropclick" style="width:100%;height:100%;;" onclick="app.handleBackButton(); return false;"> <span style="font-size:170%;font-weight:bold;vertical-align:middle;">&lt; </span><span style="vertical-align:middle;"> Back</span></button></td>';
+        t += '<td style="height:100%"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="verseStudy.wordStudy(); return false;">Word<br/>Study</button></td>';
+        t += '<td style="height:100%"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="verseStudy.commentary(); return false;"><span style="vertical-align:middle;">Commentary</span></button></td>';
+        t += '<td style="height:100%"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="verseStudy.witnessStudy(); return false;">Witness<br/>Study</button></td>';
+        t += '<td>';
+        t += `
+        <div style="width:100%" class="dropdown">
+        <button id="variantButton" style="width:100%" onclick="verseStudy.variantStudyClick(); return false;" class="dropbtn dropclick">Variant<br/>Study</button>
+        </div>
+        `;
+        t += '</td></tr></tbody></table>';
+        $('#toolbar').html(t);
+    },
+
+    
 	colorLemmas : function(wordnum, key, morph) {
 		$('#client').find('span').each(function() { 
 			var span = $(this);
@@ -164,19 +183,6 @@ console.log('aux.position: ' + JSON.stringify($('#aux').position()));
 	},
 
 
-	setupMenu: function() {
-		var t  = '<table style="width:100%"><tbody><tr><td><button class="dropbtn dropclick" style="width:100%" onclick="verseStudy.wordStudy(); return false;">Word<br/>Study</button></td>';
-		t += '<td><button class="dropbtn dropclick" style="width:100%" onclick="verseStudy.commentary(); return false;">Commentary<br/>&nbsp;</button></td>';
-		t += '<td><button class="dropbtn dropclick" style="width:100%" onclick="verseStudy.witnessStudy(); return false;">Witness<br/>Study</button></td>';
-		t += '<td>';
-		t += `
-<div style="width:100%" class="dropdown">
-  <button id="variantButton" style="width:100%" onclick="verseStudy.variantStudyClick(); return false;" class="dropbtn dropclick">Variant<br/>Study</button>
-</div>
-`;
-		t += '</td></tr></tbody></table>';
-		$('#toolbar').html(t);
-	},
 	wordStudy: function() {
 		verseStudy.closeMenus();
 		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
@@ -362,7 +368,9 @@ console.log('lex: ' + JSON.stringify(lex));
 	dECMApp : function() {
 		verseStudy.closeMenus();
 		var verseKey = app.getCurrentVerseKey();
+		// var url = 'https://apokalypse.isbtf.de/community/vmr/api/variant/apparatus/get/?format=html&indexContent='+verseKey.osisRef;
 		var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/variant/apparatus/get/?format=html&indexContent='+verseKey.osisRef;
+
 		$('#client').html('<iframe class="client" src="'+url+'"/>');
 	},
 	commentary : function() {

@@ -15,6 +15,9 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <allow-navigation href="*" />
+    <allow-intent href="*" />
+    <access origin="*" />
     <platform name="android">
         <icon src="res/swordlogo.png" />
         <allow-intent href="market:*" />
@@ -34,5 +37,5 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <engine name="android" spec="^6.4.0" />
-    <engine name="ios" spec="~4.5.4" />
+    <engine name="ios" spec="^4.5.4" />
 </widget>
