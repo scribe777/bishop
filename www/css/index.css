@@ -118,7 +118,6 @@ table.nobottom td, table.nobottom th {
 .slidemenu {
 	height:2.2em;
 	line-height:2.2em;
-	font-size: 150%;
 	width:100%;
 	z-index:7;
 }
@@ -155,6 +154,15 @@ table.nobottom td, table.nobottom th {
 #searchButton {
 	float:right;
 	width:20%;
+}
+
+#keyDisplay {
+	font-size: 150%;
+}
+
+.menuLabel {
+	font-size: 150%;
+	height: 1.5em;
 }
 
 .keySelector, .keySelector td, .keySelector th {

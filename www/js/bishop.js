@@ -292,43 +292,44 @@ console.log('app.firstTime: ' + app.firstTime);
 		});
 	},
 	setupMenu: function (mods) {
+        var modOptions = '';
+        for (var i = 0; i < mods.length; ++i) {
+            if (mods[i].category == SWORD.CATEGORY_BIBLES) {
+                modOptions += '<option>' + mods[i].name + '</option>';
+            }
+        }
 		var t = '<table class="slidemenu"><tbody>';
-		t += '<tr><td><table class="keySelector"><tbody><tr><td id="keyDisplay" style="width:100%;border-right-width:0;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="border-left-width:0;" onclick="app.shareVerse(); return false;"><img style="height:1em;" src="img/ic_action_share.png"/></td><td><select id="currentMod1" onchange="app.setCurrentMod1($(\'#currentMod1\').val()); app.closeMenu(); app.displayCurrentChapter(); return false;">';
-		var modOptions = '';
-		for (var i = 0; i < mods.length; ++i) {
-			if (mods[i].category == SWORD.CATEGORY_BIBLES) {
-				modOptions += '<option>' + mods[i].name + '</option>';
-			}
-		}
-		t += modOptions;
-		t += '</select></td></tr></tbody></table></td></tr>';
-		t += '<tr><td style="vertical-align:bottom">+<table style="float:right;" class="keySelector"><tbody><tr>';
-		t += '<td><select id="currentMod2" onchange="app.setCurrentMod2($(\'#currentMod2\').val()); app.displayCurrentChapter(); return false;"><option></option>';
+		t += '<tr><td><table class="keySelector"><tbody><tr><td id="keyDisplay" style="width:100%;border-right-width:0;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="border-left-width:0;" onclick="app.shareVerse(); return false;"><img style="height:1em;" src="img/ic_action_share.png"/></td></tr></tbody></table></td></tr>';
+		t += '<tr><td style="vertical-align:bottom"><table style="width:100%;" class="keySelector"><tbody><tr>';
+		t += '<td><select id="currentMod1" style="width:100%;" onchange="app.setCurrentMod1($(\'#currentMod1\').val()); app.closeMenu(); app.displayCurrentChapter(); return false;">';
 		t += modOptions;
 		t += '</select></td>';
-		t += '<td><select id="currentMod3" onchange="app.setCurrentMod3($(\'#currentMod3\').val()); app.displayCurrentChapter(); return false;"><option></option>';
+		t += '<td><select id="currentMod2" style="width:100%;" onchange="app.setCurrentMod2($(\'#currentMod2\').val()); app.displayCurrentChapter(); return false;"><option></option>';
+		t += modOptions;
+		t += '</select></td>';
+		t += '<td><select id="currentMod3" style="width:100%;" onchange="app.setCurrentMod3($(\'#currentMod3\').val()); app.displayCurrentChapter(); return false;"><option></option>';
 		t += modOptions;
 		t += '</select></td>';
 		t += '</tr></tbody></table></td></tr>';
-		t += '<tr onclick="verseStudy.show();return false;"><td><img src="img/ic_action_location_searching.png" style="height:1em;"/> Verse Study</td></tr>';
-		t += '<tr><td onclick="app.toggleBookmarks(); return false;"><img src="img/bookmarks.png" style="height:1em;"/> Bookmarks</td></tr>';
+		t += '<tr class="menuLabel" onclick="verseStudy.show();return false;"><td><img src="img/ic_action_location_searching.png" style="height:1em;"/> Verse Study</td></tr>';
+		t += '<tr><td class="menuLabel" onclick="app.toggleBookmarks(); return false;"><img src="img/bookmarks.png" style="height:1em;"/> Bookmarks</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="bookmarkPanel toshow">';
 		t +=     '<div><button id="addBookmarkButton" onclick="app.bookmarkAdd(app.getCurrentKey());return false;">Add Current</button><button id="clearBookmarks" onclick="app.bookmarksClear();return false;">Clear All</button></div>';
 		t +=     '<div id="bookmarkResults"></div>';
 		t += '</div></td></tr>';
-		t += '<tr><td onclick="app.toggleSearch(); return false;"><img src="img/ic_action_search.png" style="height:1em;"/> Search</td></tr>';
+		t += '<tr><td class="menuLabel" onclick="app.toggleSearch(); return false;"><img src="img/ic_action_search.png" style="height:1em;"/> Search</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="searchPanel toshow">';
 		t +=     '<div><input id="searchExpression" type="search"/><button id="searchButton" onclick="app.search();return false;">Go</button></div>';
 		t +=     '<div id="searchResults"></div>';
 		t += '</div></td></tr>';
-		t += '<tr><td onclick="app.toggleBibleSync(); return false;"><img src="img/ic_action_group.png" style="height:1em;"/> BibleSync</td></tr>';
+		t += '<tr><td class="menuLabel" onclick="app.toggleBibleSync(); return false;"><img src="img/ic_action_group.png" style="height:1em;"/> BibleSync</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="bibleSyncPanel toshow">';
 		t +=     '<div><button id="sendBibleSync" onclick="app.sendBibleSyncMessage(app.getCurrentKey());return false;">Send Current</button><button id="clearBibleSync" onclick="app.bibleSyncClear();return false;">Clear All</button></div>';
 		t +=     '<div id="bibleSyncResults"></div>';
 		t += '</div></td></tr>';
-		t += '<tr onclick="installMgr.show();return false;"><td><img src="img/ic_action_download.png" style="height:1em;"/> Library</td></tr>';
-		t += '<tr onclick="app.closeMenu(); app.toggleFootnotes();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> Toggle Notes</td></tr>';
-		t += '<tr onclick="app.closeMenu(); app.about();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> About</td></tr>';
+		t += '<tr class="menuLabel" onclick="installMgr.show();return false;"><td><img src="img/ic_action_download.png" style="height:1em;"/> Library</td></tr>';
+		t += '<tr class="menuLabel" onclick="app.closeMenu(); app.toggleFootnotes();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> Toggle Notes</td></tr>';
+		t += '<tr class="menuLabel" onclick="app.closeMenu(); app.about();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> About</td></tr>';
 		t += '</tbody></table>';
 		$('.menupanel').html(t);
 		$('.menutab').click(function(){
