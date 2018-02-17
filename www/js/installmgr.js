@@ -12,8 +12,8 @@ var installMgr = {
 	setupMenu: function(callback) {
         var t  = '<table style="width:100%"><tbody><tr>';
         t += '<td style="height:100%" class="dropbtn"><button class="dropbtn dropclick" style="width:100%;height:100%;;" onclick="app.handleBackButton(); return false;"> <span style="font-size:170%;font-weight:bold;vertical-align:middle;">&lt; </span><span style="vertical-align:middle;"> Back</span></button></td>';
-        t += '<td style="height:100%" class="dropbtn">Modules<br/><select style="width:100%;" id="modSource" onchange="installMgr.modSourceChanged();"><option>Installed</option></select></td>';
-        t += '<td style="height:100%" class="dropbtn">Type<br/><select style="width:100%;" id="catFilter" onchange="installMgr.modSourceChanged();"><option>' + SWORD.CATEGORY_BIBLES + '</option></select></td>';
+        t += '<td style="height:100%" class="dropbtn">Modules<br/><select id="modSource" onchange="installMgr.modSourceChanged();"><option>Installed</option></select></td>';
+        t += '<td style="height:100%" class="dropbtn">Type<br/><select id="catFilter" onchange="installMgr.modSourceChanged();"><option>' + SWORD.CATEGORY_BIBLES + '</option></select></td>';
         t += '<td style="height:100%" class="dropbtn"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="installMgr.refreshSources(); return false;"><span style="font-size:170%;font-weight:bold;vertical-align:middle;"> &#x21bb; </span></button></td>';
         t += '</tr></tbody></table>';
 

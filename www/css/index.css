@@ -290,12 +290,18 @@ table.clean tr.roweven {
 .dropbtn {
     background-color: #4CAF50;
     color: white;
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: .5em;
+    padding-right: .5em;
     padding-top: .2em;
     padding-bottom: .2em;
     border: none;
     cursor: pointer;
+}
+
+.dropbtn select {
+    margin-left: -.4em;
+    margin-right: -.4em;
+    width: auto;
 }
 
 /* Dropdown button on hover & focus */
