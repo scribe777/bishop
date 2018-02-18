@@ -335,3 +335,17 @@ table.clean tr.roweven {
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display:block;}
+
+#installtoolbar {
+	display: grid;
+	grid-template-columns: auto 1fr 1fr auto;
+}
+
+#installtoolbar > button {
+	border: 1px solid #EEE;
+}
+
+
+#installtoolbar > div > select {
+	width: 100%;
+}
