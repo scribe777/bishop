@@ -43,6 +43,12 @@ console.log('**** a click event from: ' + $(this).prop('outerHTML'));
 				window.open(url, '_system');
 			}
 console.log('**** a click event url: ' + url);
+			// check for display verse number click and make this verse the current verse
+			if (url == 'javascript:void(0);' && $(this).parent() && $(this).parent().parent() && $(this).parent().parent().hasClass('verse')) {
+console.log('**** a click event for updating current verse');
+				app.setCurrentVerseNode($(this).parent().parent());
+			}
+			// check for Bible reference click and jump there
 			if (url.indexOf('passagestudy.jsp') !== -1) {
 				var b = url.indexOf('key=');
 				if (b < 0) b = url.indexOf('value=');
@@ -147,18 +153,29 @@ console.log("*** in show. after setting textDisplay.length: " + textDisplay.leng
 		if (app.firstTime) app.showFirstTime();
 		else app.displayCurrentChapter();
 	},
+	setCurrentVerseNode: function(verseNode) {
+console.log('***** setCurrentVerseNode, verseNode:' + $(verseNode).prop('outerHTML'));
+		if (!$(verseNode).hasClass('currentverse')) {
+console.log('***** setCurrentVerseNode: does not have currentverse class');
+			var verseNum = $(verseNode).find('.versenum :first').text().trim();
+			var verse = app.currentVerseKey.bookAbbrev+'.'+app.currentVerseKey.chapter+'.'+verseNum;
+console.log('***** setCurrentVerseNode: about to call setCurrentKey to: ' + verse);
+			app.setCurrentKey(verse, function() {
+console.log('***** setCurrentVerseNode: setting colors');
+				$('.currentverse').removeClass('currentverse').addClass('verse');
+				$('.versenum').filter(function(){ return $(this).text().trim() == verseNum; }).parent('.verse').removeClass('verse').addClass('currentverse');
+console.log('***** setCurrentVerseNode, verseNode:' + $(verseNode).prop('outerHTML'));
+console.log('***** setCurrentVerseNode: about to display footnotes');
+				app.displayFootnotes();
+			});
+		}
+	},
 	textScroll: function() {
 		var max = $('#textDisplay').height();
 		$('.currentverse, .verse').each(function() {
-			if ($(this).offset().top > 20 && $(this).offset().top < max) {
-				if (!$(this).hasClass('currentVerse')) {
-					var verse = $(this).find('.versenum :first').text();
-					app.setCurrentKey(app.currentVerseKey.bookAbbrev+'.'+app.currentVerseKey.chapter+'.'+verse, function() {
-						$('.currentverse').removeClass('currentverse').addClass('verse');
-						$('.versenum').filter(function(){ return $(this).text()==verse; }).parent('.verse').removeClass('verse').addClass('currentverse');
-						app.displayFootnotes();
-					});
-				}
+			var verseNode = $(this);
+			if ($(verseNode).offset().top > 20 && $(verseNode).offset().top < max) {
+				app.setCurrentVerseNode(verseNode);
 				return false; // stops the iteration after the first one on screen
 			}
 		});
@@ -196,7 +213,7 @@ console.log('returning currentMod1: ' + mod);
 	getCurrentKey: function() { var v = window.localStorage.getItem('currentKey'); if (!v) v = "James 1:19"; return v; },
 	_lastVerseKey: null,
 	setCurrentKey: function(keyText, callback) {
-try { throw new Error("====================   SetCurrentKey =============================="); } catch (e) { console.log(e.stack); }
+//try { throw new Error("====================   SetCurrentKey =============================="); } catch (e) { console.log(e.stack); }
 console.log('setCurrentKey: ' + keyText);
 console.log('setCurrentKey: app.currentVerseKey: ' + app.currentVerseKey);
 		if (app._lastVerseKey == keyText && app.currentVerseKey) return callback?callback():null;
@@ -804,7 +821,7 @@ console.log('calling headerLoop : ' + (i + 1));
 	},
 	about: function() {
 		var t = '<div class="about">';
-		t += '<center><h2>Bishop version: 0.9</h2></center>';
+		t += '<center><h2>Bishop version: 1.0</h2></center>';
 		t += '<center><i>SWORD engine version: ' + SWORD.version + '</i></center>';
 		t += '<h3>The CrossWire Bible Society</h3>';
 		t += '<p>Bishop is a Bible study application from The CrossWire Bible Society and is a member of The SWORD Project family of Bible study tools.</p>';
@@ -826,7 +843,9 @@ console.log('About: showing modules, count: ' + allMods.length);
 				SWORD.mgr.getModuleByName(mods[i].name, function(module) {
 					module.getConfigEntry('About', function(about) {
 						SWORD.mgr.getExtraConfigValue(mods[i].name, "CipherKey", function(cip) {
-							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (cip?(' (CipherKey: ' + cip + ')<br/><br/>'):'') + about;
+							var ciphered = mods[i].cipherKey !== undefined;
+							if (!cip) cip = '';
+							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (ciphered?(' (<button onclick="app.changeCipher(\''+mods[i].name+'\', \'' + cip + '\'); return false;">CipherKey: ' + cip + '</button>)<br/><br/>'):'') + about;
 							getConfigsLoop(mods, ++i);
 						});
 					});
@@ -843,6 +862,16 @@ console.log('About: showing modules, count: ' + allMods.length);
 				});
 			}
 		});
+	},
+	changeCipher: function(modName, currentCipher) {
+		var cipher = prompt('Unlock Code for ' + modName, currentCipher);
+		if (cipher != null) {
+			var buffer = '['+modName+']\n';
+			buffer += 'CipherKey='+cipher;
+			SWORD.mgr.addExtraConfig(buffer, function(newMods) {
+				app.show();
+			});
+		}
 	},
 	basicStartup: function(stage) {
 console.log('basicStartup called, stage: ' + stage);
