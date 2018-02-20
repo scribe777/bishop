@@ -1,8 +1,9 @@
 var app = {
+	enableBibleSync : true,
+	bibleSyncRefs : [],
 	isPopupShowing : false,
 	basicStartupStage : 0,
 	currentVerseKey : false,
-	bibleSyncRefs : [],
 	firstTime: false,
 	waitingInstall: null,
 	lastDisplayMods: null,
@@ -154,18 +155,18 @@ console.log("*** in show. after setting textDisplay.length: " + textDisplay.leng
 		else app.displayCurrentChapter();
 	},
 	setCurrentVerseNode: function(verseNode) {
-console.log('***** setCurrentVerseNode, verseNode:' + $(verseNode).prop('outerHTML'));
+//console.log('***** setCurrentVerseNode, verseNode:' + $(verseNode).prop('outerHTML'));
 		if (!$(verseNode).hasClass('currentverse')) {
-console.log('***** setCurrentVerseNode: does not have currentverse class');
+//console.log('***** setCurrentVerseNode: does not have currentverse class');
 			var verseNum = $(verseNode).find('.versenum :first').text().trim();
 			var verse = app.currentVerseKey.bookAbbrev+'.'+app.currentVerseKey.chapter+'.'+verseNum;
-console.log('***** setCurrentVerseNode: about to call setCurrentKey to: ' + verse);
+//console.log('***** setCurrentVerseNode: about to call setCurrentKey to: ' + verse);
 			app.setCurrentKey(verse, function() {
-console.log('***** setCurrentVerseNode: setting colors');
+//console.log('***** setCurrentVerseNode: setting colors');
 				$('.currentverse').removeClass('currentverse').addClass('verse');
 				$('.versenum').filter(function(){ return $(this).text().trim() == verseNum; }).parent('.verse').removeClass('verse').addClass('currentverse');
-console.log('***** setCurrentVerseNode, verseNode:' + $(verseNode).prop('outerHTML'));
-console.log('***** setCurrentVerseNode: about to display footnotes');
+//console.log('***** setCurrentVerseNode, verseNode:' + $(verseNode).prop('outerHTML'));
+//console.log('***** setCurrentVerseNode: about to display footnotes');
 				app.displayFootnotes();
 			});
 		}
@@ -262,7 +263,10 @@ console.log('firstTime check. mods.length: ' + mods.length);
 			app.firstTime = !mods.length;
 console.log('app.firstTime: ' + app.firstTime);
 			app.show();
-			SWORD.mgr.registerBibleSyncListener(app.bibleSyncListener);
+			if (app.enableBibleSync) {
+console.log('registering BibleSync listener');
+				SWORD.mgr.registerBibleSyncListener(app.bibleSyncListener);
+			}
 		});
 	},
 	popupShow: function(content) {
@@ -339,11 +343,13 @@ console.log('app.firstTime: ' + app.firstTime);
 		t +=     '<div><input id="searchExpression" type="search"/><button id="searchButton" onclick="app.search();return false;">Go</button></div>';
 		t +=     '<div id="searchResults"></div>';
 		t += '</div></td></tr>';
+	if (app.enableBibleSync) {
 		t += '<tr><td class="menuLabel" onclick="app.toggleBibleSync(); return false;"><img src="img/ic_action_group.png" style="height:1em;"/> BibleSync</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="bibleSyncPanel toshow">';
 		t +=     '<div><button id="sendBibleSync" onclick="app.sendBibleSyncMessage(app.getCurrentKey());return false;">Send Current</button><button id="clearBibleSync" onclick="app.bibleSyncClear();return false;">Clear All</button></div>';
 		t +=     '<div id="bibleSyncResults"></div>';
 		t += '</div></td></tr>';
+	}
 		t += '<tr class="menuLabel" onclick="installMgr.show();return false;"><td><img src="img/ic_action_download.png" style="height:1em;"/> Library</td></tr>';
 		t += '<tr class="menuLabel" onclick="app.closeMenu(); app.toggleFootnotes();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> Toggle Notes</td></tr>';
 		t += '<tr class="menuLabel" onclick="app.closeMenu(); app.about();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> About</td></tr>';
@@ -410,15 +416,19 @@ console.log('app.firstTime: ' + app.firstTime);
 		}
 		app.updateBibleSyncDisplay();
 	},
+
 	updateBibleSyncDisplay: function() {
-		var t = '<table style="width:100%;"><thead><tr><th></th><th></th></tr></thead><tbody>';
-		for (var i = 0; i < app.bibleSyncRefs.length; ++i) {
-			t += '<tr class="searchHit"><td colspan="2">'+app.bibleSyncRefs[i]+'</td></tr>';
+		if (app.enableBibleSync) {
+			var t = '<table style="width:100%;"><thead><tr><th></th><th></th></tr></thead><tbody>';
+			for (var i = 0; i < app.bibleSyncRefs.length; ++i) {
+				t += '<tr class="searchHit"><td colspan="2">'+app.bibleSyncRefs[i]+'</td></tr>';
+			}
+			t += '</tbody></table>';
+			$('#bibleSyncResults').html(t);
+			app.registerSearchHitsHandler();
 		}
-		t += '</tbody></table>';
-		$('#bibleSyncResults').html(t);
-		app.registerSearchHitsHandler();
 	},
+
 	registerSearchHitsHandler: function() {
 		$('.searchHit').click(function () {
 			app.closeMenu();
@@ -823,6 +833,9 @@ console.log('calling headerLoop : ' + (i + 1));
 		var t = '<div class="about">';
 		t += '<center><h2>Bishop version: 1.0</h2></center>';
 		t += '<center><i>SWORD engine version: ' + SWORD.version + '</i></center>';
+		if (app.enableBibleSync) {
+			t += '<div style="float:right;"><img style="height:2em;" src="img/biblesync-v1-50.png"/></div>';
+		}
 		t += '<h3>The CrossWire Bible Society</h3>';
 		t += '<p>Bishop is a Bible study application from The CrossWire Bible Society and is a member of The SWORD Project family of Bible study tools.</p>';
 		t += '<p>To learn more, visit us online<br/><center><a href="http://crosswire.org">The CrossWire Bible Society</a></center></p>';
