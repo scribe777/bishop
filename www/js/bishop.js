@@ -831,18 +831,23 @@ console.log('calling headerLoop : ' + (i + 1));
 	},
 	about: function() {
 		var t = '<div class="about">';
-		t += '<div style="float:right;"><img style="height:5em;margin-top:.5em;" src="img/swordlogo.png"/></div>';
+		t += '<div style="float:right;"><img style="height:5em;margin-top:.7em;" src="img/swordlogo.png"/></div>';
 		t += '<center><h2>Bishop version: 1.0</h2></center>';
 		t += '<center><i>SWORD engine version: ' + SWORD.version + '</i></center>';
+		t += '<br/>';
+		t += '<br/>';
+		t += '<div style="float:right;padding-left:1em;"><img style="height:5em;margin-top:.5em;" src="img/crosswire_medium.png"/></div>';
 		t += '<h3>The CrossWire Bible Society</h3>';
 		t += '<p>';
 		t += 'Bishop is a Bible study application from The CrossWire Bible Society and is a member of The SWORD Project family of Bible study tools.';
 		t += '</p>';
 		t += '<p>To learn more, visit us online<br/><center><a href="http://crosswire.org">The CrossWire Bible Society</a></center></p>';
 		t += '<p>May God bless you as you seek to know Him more.</p>';
+		t += '<br/>';
 		if (app.enableBibleSync) {
 			t += '<div style="float:right;"><img style="height:2em;" src="img/biblesync-v1-50.png"/></div>';
 		}
+		t += '<br/>';
 		t += '<h3>Modules</h3>';
 		SWORD.mgr.getModInfoList(function(allMods) {
 console.log('About: showing modules, count: ' + allMods.length);
@@ -861,7 +866,7 @@ console.log('About: showing modules, count: ' + allMods.length);
 						SWORD.mgr.getExtraConfigValue(mods[i].name, "CipherKey", function(cip) {
 							var ciphered = mods[i].cipherKey !== undefined;
 							if (!cip) cip = '';
-							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (ciphered?(' (<button onclick="app.changeCipher(\''+mods[i].name+'\', \'' + cip + '\'); return false;">CipherKey: ' + cip + '</button>)<br/><br/>'):'') + about;
+							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (ciphered?(' (<button onclick="app.changeCipher(\''+mods[i].name+'\', \'' + cip + '\'); return false;">CipherKey: ' + cip + '</button>)<br/><br/>'):'') + about + '<br/><br/>';
 							getConfigsLoop(mods, ++i);
 						});
 					});
