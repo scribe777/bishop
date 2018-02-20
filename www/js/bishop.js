@@ -831,15 +831,18 @@ console.log('calling headerLoop : ' + (i + 1));
 	},
 	about: function() {
 		var t = '<div class="about">';
+		t += '<div style="float:right;"><img style="height:5em;margin-top:.5em;" src="img/swordlogo.png"/></div>';
 		t += '<center><h2>Bishop version: 1.0</h2></center>';
 		t += '<center><i>SWORD engine version: ' + SWORD.version + '</i></center>';
+		t += '<h3>The CrossWire Bible Society</h3>';
+		t += '<p>';
+		t += 'Bishop is a Bible study application from The CrossWire Bible Society and is a member of The SWORD Project family of Bible study tools.';
+		t += '</p>';
+		t += '<p>To learn more, visit us online<br/><center><a href="http://crosswire.org">The CrossWire Bible Society</a></center></p>';
+		t += '<p>May God bless you as you seek to know Him more.</p>';
 		if (app.enableBibleSync) {
 			t += '<div style="float:right;"><img style="height:2em;" src="img/biblesync-v1-50.png"/></div>';
 		}
-		t += '<h3>The CrossWire Bible Society</h3>';
-		t += '<p>Bishop is a Bible study application from The CrossWire Bible Society and is a member of The SWORD Project family of Bible study tools.</p>';
-		t += '<p>To learn more, visit us online<br/><center><a href="http://crosswire.org">The CrossWire Bible Society</a></center></p>';
-		t += '<p>May God bless you as you seek to know Him more.</p>';
 		t += '<h3>Modules</h3>';
 		SWORD.mgr.getModInfoList(function(allMods) {
 console.log('About: showing modules, count: ' + allMods.length);
