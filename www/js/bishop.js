@@ -1,4 +1,5 @@
 var app = {
+	version: '1.0.0',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -832,8 +833,8 @@ console.log('calling headerLoop : ' + (i + 1));
 	about: function() {
 		var t = '<div class="about">';
 		t += '<div style="float:right;"><img style="height:5em;margin-top:.7em;" src="img/swordlogo.png"/></div>';
-		t += '<center><h2>Bishop version: 1.0</h2></center>';
-		t += '<center><i>SWORD engine version: ' + SWORD.version + '</i></center>';
+		t += '<div style="width:100%;text-align:center;"><div style="display:inline-block;"><h2><span style="font-size:130%;">Bishop</span> <span style="font-size:70%;">version: '+app.version+'</span></h2>';
+		t += '<i>SWORD engine version: ' + SWORD.version + '</i></div></div>';
 		t += '<br/>';
 		t += '<br/>';
 		t += '<div style="float:right;padding-left:1em;"><img style="height:5em;margin-top:.5em;" src="img/crosswire_medium.png"/></div>';
@@ -866,7 +867,7 @@ console.log('About: showing modules, count: ' + allMods.length);
 						SWORD.mgr.getExtraConfigValue(mods[i].name, "CipherKey", function(cip) {
 							var ciphered = mods[i].cipherKey !== undefined;
 							if (!cip) cip = '';
-							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (ciphered?(' (<button onclick="app.changeCipher(\''+mods[i].name+'\', \'' + cip + '\'); return false;">CipherKey: ' + cip + '</button>)<br/><br/>'):'') + about + '<br/><br/>';
+							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (ciphered?('<button onclick="app.changeCipher(\''+mods[i].name+'\', \'' + cip + '\'); return false;">CipherKey: ' + cip + '</button><br/><br/>'):'') + about + '<br/><br/>';
 							getConfigsLoop(mods, ++i);
 						});
 					});
