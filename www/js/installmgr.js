@@ -18,10 +18,10 @@ var installMgr = {
         t += '<td style="width:1%;;height:100%" class="dropbtn"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="installMgr.refreshSources(); return false;"><span style="font-size:170%;font-weight:bold;vertical-align:middle;"> &#x21bb; </span></button></td>';
         t += '</tr></tbody></table>';
         */
-    var t  = '<header id="installtoolbar">';
+    var t  = '<header class="toolbar" id="installtoolbar">';
         t += '<button class="dropbtn dropclick" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> Back</div></button>';
-        t += '<div class="dropbtn"><span>Modules</span><select id="modSource" onchange="installMgr.modSourceChanged();"><option>Installed</option></select></div>';
-        t += '<div class="dropbtn"><span>Type</span><select id="catFilter" onchange="installMgr.modSourceChanged();"><option>' + SWORD.CATEGORY_BIBLES + '</option></select></div>';
+        t += '<button class="dropbtn dropclick" onclick="return false;"><div><label for="modSource">Modules</label></div><select id="modSource" onchange="installMgr.modSourceChanged();"><option>Installed</option></select></button>';
+        t += '<button class="dropbtn dropclick" onclick="return false;"><div><label for="catFilter">Type</label></div><select id="catFilter" onchange="installMgr.modSourceChanged();"><option>' + SWORD.CATEGORY_BIBLES + '</option></select></button>';
         t += '<button class="dropbtn dropclick" onclick="installMgr.refreshSources(); return false;"><span style="font-size:170%;font-weight:bold;vertical-align:middle;"> &#x21bb; </span></button>';
         t += '</header>';
 

@@ -16,18 +16,16 @@ var verseStudy = {
     
     
     setupMenu: function() {
-        var t  = '<table style="width:100%"><tbody><tr>';
-        t += '<td style="height:100%"><button class="dropbtn dropclick" style="width:100%;height:100%;;" onclick="app.handleBackButton(); return false;"> <span style="font-size:170%;font-weight:bold;vertical-align:middle;">&lt; </span><span style="vertical-align:middle;"> Back</span></button></td>';
-        t += '<td style="height:100%"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="verseStudy.wordStudy(); return false;">Word<br/>Study</button></td>';
-        t += '<td style="height:100%"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="verseStudy.commentary(); return false;"><span style="vertical-align:middle;">Commentary</span></button></td>';
-        t += '<td style="height:100%"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="verseStudy.witnessStudy(); return false;">Witness<br/>Study</button></td>';
-        t += '<td>';
-        t += `
-        <div style="width:100%" class="dropdown">
-        <button id="variantButton" style="width:100%" onclick="verseStudy.variantStudyClick(); return false;" class="dropbtn dropclick">Variant<br/>Study</button>
-        </div>
-        `;
-        t += '</td></tr></tbody></table>';
+
+    var t  = '<header class="toolbar" id="versestudytoolbar">';
+        t += '<button class="dropbtn dropclick" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> Back</div></button>';
+        t += '<button class="dropbtn dropclick" onclick="verseStudy.wordStudy(); return false;"><div>Word</div><div>Study</div></button>';
+        t += '<button class="dropbtn dropclick" onclick="verseStudy.commentary(); return false;"><div>&nbsp;</div><div>Commentary</div></button>';
+        t += '<button class="dropbtn dropclick" onclick="verseStudy.witnessStudy(); return false;"><div>Witness</div><div>Study</div></button>';
+        t += '<div style="width:100%" class="dropdown">';
+        t += '<button id="variantButton" class="dropbtn dropclick" onclick="verseStudy.variantStudyClick(); return false;"><div>Variant</div><div>Study</div></button>';
+        t += '</div>';
+        t += '</header>';
         $('#toolbar').html(t);
     },
 
@@ -302,18 +300,21 @@ console.log('lex: ' + JSON.stringify(lex));
 						t += '<td>' + $(m).find("originYear").text() + '</td>';
 						t += '<td>' + $(this).attr("folio") + '</td><td>';
 						if (transURL) {
-							t += '<a href="#" onclick="window.open(\'' + transURL + '\',\'ViewTranscription\',\'width=500,height=600,resizable=1,scrollbars=1\');return false;">';
+							t += `<button onclick="verseStudy.showRemote('` + transURL + '\'); return false;">';
 						}
 						t += $(this).attr("biblicalContent");
 						if (transURL) { t += '</a>'; }
 						t += '</td><td>';
 						if (imageURL) {
-							t += '<a href="' + imageURL + '" target="NTVMR">';
+							t += `
+								<button onclick="verseStudy.showRemote('`+ imageURL + `'); return false;">
+							`;
+				
 						}
 						if (thumbURL) {
 							t += '<img width="50px" src="' + thumbURL + '"/>';
 						}
-						if (imageURL) { t += '</a>'; }
+						if (imageURL) { t += '</button>'; }
 						t += '</td></tr>';
 					});
 				});
@@ -322,6 +323,9 @@ console.log('lex: ' + JSON.stringify(lex));
 				$('#client').html(t);
 			}
 		});
+	},
+	showRemote : function(remoteURL) {
+		$('#client').html('<iframe src="'+remoteURL+'"/>');
 	},
 	variantGraph : function() {
 		verseStudy.closeMenus();

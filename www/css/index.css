@@ -336,16 +336,36 @@ table.clean tr.roweven {
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display:block;}
 
+
 #installtoolbar {
-	display: grid;
 	grid-template-columns: auto 1fr 1fr auto;
 }
+#versestudytoolbar {
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
 
-#installtoolbar > button {
+.toolbar {
+	display: grid;
+}
+
+.toolbar button {
 	border: 1px solid #EEE;
 }
 
 
-#installtoolbar > div > select {
+.toolbar > div > button {
+	width: 100%;
+	height: 100%;
+}
+
+.toolbar select {
 	width: 100%;
 }
+
+#client iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
