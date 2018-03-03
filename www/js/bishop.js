@@ -71,7 +71,7 @@ console.log('clicked key: ' + key);
 			return false;
 		});
 	},
-	handleIntent(intent) {
+	handleIntent: function(intent) {
 		var confBlob = intent.extras['android.intent.extra.TEXT'];
 console.log('**** Received Intent. Object: ' + JSON.stringify(intent));
 console.log('**** Received Intent. confBlob: ' + confBlob);
@@ -657,7 +657,7 @@ console.log("**** done showing firstime ****");
 		$('#textDisplay').html(t);
 		return;
 	},
-	installModule(mod, callback) {
+	installModule: function(mod, callback) {
 console.log('**** installing mod: ' + mod);
 console.log('**** showing installMgr');
 		installMgr.show(function() {

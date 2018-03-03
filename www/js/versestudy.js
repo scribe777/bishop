@@ -18,13 +18,13 @@ var verseStudy = {
     setupMenu: function() {
 
     var t  = '<header class="toolbar" id="versestudytoolbar">';
-        t += '<button class="dropbtn dropclick" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> Back</div></button>';
-        t += '<button class="dropbtn dropclick" onclick="verseStudy.wordStudy(); return false;"><div>Word</div><div>Study</div></button>';
-        t += '<button class="dropbtn dropclick" onclick="verseStudy.commentary(); return false;"><div>&nbsp;</div><div>Commentary</div></button>';
-        t += '<button class="dropbtn dropclick" onclick="verseStudy.witnessStudy(); return false;"><div>Witness</div><div>Study</div></button>';
-        t += '<div style="width:100%" class="dropdown">';
-        t += '<button id="variantButton" class="dropbtn dropclick" onclick="verseStudy.variantStudyClick(); return false;"><div>Variant</div><div>Study</div></button>';
-        t += '</div>';
+        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> Back</div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveOne" onclick="verseStudy.wordStudy(); return false;"><div>Word</div><div>Study</div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveTwo" onclick="verseStudy.commentary(); return false;"><div>&nbsp;</div><div>Commentary</div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveThree" onclick="verseStudy.witnessStudy(); return false;"><div>Witness</div><div>Study</div></button>';
+//        t += '<div style="width:100%" class="dropdown twentyFiveFour">';
+        t += '<button id="variantButton" class="dropbtn dropclick twentyFiveFour" onclick="verseStudy.variantStudyClick(); return false;"><div>Variant</div><div>Study</div></button>';
+//        t += '</div>';
         t += '</header>';
         $('#toolbar').html(t);
     },
@@ -137,11 +137,11 @@ console.log('wordSearch renderText mod2 complete.');
 		var lemma = $(word).attr('data-lemma');
 		var morph = $(word).attr('data-morph').replace(/-/g, '\\-');
 		$('#aux').html(
-		    `<a href="#" onclick="return false;"><b style="white-space:nowrap">Show all occurrences of ` + lemma + `:</b></a>` +
-		    `<a href="#" onclick="verseStudy.wordSearch('`+app.lastDisplayMods[0].name+`', '`+lemma+`', '`+app.lastDisplayMods[1].name+`', '`+morph+`'); return false;">... any morphology in ` + app.lastDisplayMods[0].name + `</a>` +
-//		    `<a href="#" onclick="verseStudy.wordSearch('`+app.lastDisplayMods[0].name+`', '`+lemma+'@'+morph+`', '`+app.lastDisplayMods[1].name+`', '`+morph+`'); return false;">... same morphology in ` + app.lastDisplayMods[0].name + `</a>` + 
-		    `<a href="#" onclick="verseStudy.wordSearch('LXX', '`+lemma+`', '` + app.lastDisplayMods[0].name +`', '`+morph+`'); return false;">... any morphology in LXX</a>` +
-//		    `<a href="#" onclick="verseStudy.wordSearch('LXX', '`+lemma+`', '` + app.lastDisplayMods[0].name +`', '`+morph+`'); return false;">... same morphology in LXX</a>` +
+		    '<a href="#" onclick="return false;"><b style="white-space:nowrap">Show all occurrences of ' + lemma + ':</b></a>' +
+		    '<a href="#" onclick="verseStudy.wordSearch(\''+app.lastDisplayMods[0].name+'\', \''+lemma+'\', \''+app.lastDisplayMods[1].name+'\', \''+morph+'\'); return false;">... any morphology in ' + app.lastDisplayMods[0].name + '</a>' +
+//		    '<a href="#" onclick="verseStudy.wordSearch(\''+app.lastDisplayMods[0].name+'\', \''+lemma+\'@\'+morph+'\', \''+app.lastDisplayMods[1].name+'\', \''+morph+'\'); return false;">... same morphology in ' + app.lastDisplayMods[0].name + '</a>' + 
+		    '<a href="#" onclick="verseStudy.wordSearch(\'LXX\', \''+lemma+'\', \'' + app.lastDisplayMods[0].name +'\', \''+morph+'\'); return false;">... any morphology in LXX</a>' +
+//		    '<a href="#" onclick="verseStudy.wordSearch(\'LXX\', \''+lemma+'\', \'' + app.lastDisplayMods[0].name +'\', \''+morph+'\'); return false;">... same morphology in LXX</a>' +
 		'');
 		setTimeout(function() {
 		var v = $('#aux');
@@ -164,11 +164,7 @@ console.log('wordSearch renderText mod2 complete.');
 
 	variantStudyClick: function() {
 		var verseKey = app.getCurrentVerseKey();
-		$('#aux').html(`
-		    <a href="#" onclick="verseStudy.variantGraph(); return false;">Variant Graph</a>
-		    <a href="#" onclick="verseStudy.alignmentTable(); return false;">Alignment Table</a>
-		`
-		+ (verseKey.bookName == 'Acts' ? '<a href="#" onclick="verseStudy.dECMApp(); return false;">Digital ECM</a>' : '')
+		$('#aux').html('<a href="#" onclick="verseStudy.variantGraph(); return false;">Variant Graph</a> <a href="#" onclick="verseStudy.alignmentTable(); return false;">Alignment Table</a>' + (verseKey.bookName == 'Acts' ? '<a href="#" onclick="verseStudy.dECMApp(); return false;">Digital ECM</a>' : '')
 		);
 		var v = $('#aux');
 		var b = $('#variantButton');
@@ -300,15 +296,13 @@ console.log('lex: ' + JSON.stringify(lex));
 						t += '<td>' + $(m).find("originYear").text() + '</td>';
 						t += '<td>' + $(this).attr("folio") + '</td><td>';
 						if (transURL) {
-							t += `<button style="width:100%; height:100%" onclick="verseStudy.showRemote('` + transURL + '\'); return false;">';
+							t += '<button style="width:100%; height:100%" onclick="verseStudy.showRemote(\'' + transURL + '\'); return false;">';
 						}
 						t += $(this).attr("biblicalContent");
 						if (transURL) { t += '</a>'; }
 						t += '</td><td>';
 						if (imageURL) {
-							t += `
-								<div style="width:100%; height:100%" onclick="verseStudy.showRemote('`+ imageURL + `'); return false;">
-							`;
+							t += '<div style="width:100%; height:100%" onclick="verseStudy.showRemote(\''+ imageURL + '\'); return false;">';
 				
 						}
 						if (thumbURL) {
