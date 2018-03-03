@@ -71,7 +71,7 @@ refreshplugins:
 	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose
 
 copysourcefromplatformandroid:
-	cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/ || true
+	echo "do nothing for now"; #cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/ || true
 
 copysourcefromplatformios:
 	echo nothing to do because xcode somehow edits files at top level www/
@@ -106,7 +106,7 @@ clearplugins:
 	cordova plugin remove cordova-plugin-intent || true
 	cordova plugin remove org.crosswire.sword.cordova.SWORD || true
 	cordova plugin remove cordova-plugin-add-swift-support || true
-	cordova plugin remove phonegap-plugin-mobile-accessibility
+	cordova plugin remove phonegap-plugin-mobile-accessibility || true
 
 #copy any changes made to plugin via xcode
 back:

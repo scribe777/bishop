@@ -300,21 +300,21 @@ console.log('lex: ' + JSON.stringify(lex));
 						t += '<td>' + $(m).find("originYear").text() + '</td>';
 						t += '<td>' + $(this).attr("folio") + '</td><td>';
 						if (transURL) {
-							t += `<button onclick="verseStudy.showRemote('` + transURL + '\'); return false;">';
+							t += `<button style="width:100%; height:100%" onclick="verseStudy.showRemote('` + transURL + '\'); return false;">';
 						}
 						t += $(this).attr("biblicalContent");
 						if (transURL) { t += '</a>'; }
 						t += '</td><td>';
 						if (imageURL) {
 							t += `
-								<button onclick="verseStudy.showRemote('`+ imageURL + `'); return false;">
+								<div style="width:100%; height:100%" onclick="verseStudy.showRemote('`+ imageURL + `'); return false;">
 							`;
 				
 						}
 						if (thumbURL) {
 							t += '<img width="50px" src="' + thumbURL + '"/>';
 						}
-						if (imageURL) { t += '</button>'; }
+						if (imageURL) { t += '</div>'; }
 						t += '</td></tr>';
 					});
 				});
