@@ -296,25 +296,25 @@ console.log('lex: ' + JSON.stringify(lex));
 						}
 						var mssURL = 'http://ntvmr.uni-muenster.de/manuscript-workspace?docID=' + $(m).attr("docID")+"&pageID="+$(this).attr("pageID");
 						//t += '<tr><td><a href="'+ mssURL + '" target="NTVMR">' + $(m).attr("gaNum") + '</a></td>';
-						t += '<tr><td>' + $(m).attr("gaNum") + '</td>';
+						t += '<tr><td>' + $(m).attr("gaNum").replace(/\([^)]*\)/g, '') + '</td>';
 						t += '<td>' + $(m).find("originYear").text() + '</td>';
 						t += '<td>' + $(this).attr("folio") + '</td><td>';
 						if (transURL) {
-							t += `<button style="width:100%; height:100%" onclick="verseStudy.showRemote('` + transURL + '\'); return false;">';
+							t += `<button onclick="verseStudy.showRemote('` + transURL + '\'); return false;">';
 						}
 						t += $(this).attr("biblicalContent");
 						if (transURL) { t += '</a>'; }
 						t += '</td><td>';
 						if (imageURL) {
 							t += `
-								<div style="width:100%; height:100%" onclick="verseStudy.showRemote('`+ imageURL + `'); return false;">
+								<button onclick="verseStudy.showRemote('`+ imageURL + `'); return false;">
 							`;
 				
 						}
 						if (thumbURL) {
 							t += '<img width="50px" src="' + thumbURL + '"/>';
 						}
-						if (imageURL) { t += '</div>'; }
+						if (imageURL) { t += '</button>'; }
 						t += '</td></tr>';
 					});
 				});
@@ -325,7 +325,7 @@ console.log('lex: ' + JSON.stringify(lex));
 		});
 	},
 	showRemote : function(remoteURL) {
-		$('#client').html('<iframe src="'+remoteURL+'" scrolling="yes"></iframe>');
+		$('#client').html('<iframe src="'+remoteURL+'"/>');
 	},
 	variantGraph : function() {
 		verseStudy.closeMenus();

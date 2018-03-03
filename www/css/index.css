@@ -131,7 +131,7 @@ table.nobottom td, table.nobottom th {
 	width:5.5em;
 }
 
-.searchPanel,.bibleSyncPanel,.bookmarkPanel {
+.searchPanel,.bibleSyncPanel,.bookmarkPanel,.settingsPanel {
 	height:0em;
 	overflow:hidden;
 	width:100%;
@@ -363,11 +363,9 @@ table.clean tr.roweven {
 }
 
 #client iframe {
-	height: 0;
-	max-height: 100%;
-	max-width: 100%;
-	min-height: 100%;
-	min-width: 100%;
-	width: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: none;
 }
 

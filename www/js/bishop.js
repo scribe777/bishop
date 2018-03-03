@@ -1,5 +1,5 @@
 var app = {
-	version: '1.0.0',
+	version: '1.0.1',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -256,6 +256,11 @@ console.log('****************** main called ***********************');
 console.log('****************** ------------- ***********************');
 		dataStore.init(function() {
 			app.updateBookmarkDisplay();
+			try {
+				app.zoomLevel = parseInt(window.localStorage.getItem('textZoom'));
+			} catch (e) {}
+			if (!app.zoomLevel) app.zoomLevel = 100;
+			app.adjustUIFont(0);
 		});
 		app.popupHide();
 		// first time check
@@ -314,12 +319,12 @@ console.log('registering BibleSync listener');
 		});
 	},
 	setupMenu: function (mods) {
-        var modOptions = '';
-        for (var i = 0; i < mods.length; ++i) {
-            if (mods[i].category == SWORD.CATEGORY_BIBLES) {
-                modOptions += '<option>' + mods[i].name + '</option>';
-            }
-        }
+		var modOptions = '';
+		for (var i = 0; i < mods.length; ++i) {
+			if (mods[i].category == SWORD.CATEGORY_BIBLES) {
+				modOptions += '<option>' + mods[i].name + '</option>';
+			}
+		}
 		var t = '<table class="slidemenu"><tbody>';
 		t += '<tr><td><table class="keySelector"><tbody><tr><td id="keyDisplay" style="width:100%;border-right-width:0;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="border-left-width:0;" onclick="app.shareVerse(); return false;"><img style="height:1em;" src="img/ic_action_share.png"/></td></tr></tbody></table></td></tr>';
 		t += '<tr><td style="vertical-align:bottom"><table style="width:100%;" class="keySelector"><tbody><tr>';
@@ -333,17 +338,25 @@ console.log('registering BibleSync listener');
 		t += modOptions;
 		t += '</select></td>';
 		t += '</tr></tbody></table></td></tr>';
+
+		// Verse Study
 		t += '<tr class="menuLabel" onclick="verseStudy.show();return false;"><td><img src="img/ic_action_location_searching.png" style="height:1em;"/> Verse Study</td></tr>';
+
+		// Bookmarks
 		t += '<tr><td class="menuLabel" onclick="app.toggleBookmarks(); return false;"><img src="img/bookmarks.png" style="height:1em;"/> Bookmarks</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="bookmarkPanel toshow">';
 		t +=     '<div><button id="addBookmarkButton" onclick="app.bookmarkAdd(app.getCurrentKey());return false;">Add Current</button><button id="clearBookmarks" onclick="app.bookmarksClear();return false;">Clear All</button></div>';
 		t +=     '<div id="bookmarkResults"></div>';
 		t += '</div></td></tr>';
+
+		// Search
 		t += '<tr><td class="menuLabel" onclick="app.toggleSearch(); return false;"><img src="img/ic_action_search.png" style="height:1em;"/> Search</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="searchPanel toshow">';
 		t +=     '<div><input id="searchExpression" type="search"/><button id="searchButton" onclick="app.search();return false;">Go</button></div>';
 		t +=     '<div id="searchResults"></div>';
 		t += '</div></td></tr>';
+
+		// BibleSync
 	if (app.enableBibleSync) {
 		t += '<tr><td class="menuLabel" onclick="app.toggleBibleSync(); return false;"><img src="img/ic_action_group.png" style="height:1em;"/> BibleSync</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="bibleSyncPanel toshow">';
@@ -351,8 +364,20 @@ console.log('registering BibleSync listener');
 		t +=     '<div id="bibleSyncResults"></div>';
 		t += '</div></td></tr>';
 	}
+
+		// Library
 		t += '<tr class="menuLabel" onclick="installMgr.show();return false;"><td><img src="img/ic_action_download.png" style="height:1em;"/> Library</td></tr>';
+
+		// Toggle Notes
 		t += '<tr class="menuLabel" onclick="app.closeMenu(); app.toggleFootnotes();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> Toggle Notes</td></tr>';
+
+		// Settings
+		t += '<tr><td class="menuLabel" onclick="app.toggleSettings(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> Settings</td></tr>';
+		t += '<tr><td style="width:100%;"><div class="settingsPanel toshow">';
+		t +=     '<div>&nbsp;&nbsp;&nbsp;&nbsp;<button id="decreaseUIFontButton" onclick="app.decreaseUIFont();return false;" style="width:2em;font-size:150%"> - </button>&nbsp;&nbsp; Font Size &nbsp;&nbsp;<button id="increaseUIFontButton" onclick="app.increaseUIFont();return false;" style="width:2em;font-size:150%"> + </button></div>';
+		t += '</div></td></tr>';
+
+		// About
 		t += '<tr class="menuLabel" onclick="app.closeMenu(); app.about();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> About</td></tr>';
 		t += '</tbody></table>';
 		$('.menupanel').html(t);
@@ -372,6 +397,19 @@ console.log('registering BibleSync listener');
 		app.updateBookmarkDisplay();
 		if (!app.getCurrentMod1() && mods.length) app.setCurrentMod1(mods[0].name);
 
+	},
+	decreaseUIFont : function() {
+		app.adjustUIFont(-10);
+	},
+	increaseUIFont : function() {
+		app.adjustUIFont(10);
+	},
+	zoomLevel : 100,
+        adjustUIFont : function(step) {
+		app.zoomLevel += parseInt(step);
+		MobileAccessibility.setTextZoom(app.zoomLevel, function(level) {
+			window.localStorage.setItem('textZoom', level);
+		});
 	},
 	toggleFootnotes: function() {
 		if (!app.showingFootnotes)	{ app.openFootnotes();  }
@@ -453,6 +491,21 @@ console.log('registering BibleSync listener');
 		if ($('.searchPanel').hasClass('toshow')) return false;
 		$(".searchPanel").animate({height: "0em"});
 		$('.searchPanel').removeClass('tohide').addClass('toshow');    
+		return true;
+	},
+	toggleSettings: function() {
+		if (!$('.settingsPanel').hasClass('tohide')) app.openSettings();
+		else app.closeSettings();
+	},
+	openSettings: function() {
+		if ($('.settingsPanel').hasClass('tohide')) return;
+		$(".settingsPanel").animate({height: "4em"});
+		$('.settingsPanel').removeClass('toshow').addClass('tohide');
+	},
+	closeSettings: function() {
+		if ($('.settingsPanel').hasClass('toshow')) return false;
+		$(".settingsPanel").animate({height: "0em"});
+		$('.settingsPanel').removeClass('tohide').addClass('toshow');    
 		return true;
 	},
 	toggleBibleSync: function() {

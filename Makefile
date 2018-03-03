@@ -1,4 +1,5 @@
 PLATFORM=ios
+#PLATFORM=android
 
 all: release
 
@@ -45,8 +46,14 @@ copyreleaseios:
 
 install: install${PLATFORM}
 
+deploy: deploy${PLATFORM}
+
+
 installandroid:
 	adb install -r bishop.apk
+
+deployandroid:
+	scp bishop.apk scribe@crosswire.org:/home/crosswire/html/
 
 installios:
 	echo install app to iphone
@@ -91,6 +98,7 @@ addplugins:
 	cordova plugin add cordova-plugin-add-swift-support
 	patch -p0 < patches/cordova-plugin-intent.patch
 	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose
+	cordova plugin add https://github.com/phonegap/phonegap-mobile-accessibility.git
 
 clearplugins:
 	cordova plugin remove cordova-plugin-whitelist || true
@@ -98,6 +106,7 @@ clearplugins:
 	cordova plugin remove cordova-plugin-intent || true
 	cordova plugin remove org.crosswire.sword.cordova.SWORD || true
 	cordova plugin remove cordova-plugin-add-swift-support || true
+	cordova plugin remove phonegap-plugin-mobile-accessibility
 
 #copy any changes made to plugin via xcode
 back:
