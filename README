@@ -36,3 +36,8 @@ make install
 # cordova/phonegap/ionic in the future and support projects at the root instead of
 # under platforms/ 
 
+
+#########  Deploy Apple
+#
+# XCode: Product | Destination | Generic iOS Device
+#	Product | Archive | Export... | Ad Hoc

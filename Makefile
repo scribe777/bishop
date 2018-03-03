@@ -99,6 +99,7 @@ clearplugins:
 	cordova plugin remove org.crosswire.sword.cordova.SWORD || true
 	cordova plugin remove cordova-plugin-add-swift-support || true
 
+#copy any changes made to plugin via xcode
 back:
 	cp platforms/ios/Bishop/Plugins/org.crosswire.sword.cordova.SWORD/SWORD.swift ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/src/ios/SWORD.swift 
 	cp platforms/ios/Bishop/Plugins/org.crosswire.sword.cordova.SWORD/flatapi.h ../sword/include/
