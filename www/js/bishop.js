@@ -1,5 +1,5 @@
 var app = {
-	version: '1.0.1',
+	version: '1.0.2',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -129,6 +129,15 @@ console.log('**** mod doesn\'t exist: ' + mods[i]);
 				alert("Error: Cannot handle open with file intent");
 			}
 		);
+		window.addEventListener("message", function(event) {
+			console.log('received message event: ' + event);
+			var msg = event.data;
+			console.log('message: ' + msg);
+			if (msg.action == 'showImage') {
+				console.log('showing image: ' + msg.dataURL.substring(0,10));
+				FullScreenImage.showImageBase64(msg.dataURL, msg.name, msg.type);
+			}
+		}, false);
 	},
 	handleBackButton: function() {
 		if (app.isPopupShowing) app.popupHide();

@@ -401,5 +401,5 @@ console.log('lex: ' + JSON.stringify(lex));
 			}
 		});
 		}, 50);
-	}
+	},
 };

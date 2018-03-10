@@ -1,5 +1,5 @@
-PLATFORM=ios
-#PLATFORM=android
+#PLATFORM=ios
+PLATFORM=android
 
 all: release
 
@@ -96,17 +96,20 @@ addplugins:
 	cordova plugin add cordova-custom-config
 	cordova plugin add cordova-plugin-intent
 	cordova plugin add cordova-plugin-add-swift-support
-	patch -p0 < patches/cordova-plugin-intent.patch
 	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose
 	cordova plugin add https://github.com/phonegap/phonegap-mobile-accessibility.git
+	cordova plugin add es.keensoft.fullscreenimage
+	patch -p0 < patches/cordova-plugin-intent.patch
 
 clearplugins:
 	cordova plugin remove cordova-plugin-whitelist || true
 	cordova plugin remove cordova-custom-config || true
 	cordova plugin remove cordova-plugin-intent || true
+	cordova plugin remove com.napolitano.cordova.plugin.intent || true
 	cordova plugin remove org.crosswire.sword.cordova.SWORD || true
 	cordova plugin remove cordova-plugin-add-swift-support || true
 	cordova plugin remove phonegap-plugin-mobile-accessibility || true
+	cordova plugin remove es.keensoft.fullscreenimage || true
 
 #copy any changes made to plugin via xcode
 back:
