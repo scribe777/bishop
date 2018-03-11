@@ -126,13 +126,17 @@ console.log('message: ' + msg);
 				window.plugins.toast.showLongCenter('Preparing image for image viewer...');
 			}
 			else if (msg.action == 'showImage') {
-				window.plugins.toast.showLongCenter('Loading image into image viewer...');
 				// showImageURL for remote images doesn't seem to work
-				if (false && msg.imageURL) {
+				if (!msg.imageData) {
 console.log('showing image by url: ' + msg.imageURL);
-					FullScreenImage.showImageURL(msg.imageURL);
+					window.plugins.toast.showLongCenter('Preparing image for image viewer...');
+					imageTools.getImageData(msg.imageURL, function(imageData) {
+						window.plugins.toast.showLongCenter('Loading image into image viewer...');
+						FullScreenImage.showImageBase64(imageData, msg.name, 'png');
+					});
 				}
 				else {
+					window.plugins.toast.showLongCenter('Loading image into image viewer...');
 console.log('showing image by data: ' + msg.imageData.substring(0,10));
 					FullScreenImage.showImageBase64(msg.imageData, msg.name, msg.type);
 				}
