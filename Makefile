@@ -1,5 +1,5 @@
-#PLATFORM=ios
-PLATFORM=android
+PLATFORM=ios
+#PLATFORM=android
 
 all: release
 
@@ -76,14 +76,18 @@ copysourcefromplatformandroid:
 copysourcefromplatformios:
 	echo nothing to do because xcode somehow edits files at top level www/
 
-refreshplatform: refreshplatform${PLATFORM}
+refreshplatform: removeplatforms refreshplatform${PLATFORM}
+
+removeplatforms:
+	cordova platform remove android || true
+	cordova platform remove ios || true
 
 refreshplatformandroid:
-	cordova platform remove android
+	cordova platform remove android || true
 	cordova platform add android
 
 refreshplatformios:
-	cordova platform remove ios
+	cordova platform remove ios || true
 	cordova platform add ios
 
 setup: clearplugins refreshplatform addplugins

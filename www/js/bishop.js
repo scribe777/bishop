@@ -1,5 +1,5 @@
 var app = {
-	version: '1.0.2',
+	version: '1.0.3',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -118,26 +118,33 @@ console.log('**** mod doesn\'t exist: ' + mods[i]);
 	onDeviceReady: function() {
 		app.bindEvents();
 		app.main();
-		window.plugins.intent.setNewIntentHandler(function(intent) {
-			app.handleIntent(intent);
-		});
-		window.plugins.intent.getCordovaIntent(
-			function(intent) {
-				app.handleIntent(intent);
-			},
-			function () {
-				alert("Error: Cannot handle open with file intent");
-			}
-		);
 		window.addEventListener("message", function(event) {
 			console.log('received message event: ' + event);
 			var msg = event.data;
-			console.log('message: ' + msg);
+console.log('message: ' + msg);
 			if (msg.action == 'showImage') {
-				console.log('showing image: ' + msg.dataURL.substring(0,10));
-				FullScreenImage.showImageBase64(msg.dataURL, msg.name, msg.type);
+console.log('showing image: ' + msg.imageURL ? msg.imageURL : msg.imageData.substring(0,10));
+				if (msg.imageURL) {
+					FullScreenImage.showImageURL(msg.imageURL);
+				}
+				else {
+					FullScreenImage.showImageBase64(msg.imageData, msg.name, msg.type);
+				}
 			}
 		}, false);
+		if (window.plugins.intent) {
+			window.plugins.intent.setNewIntentHandler(function(intent) {
+				app.handleIntent(intent);
+			});
+			window.plugins.intent.getCordovaIntent(
+				function(intent) {
+					app.handleIntent(intent);
+				},
+				function () {
+					alert("Error: Cannot handle open with file intent");
+				}
+			);
+		}
 	},
 	handleBackButton: function() {
 		if (app.isPopupShowing) app.popupHide();

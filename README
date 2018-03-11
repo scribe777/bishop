@@ -9,32 +9,40 @@ make
 cd ../Android
 # run Android Studio and open project ~/src/sword/bindings/Android/SWORD
 # once project is loaded, choose Build | Rebuild Project
+# this will build the native libsword.so binaries for Android
 # once building is complete, continue in shell...
 make
 
+# on iOS, build the cordova plugin libsword.so
+# run Xcode and open project ~/src/sword/bindings/objc/SWORD/SWORD.xcodeproj
+# select Product | Build
+# then copy to universal libsword.so binary and deps with..
+cd ~src/sword/bindings/objc
+make
+
+
+ 
 ##########  Build bishop ###############################
 
 # first time after checkout
-
+# edit Makefile and choose your Android or iOS at the beginning of the Makefile
+# then setup the project for your environment with
 make setup
-make refreshplatforms
 
+# to build 
 make
-#plug your phone in
-make install
 
-######### WARNING!!!!  The Makefile copies files from platforms/android/assets/www/ into www/ ###############
-# I know this seems wrong, but it is right if you are using and IDE
-# All Cordova support in IDEs that I've seen have you go into the platforms/
-# folder and open the project files under there.  This means that if you
-# run debug and edit from your IDE, you will be editing under the platforms/ folder
-# so the Makefile copies source from there.  This just means that if you are NOT using
-# an IDE, simply still edit the files in platform/android/assets/www/ instead of www/
-# or change the Makefile to remove the 'copyfromplatform' target.
-#
-#########  Again, I realize this isn't ideal and I am guessing IDEs will become more aware of
-# cordova/phonegap/ionic in the future and support projects at the root instead of
-# under platforms/ 
+# for iOS, sometime the cli make doesn't complete and you need to open in Xcode
+# ~/src/bishop/platforms/ios/Bishop.xcodeproj
+# then Product | Destination | [choose a simulator for testing]
+# then Product | Build
+# then the little VCR play button will run in emulator
+
+# for testing if no phone is plugged in and accessible an emulator will be launched
+make run
+
+# to simply install
+make install
 
 
 #########  Deploy Apple
