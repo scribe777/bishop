@@ -1,5 +1,5 @@
-PLATFORM=ios
-#PLATFORM=android
+#PLATFORM=ios
+PLATFORM=android
 
 all: release
 
@@ -84,11 +84,11 @@ removeplatforms:
 
 refreshplatformandroid:
 	cordova platform remove android || true
-	cordova platform add android
+	cordova platform add android || true
 
 refreshplatformios:
 	cordova platform remove ios || true
-	cordova platform add ios
+	cordova platform add ios || true
 
 setup: clearplugins refreshplatform addplugins
 
@@ -97,12 +97,14 @@ setup: clearplugins refreshplatform addplugins
 # make setup adds them in the right order after platform
 #
 addplugins:
-	cordova plugin add cordova-custom-config
-	cordova plugin add cordova-plugin-intent
-	cordova plugin add cordova-plugin-add-swift-support
-	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose
-	cordova plugin add https://github.com/phonegap/phonegap-mobile-accessibility.git
-	cordova plugin add es.keensoft.fullscreenimage
+	cordova plugin add cordova-custom-config || true
+	cordova plugin add cordova-plugin-intent || true
+	cordova plugin add com.napolitano.cordova.plugin.intent || true
+	cordova plugin add cordova-plugin-add-swift-support || true
+	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose || true
+	cordova plugin add https://github.com/phonegap/phonegap-mobile-accessibility.git || true
+	cordova plugin add es.keensoft.fullscreenimage || true
+	cordova plugin add cordova-plugin-x-toast
 	patch -p0 < patches/cordova-plugin-intent.patch
 
 clearplugins:
@@ -114,6 +116,7 @@ clearplugins:
 	cordova plugin remove cordova-plugin-add-swift-support || true
 	cordova plugin remove phonegap-plugin-mobile-accessibility || true
 	cordova plugin remove es.keensoft.fullscreenimage || true
+	cordova plugin remove cordova-plugin-x-toast
 
 #copy any changes made to plugin via xcode
 back:

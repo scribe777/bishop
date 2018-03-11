@@ -1,5 +1,5 @@
 var app = {
-	version: '1.0.3',
+	version: '1.0.4',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -122,12 +122,18 @@ console.log('**** mod doesn\'t exist: ' + mods[i]);
 			console.log('received message event: ' + event);
 			var msg = event.data;
 console.log('message: ' + msg);
-			if (msg.action == 'showImage') {
-console.log('showing image: ' + msg.imageURL ? msg.imageURL : msg.imageData.substring(0,10));
-				if (msg.imageURL) {
+			if (msg.action == 'preparingImage') {
+				window.plugins.toast.showLongCenter('Preparing image for image viewer...');
+			}
+			else if (msg.action == 'showImage') {
+				window.plugins.toast.showLongCenter('Loading image into image viewer...');
+				// showImageURL for remote images doesn't seem to work
+				if (false && msg.imageURL) {
+console.log('showing image by url: ' + msg.imageURL);
 					FullScreenImage.showImageURL(msg.imageURL);
 				}
 				else {
+console.log('showing image by data: ' + msg.imageData.substring(0,10));
 					FullScreenImage.showImageBase64(msg.imageData, msg.name, msg.type);
 				}
 			}
@@ -202,19 +208,7 @@ console.log("*** in show. after setting textDisplay.length: " + textDisplay.leng
 		window.localStorage.setItem('currentMod1', modName);
 	},
 	getCurrentMod1: function() {
-		var mod = window.localStorage.getItem('currentMod1');
-console.log('currentMod1 from localStorage: ' + mod);
-		if (!mod) {
-			var mods = SWORD.mgr.getModInfoList();
-			for (var i = 0; i < mods.length; ++i) {
-				if (mods[i].category == SWORD.CATEGORY_BIBLES) {
-					app.setCurrentMod1(mods[i].name);
-					return mods[i].name;
-				}
-			}
-		}
-console.log('returning currentMod1: ' + mod);
-		return mod;
+		return window.localStorage.getItem('currentMod1');
 	},
 	setCurrentMod2: function(modName) {
 		window.localStorage.setItem('currentMod2', modName);
@@ -335,9 +329,16 @@ console.log('registering BibleSync listener');
 		});
 	},
 	setupMenu: function (mods) {
+		// see if we have a main module selected...
+		var mainMod = app.getCurrentMod1();
+console.log('currentMod1 from localStorage: ' + mainMod);
 		var modOptions = '';
 		for (var i = 0; i < mods.length; ++i) {
 			if (mods[i].category == SWORD.CATEGORY_BIBLES) {
+				if (!mainMod) {
+					mainMod = mods[i].name;
+					app.setCurrentMod1(mainMod);
+				}
 				modOptions += '<option>' + mods[i].name + '</option>';
 			}
 		}
@@ -754,10 +755,29 @@ console.log('parDispModules.length: ' + parDispModules.length);
 			var mods = [];
 			var renderData = [];
 
+		var chapterDisplay = function(htmlText, mods) {
+			$('#textDisplay').html(htmlText);
+			app.lastDisplayMods=mods;
+			setTimeout(function() {
+				if (app.getCurrentVerseKey().verse > 1) {
+					var new_position = $('.currentverse').offset();
+					$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
+				}
+				app.displayFootnotes(function() {
+console.log('**** checking if any modules await installation');
+					if (app.waitingInstall) { app.installNewModules(app.waitingInstall); app.waitingInstall = null; }
+				});
+			}, 500);
+		};
 
 
 		var headerLoopContinue = function() {
 console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.length: ' + renderData.length);
+
+			// assert we have something to display
+			if (!mods.length) {
+				return chapterDisplay('<center><h2>Nothing to display.</h2></center>');
+			}
 
 	// table which contains all verse items 
 			t += '<table><caption></caption>';
@@ -837,29 +857,19 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 				t += '</td>';
 			}
 
-				t += '</tr></tbody></table>';
-				t += '<div class="screenPad">';
-				t += '<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>';
-				t += '</div>';
-				t += '<ul class="booknav">';
-				t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">previous chapter</a></li>';
-				t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">next chapter</a></li>';
-				t += '</ul>';
-				t += '</div>';
-				t += '<div id="footerBuffer"></div>';
-				$('#textDisplay').html(t);
-				app.lastDisplayMods=mods;
-				setTimeout(function() {
-					if (app.getCurrentVerseKey().verse > 1) {
-						var new_position = $('.currentverse').offset();
-						$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
-					}
-					app.displayFootnotes(function() {
-console.log('**** checking if any modules await installation');
-						if (app.waitingInstall) { app.installNewModules(app.waitingInstall); app.waitingInstall = null; }
-					});
-				}, 500);
-			};
+			t += '</tr></tbody></table>';
+			t += '<div class="screenPad">';
+			t += '<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>';
+			t += '</div>';
+			t += '<ul class="booknav">';
+			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">previous chapter</a></li>';
+			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">next chapter</a></li>';
+			t += '</ul>';
+			t += '</div>';
+			t += '<div id="footerBuffer"></div>';
+			
+			chapterDisplay(t, mods);
+		};
 
 
 
