@@ -1,5 +1,5 @@
-PLATFORM=ios
-#PLATFORM=android
+#PLATFORM=ios
+PLATFORM=android
 
 all: release
 
@@ -90,7 +90,9 @@ refreshplatformios:
 	cordova platform remove ios || true
 	cordova platform add ios || true
 
-setup: clearplugins refreshplatform addplugins
+setup: clearplugins refreshplatform addplugins 
+	# one last refresh platform to get the plugin patches deployed
+	make refreshplatform
 
 ###
 # Plugins should not be committed to config.xml
