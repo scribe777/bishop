@@ -24,22 +24,52 @@ make
  
 ##########  Build bishop ###############################
 
-# first time after checkout
-# edit Makefile and choose your Android or iOS at the beginning of the Makefile
+###### Prerequisite #########################
+# bishop is a cordova application
+# prerequisite to compiling bishop is to have
+# cordova successfully installed
+# something like:
+#
+#   yum install npm
+#   npm -g i cordova
+#
+# but see this link 
+# https://cordova.apache.org/docs/en/latest/guide/cli/
+
+######## first time setup of bishop project after checkout ######################
+# edit Makefile and choose target Android or iOS at the beginning of the Makefile
 # then setup the project for your environment with
 make setup
 
 # to build 
 make
 
-# for iOS, sometime the cli make doesn't complete and you need to open in Xcode
+# for iOS, the cli make doesn't complete successfully for me and
+# it is necessary to finish the build in Xcode.
+# Open in Xcode
 # ~/src/bishop/platforms/ios/Bishop.xcodeproj
 # then Product | Destination | [choose a simulator for testing]
 # then Product | Build
 # then the little VCR play button will run in emulator
+#
+# A nice feature of Safari in macOS is that it has a menu choice
+# to attach to running iOS emulators and will allow you to debug
+# the JavaScript in Bishop.
 
-# for testing if no phone is plugged in and accessible an emulator will be launched
+# for testing in Android
+# and possibly iOS
 make run
+
+# if no phone is plugged in an emulator will be launched
+# if your phone is plugged in, check to see that you can
+# access it with something like:
+adb devices #should show your phone
+adb logcat #should tail the debug log on your phone
+
+# if you don't have permission, you'll probably need to
+# find the usb bus and dev of your phone and then:
+sudo chmod 666 /dev/bus/usb/$bus/$dev
+adb kill-server #restarts the adb server after permission change
 
 # to simply install
 make install
