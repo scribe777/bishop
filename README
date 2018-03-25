@@ -35,6 +35,19 @@ make
 #
 # but see this link 
 # https://cordova.apache.org/docs/en/latest/guide/cli/
+#
+# on iOS we use cordova-icon and cordova-splash to generate
+# the plethora of required images.  You'll need to install
+# these with something like:
+#
+#   npm -g -i cordova-icon
+#   npm -g -i cordova-splash
+#
+# but see these links:
+# https://github.com/AlexDisler/cordova-icon
+# https://github.com/AlexDisler/cordova-splash
+#
+
 
 ######## first time setup of bishop project after checkout ######################
 # edit Makefile and choose target Android or iOS at the beginning of the Makefile

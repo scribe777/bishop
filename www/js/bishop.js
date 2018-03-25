@@ -456,9 +456,9 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		t += '<tr><td class="menuLabel" onclick="app.toggleSettings(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> Settings</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="settingsPanel toshow">';
 		t +=     '<div>&nbsp;&nbsp;&nbsp;&nbsp;<button id="decreaseUIFontButton" onclick="app.decreaseUIFont();return false;" style="width:2em;font-size:150%"> - </button>&nbsp;&nbsp; Font Size &nbsp;&nbsp;<button id="increaseUIFontButton" onclick="app.increaseUIFont();return false;" style="width:2em;font-size:150%"> + </button></div>';
-		t += '<div><label for="bibleSyncUserName">BibleSync User</label><input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
-		t += '<div><label for="bibleSyncPassphrase">BibleSync Passphrase</label><input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
-		t += '<div><label for="wordStudyBible">WordStudy Bible</label> <select style="width:9em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
+		t += '<div>BibleSync User <input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
+		t += '<div>BibleSync Passphrase <input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
+		t += '<div>WordStudy Bible <select style="width:9em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
 		t += '</div></td></tr>';
 
 		// About
@@ -588,7 +588,7 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 	},
 	openSettings: function() {
 		if ($('.settingsPanel').hasClass('tohide')) return;
-		$(".settingsPanel").animate({height: "14em"});
+		$(".settingsPanel").animate({height: "15em"});
 		$('.settingsPanel').removeClass('toshow').addClass('tohide');
 	},
 	closeSettings: function() {
