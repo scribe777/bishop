@@ -182,10 +182,41 @@ console.log('aux.position: ' + JSON.stringify($('#aux').position()));
 		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
 console.log('*** wordStudy begin');
 		setTimeout(function() {
-		SWORD.mgr.getModuleByName(app.getCurrentMod1(), function(mod) {
+		var wordStudyBible = app.getWordStudyBible();
+		// if wordStudyBible not choosen or 'First Active'
+		if (wordStudyBible == '') {
+			// check active modules in order for Strongs
+			wordStudyBible = app.mods.find(function(m) { return m.name == app.getCurrentMod1() && m.features && m.features.includes('StrongsNumbers'); });
+			if (!wordStudyBible) wordStudyBible = app.mods.find(function(m) { return m.name == app.getCurrentMod2() && m.features && m.features.includes('StrongsNumbers'); });
+			if (!wordStudyBible) wordStudyBible = app.mods.find(function(m) { return m.name == app.getCurrentMod3() && m.features && m.features.includes('StrongsNumbers'); });
+			// if nothing still is found, prefer KJV
+			if (!wordStudyBible) wordStudyBible = app.mods.find(function(m) { return m.name == 'KJV'; });
+			// then finally punt and take any module with Strongs
+			if (!wordStudyBible) wordStudyBible = app.mods.find(function(m) { return m.features && m.features.includes('StrongsNumbers'); });
+
+			// finally, we want the name, not the ModInfo struct
+			if (wordStudyBible) wordStudyBible = wordStudyBible.name;
+		}
+		var errorText = null;
+		var greekLex = app.greekDefMods.length > 0 ? app.greekDefMods[0] : null;
+		var hebrewLex = app.hebrewDefMods.length > 0 ? app.hebrewDefMods[0] : null;
+		if (!wordStudyBible) {
+			errorText = '<h3>Word Study requires a Bible with Strongs numbers.  Please install one.</h3>';
+		}
+		else if (!greekLex || !hebrewLex) {
+			errorText = '<h3>Word Study requires a Greek and Hebrew Strongs dictionary.  Please install one of each.</h3>';
+		}
+		if (errorText) {
+			errorText += '<div><center><p>We would suggest installing from "CrossWire" the KJV, WLC, WHNU, StrongsGreek, and StrongsHebrew modules for a minimal set of modules which allow basic Greek and Hebrew word study.</p>';
+			errorText += '<p>I can do all of this for you now, if you would like; simply press this button:</p><p><button style="height:3em;" onclick="app.basicStartup(1);return false;">Basic Module Set</button></p></center></div>';
+			$('#client').html(errorText);
+			return;
+		}
+
+		SWORD.mgr.getModuleByName(wordStudyBible, function(mod) {
 console.log('*** wordStudy mod: ' + JSON.stringify(mod));
-			SWORD.mgr.getModuleByName("StrongsGreek", function(glex) {
-				SWORD.mgr.getModuleByName("StrongsHebrew", function(hlex) {
+			SWORD.mgr.getModuleByName(greekLex, function(glex) {
+				SWORD.mgr.getModuleByName(hebrewLex, function(hlex) {
 					if (!mod) { alert ('No Bible Selected.  Please first select an installed module.'); return; }
 console.log('*** wordStudy setting mod.keyText: ' + JSON.stringify(app.getCurrentKey()));
 					mod.setKeyText(app.getCurrentKey(), function() {

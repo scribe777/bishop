@@ -1,5 +1,5 @@
 var app = {
-	version: '1.0.5',
+	version: '1.0.6',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -9,6 +9,9 @@ var app = {
 	waitingInstall: null,
 	lastDisplayMods: null,
 	showingFootnotes: false,
+	greekDefMods : [],
+	hebrewDefMods : [],
+	mods : [],
 
 	// ------------- local sample data for testing in a web browser and not on a phone with a real SWORD engine installation
 	localFixup : function() {
@@ -23,7 +26,7 @@ console.log('using localFixup instead of real SWORD plugin');
 			mgr : {
 				getModInfoList : function(callback) { if(callback)callback([sampleModInfo]); return [sampleModInfo]; },
 				getModuleByName : function(name, callback) { if(callback)callback(sampleModule); return sampleModule; },
-				registerBibleSyncListener : function(callback) {}
+				startBibleSyncListener : function(appName, userName, passphrase, callback) {}
 			},
 			installMgr : {
 				getRemoteSources : function(callback) { if(callback)callback(['CrossWire']); return ['CrossWire']; }
@@ -162,6 +165,9 @@ console.log('showing image by data: ' + msg.imageData.substring(0,10));
 		else if (!app.closeMenu()) navigator.app.exitApp();
 	},
 	show: function() {
+		
+		if (!window.localStorage.getItem('bibleSyncUserName')) window.localStorage.setItem('bibleSyncUserName', 'BishopUser');
+		if (!window.localStorage.getItem('bibleSyncPassphrase')) window.localStorage.setItem('bibleSyncPassphrase', 'BibleSync');
 		app.showingFootnotes = window.localStorage.getItem('showingFootnotes');
 		app.setCurrentKey(app.getCurrentKey());
 		app.currentWindow = app;
@@ -172,7 +178,8 @@ console.log("*** in show. main.length: " + main.length);
 console.log("*** in show. after setting textDisplay.length: " + textDisplay.length);
 		$(textDisplay).scroll(app.textScroll);
 		SWORD.mgr.getModInfoList(function(mods) {
-			app.setupMenu(mods);
+			app.mods = mods;
+			app.setupMenu();
 			$('#currentMod1').val(app.getCurrentMod1());
 			$('#currentMod2').val(app.getCurrentMod2());
 			$('#currentMod3').val(app.getCurrentMod3());
@@ -283,11 +290,48 @@ console.log('firstTime check. mods.length: ' + mods.length);
 			app.firstTime = !mods.length;
 console.log('app.firstTime: ' + app.firstTime);
 			app.show();
-			if (app.enableBibleSync) {
-console.log('registering BibleSync listener');
-				SWORD.mgr.registerBibleSyncListener(app.bibleSyncListener);
-			}
 		});
+	},
+	setWordStudyBible: function(modName) {
+		window.localStorage.setItem('wordStudyBible', modName);
+	},
+	getWordStudyBible: function() {
+		var retVal = window.localStorage.getItem('wordStudyBible');
+		if (!retVal) retVal = '';
+		return retVal;
+	},
+	setBibleSyncUserName : function(userName) {
+		window.localStorage.setItem('bibleSyncUserName', userName);
+		$('#bibleSyncSwitch').prop('checked', false);
+		app.stopBibleSync();
+	},
+	setBibleSyncPassphrase : function(passphrase) {
+		window.localStorage.setItem('bibleSyncPassphrase', passphrase);
+		$('#bibleSyncSwitch').prop('checked', false);
+		app.stopBibleSync();
+	},
+	toggleBibleSync : function() {
+		if ($('#bibleSyncSwitch').is(':checked')) {
+			app.startBibleSync();
+		}
+		else {
+			app.stopBibleSync();
+		}
+	},
+	startBibleSync : function() {
+console.log('starting BibleSync');
+		var bibleSyncAppName = 'BishopAndroid';
+			
+		var bibleSyncUserName = window.localStorage.getItem('bibleSyncUserName');
+		if (!bibleSyncUserName) bibleSyncUserName = 'BishopUser';
+		var bibleSyncPassphrase = window.localStorage.getItem('bibleSyncPassphrase');
+		if (!bibleSyncPassphrase) bibleSyncPassphrase = 'Default';
+		SWORD.mgr.startBibleSync(bibleSyncAppName, bibleSyncUserName, bibleSyncPassphrase, app.bibleSyncListener);
+	},
+	stopBibleSync : function() {
+console.log('stopping BibleSync');
+		app.closeBibleSync();
+		SWORD.mgr.stopBibleSync();
 	},
 	popupShow: function(content) {
 		app.isPopupShowing = true;
@@ -332,18 +376,34 @@ console.log('registering BibleSync listener');
 			}
 		});
 	},
-	setupMenu: function (mods) {
+	setupMenu: function() {
+		var mods = app.mods;
 		// see if we have a main module selected...
 		var mainMod = app.getCurrentMod1();
 console.log('currentMod1 from localStorage: ' + mainMod);
 		var modOptions = '';
+		var strongsBibleOptions = '<option value="">First Active</option>';
+		app.greekDefMods = [];
+		app.hebrewDefMods = [];
 		for (var i = 0; i < mods.length; ++i) {
+console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i].features.length + '; features: ' + mods[i].features);
 			if (mods[i].category == SWORD.CATEGORY_BIBLES) {
 				if (!mainMod) {
 					mainMod = mods[i].name;
 					app.setCurrentMod1(mainMod);
 				}
 				modOptions += '<option>' + mods[i].name + '</option>';
+				if (mods[i].features && mods[i].features.includes('StrongsNumbers')) {
+					strongsBibleOptions += '<option>' + mods[i].name + '</option>';
+				}
+			}
+			else if (mods[i].category == SWORD.CATEGORY_LEXDICTS) {
+				if (mods[i].features && mods[i].features.includes('GreekDef')) {
+					app.greekDefMods.push(mods[i].name);
+				}
+				if (mods[i].features && mods[i].features.includes('HebrewDef')) {
+					app.hebrewDefMods.push(mods[i].name);
+				}
 			}
 		}
 		var t = '<table class="slidemenu"><tbody>';
@@ -379,9 +439,9 @@ console.log('currentMod1 from localStorage: ' + mainMod);
 
 		// BibleSync
 	if (app.enableBibleSync) {
-		t += '<tr><td class="menuLabel" onclick="app.toggleBibleSync(); return false;"><img src="img/ic_action_group.png" style="height:1em;"/> BibleSync</td></tr>';
+		t += '<tr><td class="menuLabel"><div style="display:inline-block" onclick="app.toggleBibleSyncPanel(); return false;"><img src="img/ic_action_group.png" style="height:1em;"/> BibleSync</div><label style="float:right;" class="switch"><input id="bibleSyncSwitch" onchange="app.toggleBibleSync(); return false;" type="checkbox"><span class="slider round"></span></label></td></tr>';
 		t += '<tr><td style="width:100%;"><div class="bibleSyncPanel toshow">';
-		t +=     '<div><button id="sendBibleSync" onclick="app.sendBibleSyncMessage(app.getCurrentKey());return false;">Send Current</button><button id="clearBibleSync" onclick="app.bibleSyncClear();return false;">Clear All</button></div>';
+		t +=     '<div><button id="sendBibleSync" onclick="app.sendBibleSyncMessage(app.getCurrentVerseKey().osisRef);return false;">Send Current</button><button id="clearBibleSync" onclick="app.bibleSyncClear();return false;">Clear All</button></div>';
 		t +=     '<div id="bibleSyncResults"></div>';
 		t += '</div></td></tr>';
 	}
@@ -396,6 +456,9 @@ console.log('currentMod1 from localStorage: ' + mainMod);
 		t += '<tr><td class="menuLabel" onclick="app.toggleSettings(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> Settings</td></tr>';
 		t += '<tr><td style="width:100%;"><div class="settingsPanel toshow">';
 		t +=     '<div>&nbsp;&nbsp;&nbsp;&nbsp;<button id="decreaseUIFontButton" onclick="app.decreaseUIFont();return false;" style="width:2em;font-size:150%"> - </button>&nbsp;&nbsp; Font Size &nbsp;&nbsp;<button id="increaseUIFontButton" onclick="app.increaseUIFont();return false;" style="width:2em;font-size:150%"> + </button></div>';
+		t += '<div><label for="bibleSyncUserName">BibleSync User</label><input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
+		t += '<div><label for="bibleSyncPassphrase">BibleSync Passphrase</label><input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
+		t += '<div><label for="wordStudyBible">WordStudy Bible</label> <select style="width:9em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
 		t += '</div></td></tr>';
 
 		// About
@@ -414,6 +477,10 @@ console.log('currentMod1 from localStorage: ' + mainMod);
 				$('#searchButton').click();
 			}
 		});
+		$('#bibleSyncUserName').val(window.localStorage.getItem('bibleSyncUserName'));
+		$('#bibleSyncPassphrase').val(window.localStorage.getItem('bibleSyncPassphrase'));
+		$('#wordStudyBible').append(strongsBibleOptions);
+		$('#wordStudyBible').val(app.getWordStudyBible());
 		app.updateBibleSyncDisplay();
 		app.updateBookmarkDisplay();
 		if (!app.getCurrentMod1() && mods.length) app.setCurrentMod1(mods[0].name);
@@ -462,7 +529,8 @@ console.log('currentMod1 from localStorage: ' + mainMod);
 		app.updateBibleSyncDisplay();
 	},
 	sendBibleSyncMessage: function(osisRef) {
-		SWORD.mgr.sendBibleSyncMessage(osisRef);
+		var currentMod = app.getCurrentMod1()
+		SWORD.mgr.sendBibleSyncMessage(currentMod + ':' + osisRef);
 		// add our own reference to the list so we keep our receive list in sync with others
 		app.bibleSyncListener(osisRef);
 	},
@@ -520,7 +588,7 @@ console.log('currentMod1 from localStorage: ' + mainMod);
 	},
 	openSettings: function() {
 		if ($('.settingsPanel').hasClass('tohide')) return;
-		$(".settingsPanel").animate({height: "4em"});
+		$(".settingsPanel").animate({height: "14em"});
 		$('.settingsPanel').removeClass('toshow').addClass('tohide');
 	},
 	closeSettings: function() {
@@ -529,11 +597,12 @@ console.log('currentMod1 from localStorage: ' + mainMod);
 		$('.settingsPanel').removeClass('tohide').addClass('toshow');    
 		return true;
 	},
-	toggleBibleSync: function() {
+	toggleBibleSyncPanel: function() {
 		if (!$('.bibleSyncPanel').hasClass('tohide')) app.openBibleSync();
 		else app.closeBibleSync();
 	},
 	openBibleSync: function() {
+		if (!$('#bibleSyncSwitch').is(':checked')) return;
 		if ($('.bibleSyncPanel').hasClass('tohide')) return;
 		$(".bibleSyncPanel").animate({height: "18em"});
 		$('.bibleSyncPanel').removeClass('toshow').addClass('tohide');

@@ -16,7 +16,7 @@ make
 # on iOS, build the cordova plugin libsword.so
 # run Xcode and open project ~/src/sword/bindings/objc/SWORD/SWORD.xcodeproj
 # select Product | Build
-# then copy to universal libsword.so binary and deps with..
+# then copy the universal libsword.so binary and deps with..
 cd ~src/sword/bindings/objc
 make
 
