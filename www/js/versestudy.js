@@ -186,13 +186,13 @@ console.log('*** wordStudy begin');
 		// if wordStudyBible not choosen or 'First Active'
 		if (wordStudyBible == '') {
 			// check active modules in order for Strongs
-			wordStudyBible = app.mods.find(function(m) { return m.name == app.getCurrentMod1() && m.features && m.features.includes('StrongsNumbers'); });
-			if (!wordStudyBible) wordStudyBible = app.mods.find(function(m) { return m.name == app.getCurrentMod2() && m.features && m.features.includes('StrongsNumbers'); });
-			if (!wordStudyBible) wordStudyBible = app.mods.find(function(m) { return m.name == app.getCurrentMod3() && m.features && m.features.includes('StrongsNumbers'); });
+			wordStudyBible = app.mods.filter(function(m) { return m.name == app.getCurrentMod1() && m.features && m.features.indexOf('StrongsNumbers') !== -1; }).shift();
+			if (!wordStudyBible) wordStudyBible = app.mods.filter(function(m) { return m.name == app.getCurrentMod2() && m.features && m.features.indexOf('StrongsNumbers') !== -1; }).shift();
+			if (!wordStudyBible) wordStudyBible = app.mods.filter(function(m) { return m.name == app.getCurrentMod3() && m.features && m.features.indexOf('StrongsNumbers') !== -1; }).shift();
 			// if nothing still is found, prefer KJV
-			if (!wordStudyBible) wordStudyBible = app.mods.find(function(m) { return m.name == 'KJV'; });
+			if (!wordStudyBible) wordStudyBible = app.mods.filter(function(m) { return m.name == 'KJV'; }).shift();
 			// then finally punt and take any module with Strongs
-			if (!wordStudyBible) wordStudyBible = app.mods.find(function(m) { return m.features && m.features.includes('StrongsNumbers'); });
+			if (!wordStudyBible) wordStudyBible = app.mods.filter(function(m) { return m.features && m.features.indexOf('StrongsNumbers') !== -1; }).shift();
 
 			// finally, we want the name, not the ModInfo struct
 			if (wordStudyBible) wordStudyBible = wordStudyBible.name;

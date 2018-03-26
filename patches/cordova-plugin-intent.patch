@@ -1,5 +1,6 @@
---- plugins/com.napolitano.cordova.plugin.intent/src/android/IntentPlugin.java	2017-11-12 16:41:58.326684245 -0700
-+++ patches/IntentPlugin.java	2017-11-12 16:41:25.781747329 -0700
+diff -Pru plugins/com.napolitano.cordova.plugin.intent.orig/src/android/IntentPlugin.java plugins/com.napolitano.cordova.plugin.intent/src/android/IntentPlugin.java
+--- plugins/com.napolitano.cordova.plugin.intent.orig/src/android/IntentPlugin.java	2018-03-25 19:27:15.319070288 -0700
++++ plugins/com.napolitano.cordova.plugin.intent/src/android/IntentPlugin.java	2018-03-25 19:28:31.985653007 -0700
 @@ -11,6 +11,7 @@
  import android.content.ClipData;
  import android.content.Intent;
@@ -8,7 +9,16 @@
  import android.util.Log;
  
  import org.apache.cordova.CallbackContext;
-@@ -149,7 +150,16 @@
+@@ -142,14 +143,21 @@
+         try {
+             intentJSON = new JSONObject();
+ 
+-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+-                if(items != null) {
+-                    intentJSON.put("clipItems", new JSONArray(items));
+-                }
++            if(items != null) {
++                intentJSON.put("clipItems", new JSONArray(Arrays.asList(items)));
              }
  
              intentJSON.put("type", intent.getType());
@@ -26,7 +36,7 @@
              intentJSON.put("action", intent.getAction());
              intentJSON.put("categories", intent.getCategories());
              intentJSON.put("flags", intent.getFlags());
-@@ -167,4 +177,4 @@
+@@ -167,4 +175,4 @@
          }
      }
  

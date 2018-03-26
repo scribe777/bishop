@@ -1,5 +1,5 @@
-PLATFORM=ios
-#PLATFORM=android
+#PLATFORM=ios
+PLATFORM=android
 
 all: release
 

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.crosswire.bishop" version="1.0.6" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget id="org.crosswire.bishop" version="1.0.7" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Bishop</name>
     <description>
         A Bible Study App from CrossWire
@@ -37,12 +37,12 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <plugin name="cordova-plugin-navigationbar" spec="^1.0.31" />
-    <plugin name="cordova-custom-config" spec="^5.0.2" />
+    <plugin name="es.keensoft.fullscreenimage" spec="^0.2.10" />
+    <plugin name="cordova-custom-config" spec="^4.0.2" />
     <plugin name="com.napolitano.cordova.plugin.intent" spec="~0.1.2" />
     <plugin name="cordova-plugin-add-swift-support" spec="^1.7.1" />
     <plugin name="phonegap-plugin-mobile-accessibility" spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" />
-    <plugin name="es.keensoft.fullscreenimage" spec="^0.2.10" />
     <plugin name="cordova-plugin-x-toast" spec="^2.6.2" />
     <plugin name="org.crosswire.sword.cordova.SWORD" spec="../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD" />
-    <engine name="ios" spec="^4.5.4" />
+    <engine name="android" spec="^6.4.0" />
 </widget>

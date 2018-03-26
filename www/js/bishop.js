@@ -1,5 +1,5 @@
 var app = {
-	version: '1.0.6',
+	version: '1.0.7',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -75,16 +75,17 @@ console.log('clicked key: ' + key);
 		});
 	},
 	handleIntent: function(intent) {
-		var confBlob = intent.extras['android.intent.extra.TEXT'];
 console.log('**** Received Intent. Object: ' + JSON.stringify(intent));
+		if (intent.extras) {
+		var confBlob = intent.extras['android.intent.extra.TEXT'];
 console.log('**** Received Intent. confBlob: ' + confBlob);
 		if (confBlob) {
 			SWORD.mgr.addExtraConfig(confBlob, function(newMods) {
 console.log('**** newMods.length: ' + newMods.length);
-				
 				app.waitingInstall = newMods;
 
 			});
+		}
 		}
 	},
 
@@ -393,15 +394,15 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 					app.setCurrentMod1(mainMod);
 				}
 				modOptions += '<option>' + mods[i].name + '</option>';
-				if (mods[i].features && mods[i].features.includes('StrongsNumbers')) {
+				if (mods[i].features && mods[i].features.indexOf('StrongsNumbers') !== -1) {
 					strongsBibleOptions += '<option>' + mods[i].name + '</option>';
 				}
 			}
 			else if (mods[i].category == SWORD.CATEGORY_LEXDICTS) {
-				if (mods[i].features && mods[i].features.includes('GreekDef')) {
+				if (mods[i].features && mods[i].features.indexOf('GreekDef') !== -1) {
 					app.greekDefMods.push(mods[i].name);
 				}
-				if (mods[i].features && mods[i].features.includes('HebrewDef')) {
+				if (mods[i].features && mods[i].features.indexOf('HebrewDef') !== -1) {
 					app.hebrewDefMods.push(mods[i].name);
 				}
 			}
@@ -1019,7 +1020,9 @@ console.log('About: showing modules, count: ' + allMods.length);
 						SWORD.mgr.getExtraConfigValue(mods[i].name, "CipherKey", function(cip) {
 							var ciphered = mods[i].cipherKey !== undefined;
 							if (!cip) cip = '';
-							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (ciphered?('<button onclick="app.changeCipher(\''+mods[i].name+'\', \'' + cip + '\'); return false;">CipherKey: ' + cip + '</button><br/><br/>'):'') + about + '<br/><br/>';
+							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (ciphered?('<button onclick="app.changeCipher(\''+mods[i].name+'\', \'' + cip + '\'); return false;">CipherKey: ' + cip + '</button><br/><br/>'):'') + about + '<br/>';
+							if (module.shortPromo && module.shortPromo.length) t += '<div class="promoLine">' + module.shortPromo +'</div>';
+							t += '<br/>';
 							getConfigsLoop(mods, ++i);
 						});
 					});
