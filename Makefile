@@ -1,5 +1,5 @@
-#PLATFORM=ios
-PLATFORM=android
+PLATFORM=ios
+#PLATFORM=android
 
 all: release
 
@@ -56,7 +56,8 @@ deployandroid:
 	scp bishop.apk scribe@crosswire.org:/home/crosswire/html/
 
 installios:
-	echo install app to iphone
+	scp "$(ls -td ~/Desktop/Bishop*|head -1)"/Bishop.ipa crosswire.org:/home/crosswire/html/
+	scp "$(ls -td ~/Desktop/Bishop*|head -1)"/manifest.plist crosswire.org:/home/crosswire/html/bishop/
 
 uninstall: uinstall${PLATFORM}
 

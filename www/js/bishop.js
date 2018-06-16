@@ -1,5 +1,6 @@
 var app = {
-	version: '1.1.3',
+	// change version here and in config.xml, near top
+	version: '1.1.4',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -11,6 +12,7 @@ var app = {
 	showingFootnotes: false,
 	greekDefMods : [],
 	hebrewDefMods : [],
+	menuWidth : 16,
 	mods : [],
 
 	// ------------- local sample data for testing in a web browser and not on a phone with a real SWORD engine installation
@@ -447,14 +449,11 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 			}
 		}
 		var t = '<table class="slidemenu"><tbody>';
-		t += '<tr><td><table class="keySelector"><tbody><tr><td id="keyDisplay" style="width:100%;border-right-width:0;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="border-left-width:0;" onclick="app.shareVerse(); return false;"><img style="height:1em;" src="img/ic_action_share.png"/></td></tr></tbody></table></td></tr>';
-
-		// View Selector
-		t += '<tr><td class="menuLabel" onclick="app.toggleViewSelector(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> View: <span style="font-size:70%;" id="mainViewType">' + app.mainViewType + '</span></td></tr>';
-		t += '<tr><td style="width:100%;"><div style="padding-left:1em;" class="viewSelectorPanel toshow">';
-		t +=     '<div><input type="radio" id="viewBibles" name="viewSelector" value="Bibles" onclick="app.setViewBibles();return false;"/> <label for="viewBibles">Bibles</label></div>';
-
-		t += '<table style="width:100%;padding-right:1em;" class="keySelector"><tbody><tr>';
+		t += '<tr><td>';
+		t += '<table class="keySelector"><tbody><tr><td id="keyDisplay" style="height:2.5em;width:100%;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="padding-right:.4em;" onclick="app.shareVerse(); return false;"><img style="height:2.4em;" src="img/ic_action_share.png"/></td></tr></tbody></table>';
+		t += '</td></tr>';
+		t += '<tr><td>';
+		t += '<table class="keySelector" style="width:100%;"><tbody><tr>';
 		t += '<td><select id="currentMod1" style="width:100%;" onchange="app.setCurrentMod1($(\'#currentMod1\').val()); app.closeMenu(); app.displayCurrentChapter(); return false;">';
 		t += modOptions;
 		t += '</select></td>';
@@ -465,6 +464,11 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		t += modOptions;
 		t += '</select></td>';
 		t += '</tr></tbody></table>';
+		t += '</td></tr>';
+		// View Selector
+		t += '<tr><td class="menuLabel" onclick="app.toggleViewSelector(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> View: <span style="font-size:70%;" id="mainViewType">' + app.mainViewType + '</span></td></tr>';
+		t += '<tr><td style="width:100%;"><div style="padding-left:1em;" class="viewSelectorPanel toshow">';
+		t +=     '<div><input type="radio" id="viewBibles" name="viewSelector" value="Bibles" onclick="app.setViewBibles();return false;"/> <label for="viewBibles">Bibles</label></div>';
 		t +=     '<div><input type="radio" id="viewLanguageAssist" name="viewSelector" value="Language Assist" onclick="app.setViewLanguageAssist();return false;"/> <label for="viewLanguageAssist">Language Assist</label></div>';
 		t +=     '<div><input type="radio" id="viewCommentaryAssist" name="viewSelector" value="Commentary Assist" onclick="app.setViewCommentaryAssist();return false;"/> <label for="viewCommentaryAssist">Commentary Assist</label></div>';
 		t += '</div></td></tr>';
@@ -690,7 +694,7 @@ console.log('updateMainViewSetting: ' + viewType);
 	},
 	openViewSelector: function() {
 		if ($('.viewSelectorPanel').hasClass('tohide')) return;
-		$(".viewSelectorPanel").animate({height: "18em"});
+		$(".viewSelectorPanel").animate({height: "10em"});
 		$('.viewSelectorPanel').removeClass('toshow').addClass('tohide');
 	},
 	closeViewSelector: function() {
@@ -747,8 +751,8 @@ console.log('updateMainViewSetting: ' + viewType);
 	},
 	openMenu: function() {
 		if ($('.menutab').hasClass('tohide')) return;
-//		$( ".menutab, .menupanel" ).css('left', "+=18em");
-		$( ".menutab, .menupanel" ).animate({ left: "+=18em" }, 350, function() {
+//		$( ".menutab, .menupanel" ).css('left', "+="+app.menuWidth+"em");
+		$( ".menutab, .menupanel" ).animate({ left: "+="+app.menuWidth+"em" }, 350, function() {
 		});
 		// this is for some refresh bug in older
 		// Android devices
@@ -762,7 +766,7 @@ console.log('updateMainViewSetting: ' + viewType);
 	},
 	closeMenu: function() {
 		if ($('.menutab').hasClass('toshow')) return false;
-		$( ".menutab, .menupanel" ).animate({ left: "-=18em" }, 350, function() { });
+		$( ".menutab, .menupanel" ).animate({ left: "-="+app.menuWidth+"em" }, 350, function() { });
 		$('.menutab').removeClass('tohide').addClass('toshow');    
 		return true;
 	},

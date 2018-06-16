@@ -78,13 +78,13 @@ body,td,div,span,p,.verse,.currentVerse {
 
 .menupanel {
 	top:0px;
-	width:18em;
+	width:16em;
 	float:left;
 	height:100%;
 	background-color:#303030;
 	position:absolute;
 	overflow-y: auto;
-	left:-18em;
+	left:-16em;
 	opacity:0.90;
 	z-index:5;
 }
@@ -123,13 +123,15 @@ table.nobottom td, table.nobottom th {
 	z-index:7;
 }
 .slidemenu td, .slidemenu th {
-	padding: 0px 0px 0px .2em;
-	border: 1px solid #000;
+	vertical-align: middle;
+	padding: 0px 0px 0px 0px;
 	color: #EEEEEE;
 	z-index:9;
 }
+.slidemenu td img {
+	vertical-align: middle;
+}
 .slidemenu select {
-	width:5.5em;
 }
 
 .searchPanel,.bibleSyncPanel,.bookmarkPanel,.settingsPanel,.viewSelectorPanel {
@@ -158,16 +160,18 @@ table.nobottom td, table.nobottom th {
 }
 
 #keyDisplay {
-	font-size: 150%;
+	font-size: 210%;
+	padding-left: .4em;
 }
 
 .menuLabel {
 	font-size: 150%;
-	height: 1.5em;
+	height: 2em;
 }
 
 .keySelector, .keySelector td, .keySelector th {
-	margin: 0px 0px 0px -.2em;
+	border-width:0;
+	margin: 0px 0px 0px 0px;
 	font-size: 95%;
 	background-color: #b9baba;
 	color: #000000;
