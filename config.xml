@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.crosswire.bishop" version="1.0.7" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget id="org.crosswire.bishop" version="1.1.3" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Bishop</name>
     <description>
         A Bible Study App from CrossWire
     </description>
     <author email="develoment@crosswire.org" href="http://crosswire.org">
-        Apache Cordova Team
+        CrossWire Bible Society, Software Development Team
     </author>
     <content src="index.html" />
     <access origin="*" />
@@ -22,7 +22,7 @@
         <icon src="res/swordlogo.png" />
         <allow-intent href="market:*" />
         <preference name="android-minSdkVersion" value="14" />
-        <preference name="android-targetSdkVersion" value="17" />
+        <preference name="android-targetSdkVersion" value="26" />
         <preference name="AndroidLaunchMode" value="singleTop" />
         <config-file mode="add" parent="./application/activity" target="AndroidManifest.xml">
             <intent-filter>
@@ -40,7 +40,7 @@
     <plugin name="es.keensoft.fullscreenimage" spec="^0.2.10" />
     <plugin name="cordova-custom-config" spec="^4.0.2" />
     <plugin name="com.napolitano.cordova.plugin.intent" spec="~0.1.2" />
-    <plugin name="cordova-plugin-add-swift-support" spec="^1.7.1" />
+    <plugin name="cordova-plugin-add-swift-support" spec="^1.7.2" />
     <plugin name="phonegap-plugin-mobile-accessibility" spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" />
     <plugin name="cordova-plugin-x-toast" spec="^2.6.2" />
     <plugin name="org.crosswire.sword.cordova.SWORD" spec="../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD" />

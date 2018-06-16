@@ -31,7 +31,7 @@ body {
 	src: url('../fonts/GentiumPlus-I.woff') format('woff');
 }
 
-body,td,div,span,p{
+body,td,div,span,p,.verse,.currentVerse {
         font-family: 'SBL Greek', 'GentiumPlus', 'AntinoouWeb', SymbolGreekU, SymbolGreekTU, SymbolGreekMetU, SymbolGreekTMetU, OdysseaU, OdysseaUBSU, TeubnerLSU, TeubnerLSCU, TeubnerVerticalU, TeubnerVerticalCU, GraecaUBSU, GraecaUBSMetU, GraecaU, HellenicaU, HellenicaCU, GreekSansLSU, GreekSansLSConU, PayneU, UncialLSU;
 }
 
@@ -99,6 +99,7 @@ body,td,div,span,p{
 	position:absolute;
 	top:.5em;
 	left:0;
+	z-index:5;
 	text-decoration:none;
 }
 
@@ -131,7 +132,7 @@ table.nobottom td, table.nobottom th {
 	width:5.5em;
 }
 
-.searchPanel,.bibleSyncPanel,.bookmarkPanel,.settingsPanel {
+.searchPanel,.bibleSyncPanel,.bookmarkPanel,.settingsPanel,.viewSelectorPanel {
 	height:0em;
 	overflow:hidden;
 	width:100%;
@@ -206,7 +207,21 @@ table.clean tr.roweven {
 	color: #000000;
 	background-color: #ffffff;
 	margin: 0px 0px 0px 0px;
+	z-index: 3;
 	-webkit-user-select: text;
+}
+
+#altDisplay {
+	position:absolute;
+	overflow-y: auto;
+	height:100%;
+	width:50%;
+	right:0px;
+	color: #000000;
+	background-color: #ffffff;
+	margin: 0px 0px 0px 0px;
+	-webkit-user-select: text;
+	z-index: 2;
 }
 
 #footerBuffer {

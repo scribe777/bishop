@@ -1,5 +1,5 @@
 var app = {
-	version: '1.0.7',
+	version: '1.1.3',
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -169,15 +169,20 @@ console.log('showing image by data: ' + msg.imageData.substring(0,10));
 		
 		if (!window.localStorage.getItem('bibleSyncUserName')) window.localStorage.setItem('bibleSyncUserName', 'BishopUser');
 		if (!window.localStorage.getItem('bibleSyncPassphrase')) window.localStorage.setItem('bibleSyncPassphrase', 'BibleSync');
+		if (!window.localStorage.getItem('mainViewType')) window.localStorage.setItem('mainViewType', 'Bibles');
 		app.showingFootnotes = window.localStorage.getItem('showingFootnotes');
+		app.mainViewType = window.localStorage.getItem('mainViewType');
 		app.setCurrentKey(app.getCurrentKey());
 		app.currentWindow = app;
 		var main = $('#main');
 console.log("*** in show. main.length: " + main.length);
-		$(main).html('<div id="textDisplay"></div><div class="menupanel"></div><a href="javascript:void(0);" class="menutab toshow">&nbsp;</a><div id="footnotes" class="toshow"></div>');
+		var t = '<div id="textDisplay"></div><div class="menupanel"></div><a href="javascript:void(0);" class="menutab toshow">&nbsp;</a><div id="footnotes" class="toshow"></div>';
+		t += '<div id="altDisplay"></div><div id="aux" class="dropdown-content"></div>';
+		$(main).html(t);
 		var textDisplay = $('#textDisplay');
 console.log("*** in show. after setting textDisplay.length: " + textDisplay.length);
 		$(textDisplay).scroll(app.textScroll);
+		$('#altDisplay').scroll(app.altScroll);
 		SWORD.mgr.getModInfoList(function(mods) {
 			app.mods = mods;
 			app.setupMenu();
@@ -191,27 +196,61 @@ console.log("*** in show. after setting textDisplay.length: " + textDisplay.leng
 	},
 	setCurrentVerseNode: function(verseNode) {
 //console.log('***** setCurrentVerseNode, verseNode:' + $(verseNode).prop('outerHTML'));
-		if (!$(verseNode).hasClass('currentverse')) {
-//console.log('***** setCurrentVerseNode: does not have currentverse class');
+		if (!$(verseNode).hasClass('currentVerse')) {
+//console.log('***** setCurrentVerseNode: does not have currentVerse class');
 			var verseNum = $(verseNode).find('.versenum :first').text().trim();
 			var verse = app.currentVerseKey.bookAbbrev+'.'+app.currentVerseKey.chapter+'.'+verseNum;
 //console.log('***** setCurrentVerseNode: about to call setCurrentKey to: ' + verse);
 			app.setCurrentKey(verse, function() {
 //console.log('***** setCurrentVerseNode: setting colors');
-				$('.currentverse').removeClass('currentverse').addClass('verse');
-				$('.versenum').filter(function(){ return $(this).text().trim() == verseNum; }).parent('.verse').removeClass('verse').addClass('currentverse');
+//
+//				// remove any word marked with currentVerseWord 
+				var curSpans = $('.currentVerse span.clk');
+				$(curSpans).removeClass('currentVerseWord');
+
+				$('.currentVerse').removeClass('currentVerse').addClass('verse');
+				$('.versenum').filter(function(){ return $(this).text().trim() == verseNum; }).parent('.verse').removeClass('verse').addClass('currentVerse');
 //console.log('***** setCurrentVerseNode, verseNode:' + $(verseNode).prop('outerHTML'));
 //console.log('***** setCurrentVerseNode: about to display footnotes');
-				app.displayFootnotes();
+				app.requestAuxDisplay();
 			});
 		}
 	},
 	textScroll: function() {
 		var max = $('#textDisplay').height();
-		$('.currentverse, .verse').each(function() {
+		$('.currentVerse, .verse').each(function() {
 			var verseNode = $(this);
 			if ($(verseNode).offset().top > 20 && $(verseNode).offset().top < max) {
 				app.setCurrentVerseNode(verseNode);
+				return false; // stops the iteration after the first one on screen
+			}
+		});
+	},
+	setCurrentWordNode: function(wordNode) {
+//console.log('***** setCurrentWordNode, wordNode:' + $(wordNode).prop('outerHTML'));
+		if (!$(wordNode).hasClass('currentWord')) {
+//console.log('***** setCurrentWordNode: does not have currentWord class');
+			var wordNum = $(wordNode).find('.wordNum').text().trim();
+			var word = 'src='+wordNum;
+//console.log('***** setCurrentWordNode: setting colors. word num: ' + word);
+			$('#altDisplay').find('tr.currentWord').removeClass('currentWord');
+			$('#altDisplay').find('.wordNum').filter(function(){ return $(this).text().trim() == wordNum; }).parent('.wordHeading').addClass('currentWord');
+			$('#altDisplay').find('.wordNum').filter(function(){ return $(this).text().trim() == wordNum; }).parent('.wordHeading').next('.def').addClass('currentWord');
+			var curSpans = $('.currentVerse span.clk');
+//console.log('***** currentVerse spans length: ' + curSpans.length);
+//console.log('***** currentVerse node: ' + $('.currentVerse').prop('outerHTML'));
+			$(curSpans).removeClass('currentVerseWord');
+			if (curSpans.length > wordNum) $(curSpans[wordNum]).addClass('currentVerseWord');
+//console.log('***** setCurrentWordNode, wordNode:' + $(wordNode).prop('outerHTML'));
+		}
+	},
+	altScroll: function() {
+		if (app.mainViewType !== 'Language Assist') return;
+		var max = $('#altDisplay').height();
+		$('.wordHeading').each(function() {
+			var wordNode = $(this);
+			if ($(wordNode).offset().top > 20 && $(wordNode).offset().top < max) {
+				app.setCurrentWordNode(wordNode);
 				return false; // stops the iteration after the first one on screen
 			}
 		});
@@ -409,7 +448,13 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		}
 		var t = '<table class="slidemenu"><tbody>';
 		t += '<tr><td><table class="keySelector"><tbody><tr><td id="keyDisplay" style="width:100%;border-right-width:0;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="border-left-width:0;" onclick="app.shareVerse(); return false;"><img style="height:1em;" src="img/ic_action_share.png"/></td></tr></tbody></table></td></tr>';
-		t += '<tr><td style="vertical-align:bottom"><table style="width:100%;" class="keySelector"><tbody><tr>';
+
+		// View Selector
+		t += '<tr><td class="menuLabel" onclick="app.toggleViewSelector(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> View: <span style="font-size:70%;" id="mainViewType">' + app.mainViewType + '</span></td></tr>';
+		t += '<tr><td style="width:100%;"><div style="padding-left:1em;" class="viewSelectorPanel toshow">';
+		t +=     '<div><input type="radio" id="viewBibles" name="viewSelector" value="Bibles" onclick="app.setViewBibles();return false;"/> <label for="viewBibles">Bibles</label></div>';
+
+		t += '<table style="width:100%;padding-right:1em;" class="keySelector"><tbody><tr>';
 		t += '<td><select id="currentMod1" style="width:100%;" onchange="app.setCurrentMod1($(\'#currentMod1\').val()); app.closeMenu(); app.displayCurrentChapter(); return false;">';
 		t += modOptions;
 		t += '</select></td>';
@@ -419,7 +464,10 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		t += '<td><select id="currentMod3" style="width:100%;" onchange="app.setCurrentMod3($(\'#currentMod3\').val()); app.displayCurrentChapter(); return false;"><option></option>';
 		t += modOptions;
 		t += '</select></td>';
-		t += '</tr></tbody></table></td></tr>';
+		t += '</tr></tbody></table>';
+		t +=     '<div><input type="radio" id="viewLanguageAssist" name="viewSelector" value="Language Assist" onclick="app.setViewLanguageAssist();return false;"/> <label for="viewLanguageAssist">Language Assist</label></div>';
+		t +=     '<div><input type="radio" id="viewCommentaryAssist" name="viewSelector" value="Commentary Assist" onclick="app.setViewCommentaryAssist();return false;"/> <label for="viewCommentaryAssist">Commentary Assist</label></div>';
+		t += '</div></td></tr>';
 
 		// Verse Study
 		t += '<tr class="menuLabel" onclick="verseStudy.show();return false;"><td><img src="img/ic_action_location_searching.png" style="height:1em;"/> Verse Study</td></tr>';
@@ -482,10 +530,46 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		$('#bibleSyncPassphrase').val(window.localStorage.getItem('bibleSyncPassphrase'));
 		$('#wordStudyBible').append(strongsBibleOptions);
 		$('#wordStudyBible').val(app.getWordStudyBible());
+		$('input[name=viewSelector]').prop('checked', false);
+		$('input[name=viewSelector][value="'+app.mainViewType+'"]').prop('checked', true);
 		app.updateBibleSyncDisplay();
 		app.updateBookmarkDisplay();
 		if (!app.getCurrentMod1() && mods.length) app.setCurrentMod1(mods[0].name);
 
+	},
+	mainViewType : 'Bibles',
+	setViewBibles : function() {
+		app.updateMainViewSetting('Bibles');
+	},
+	setViewLanguageAssist : function() {
+		app.updateMainViewSetting('Language Assist');
+	},
+	setViewCommentaryAssist : function() {
+		app.updateMainViewSetting('Commentary Assist');
+	},
+	updateMainViewSetting : function(viewType) {
+console.log('updateMainViewSetting: ' + viewType);
+		app.mainViewType = viewType;
+		$('#mainViewType').text(app.mainViewType);
+		window.localStorage.setItem('mainViewType', app.mainViewType);
+		switch (app.mainViewType) {
+		case 'Bibles':
+			$('#textDisplay').css('width', '100%');
+			break;
+		case 'Language Assist':
+			$('#textDisplay').css('width', '50%');
+			break;
+		case 'Commentary Assist':
+			$('#textDisplay').css('width', '50%');
+			break;
+		}
+		setTimeout(function() {
+			$('input[name=viewSelector]').prop('checked', false);
+			$('input[name=viewSelector][value="'+app.mainViewType+'"]').prop('checked', true);
+			app.closeMenu();
+		}, 200);
+		app.displayCurrentChapter();
+		app.displayAlt();
 	},
 	decreaseUIFont : function() {
 		app.adjustUIFont(-10);
@@ -535,15 +619,31 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		// add our own reference to the list so we keep our receive list in sync with others
 		app.bibleSyncListener(osisRef);
 	},
-	bibleSyncListener: function(osisRef) {
-		var index = app.bibleSyncRefs.indexOf(osisRef);
-		if (index > 0) {
-			app.bibleSyncRefs.splice(index, 1);
+	bibleSyncListener: function(msg) {
+		if (msg && msg.cmd) {
 		}
-		if (index != 0) {
-			app.bibleSyncRefs.unshift(osisRef);
+		else {
+			msg = {
+				cmd : 'nav',
+				osisRef : msg
+			};
 		}
-		app.updateBibleSyncDisplay();
+		switch (msg.cmd) {
+		case 'nav':
+			var osisRef = msg.osisRef;
+			var index = app.bibleSyncRefs.indexOf(osisRef);
+			if (index > 0) {
+				app.bibleSyncRefs.splice(index, 1);
+			}
+			if (index != 0) {
+				app.bibleSyncRefs.unshift(osisRef);
+			}
+			app.updateBibleSyncDisplay();
+			break;
+		case 'chat':
+			window.plugins.toast.showLongCenter('Chat from [' + msg.user + ']: ' + msg.message);
+			break;
+		}
 	},
 
 	updateBibleSyncDisplay: function() {
@@ -581,6 +681,22 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		if ($('.searchPanel').hasClass('toshow')) return false;
 		$(".searchPanel").animate({height: "0em"});
 		$('.searchPanel').removeClass('tohide').addClass('toshow');    
+		return true;
+	},
+	toggleViewSelector: function() {
+//		$('.viewSelectorPanel').slideToggle('slow');
+		if (!$('.viewSelectorPanel').hasClass('tohide')) app.openViewSelector();
+		else app.closeViewSelector();
+	},
+	openViewSelector: function() {
+		if ($('.viewSelectorPanel').hasClass('tohide')) return;
+		$(".viewSelectorPanel").animate({height: "18em"});
+		$('.viewSelectorPanel').removeClass('toshow').addClass('tohide');
+	},
+	closeViewSelector: function() {
+		if ($('.viewSelectorPanel').hasClass('toshow')) return false;
+		$(".viewSelectorPanel").animate({height: "0em"});
+		$('.viewSelectorPanel').removeClass('tohide').addClass('toshow');    
 		return true;
 	},
 	toggleSettings: function() {
@@ -631,7 +747,17 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 	},
 	openMenu: function() {
 		if ($('.menutab').hasClass('tohide')) return;
-		$( ".menutab, .menupanel" ).animate({ left: "+=18em" }, 350, function() { });
+//		$( ".menutab, .menupanel" ).css('left', "+=18em");
+		$( ".menutab, .menupanel" ).animate({ left: "+=18em" }, 350, function() {
+		});
+		// this is for some refresh bug in older
+		// Android devices
+		$('.menupanel').css('display', 'none');
+		setTimeout(function() {
+			$('.menupanel').css('display', 'block');
+		}, 100);
+		// end of silly workaround for older Android devices
+
 		$('.menutab').removeClass('toshow').addClass('tohide');
 	},
 	closeMenu: function() {
@@ -659,6 +785,41 @@ console.log('closing footnotes');
 			$('#footnotes').removeClass('tohide').addClass('toshow');    
 		});
 		return true;
+	},
+	auxDisplayCallback : null,
+	auxDisplayCountdown : 0,
+	auxDisplayIntervalID : setInterval(function() {
+		if (app.auxDisplayCountdown > 0) {
+			--app.auxDisplayCountdown;
+console.log('auxDisplayCountdown: ' + app.auxDisplayCountdown);
+			if (!app.auxDisplayCountdown) {
+				app.displayAux(app.auxDisplayCallback);
+			}
+		}
+	}, 100),
+	requestAuxDisplay : function(callback) {
+		app.auxDisplayCountdown = 5;
+		app.auxDisplayCallback = callback;
+	},
+	displayAux : function(callback) {
+		app.displayFootnotes(function() {
+			app.displayAlt(function() {
+				if (callback) callback();
+			});
+		});
+	},
+	displayAlt: function(callback) {
+		switch (app.mainViewType) {
+		case 'Bibles':
+			break;
+		case 'Language Assist':
+			verseStudy.wordStudy('#altDisplay');
+			break;
+		case 'Commentary Assist':
+			verseStudy.commentary('#altDisplay');
+			break;
+		}
+		
 	},
 	displayFootnotes: function(callback) {
 		if ($('#footnotes').hasClass('toshow')) return callback?callback():null;
@@ -786,6 +947,12 @@ console.log('**** looping sources');
 		});
 	},
 	displayCurrentChapter: function() {
+console.log('**** checking if any modules await installation');
+		if (app.waitingInstall) { app.installNewModules(app.waitingInstall); app.waitingInstall = null; return; }
+		SWORD.mgr.setJavascript(true);
+		var onlyOne = app.mainViewType != 'Bibles';
+		$('#textDisplay').css('width', onlyOne ? '50%':'100%');
+		
 		$('#textDisplay').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center></div>');
 
 		// run in background
@@ -834,12 +1001,10 @@ console.log('parDispModules.length: ' + parDispModules.length);
 			app.lastDisplayMods=mods;
 			setTimeout(function() {
 				if (app.getCurrentVerseKey().verse > 1) {
-					var new_position = $('.currentverse').offset();
+					var new_position = $('.currentVerse').offset();
 					$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
 				}
-				app.displayFootnotes(function() {
-console.log('**** checking if any modules await installation');
-					if (app.waitingInstall) { app.installNewModules(app.waitingInstall); app.waitingInstall = null; }
+				app.requestAuxDisplay(function() {
 				});
 			}, 500);
 		};
@@ -900,7 +1065,7 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 
 					var rtol = ("RtoL".toUpperCase() == mods[i].direction.toUpperCase());
 					var style = (mods[i].font && mods[i].font.length > 0)?('font-family:'+mods[i].font) : '';
-					t += '<td style="'+ style +'" ' + (rtol ? 'dir="rtl"' : '') + ' class="' + mods[i].language + ' ' + (verseKey.verse == currentVerse.verse ? 'currentverse' : 'verse') + '">';
+					t += '<td style="'+ style +'" ' + (rtol ? 'dir="rtl"' : '') + ' class="' + mods[i].language + ' ' + (verseKey.verse == currentVerse.verse ? 'currentVerse' : 'verse') + '">';
 
 					t += renderData[i][v].preVerse;
 
@@ -958,7 +1123,7 @@ console.log('header module retrieved: ' + mod.description);
 console.log('got chapter data for: ' + mod.description + '; chapterData.length: ' + chapterData.length);
 						// only display module if some data for the chapter
 						for (var j = 0; j < chapterData.length; ++j) {
-							if (chapterData[j].text && chapterData[j].text.length > 0) {
+							if (chapterData[j].text && chapterData[j].text.length > 0 && (!onlyOne || !renderData.length)) {
 console.log('found some data so we should include mod: ' + mod.description + '; getting renderHeader');
 								mod.getRenderHeader(function(h) {
 console.log('got renderHeader for mod: ' + mod.description);
@@ -1002,33 +1167,47 @@ console.log('calling headerLoop : ' + (i + 1));
 			t += '<div style="float:right;"><img style="height:2em;" src="img/biblesync-v1-50.png"/></div>';
 		}
 		t += '<br/>';
-		t += '<h3>Modules</h3>';
-		SWORD.mgr.getModInfoList(function(allMods) {
-console.log('About: showing modules, count: ' + allMods.length);
-			var getConfigsLoop = function(mods, i) {
-				if (!i) i = 0;
-				if (i >= mods.length) {
-					t += '</div>';
-					app.popupShow(t);
-					$('.about').click(function(){
-						app.popupHide();
-					});
-					return;
-				}
-				SWORD.mgr.getModuleByName(mods[i].name, function(module) {
-					module.getConfigEntry('About', function(about) {
-						SWORD.mgr.getExtraConfigValue(mods[i].name, "CipherKey", function(cip) {
-							var ciphered = mods[i].cipherKey !== undefined;
-							if (!cip) cip = '';
-							t += '<h4>' + mods[i].name + ' - ' + mods[i].description + '</h4>' + (ciphered?('<button onclick="app.changeCipher(\''+mods[i].name+'\', \'' + cip + '\'); return false;">CipherKey: ' + cip + '</button><br/><br/>'):'') + about + '<br/>';
-							if (module.shortPromo && module.shortPromo.length) t += '<div class="promoLine">' + module.shortPromo +'</div>';
-							t += '<br/>';
-							getConfigsLoop(mods, ++i);
-						});
-					});
-				});
-			};
-			getConfigsLoop(allMods);
+		t += '<h3>Installed Modules</h3>';
+console.log('About: showing modules, count: ' + app.mods.length);
+		for (var i = 0; i < app.mods.length; ++i) {
+			var ciphered = app.mods[i].cipherKey !== undefined;
+			t += '<h4>' + app.mods[i].name + ' - ' + app.mods[i].description + '<button id="modAboutButton_' + app.mods[i].name + '" style="float:right;" onclick="event.stopPropagation(); app.showModuleAbout(\''+app.mods[i].name+'\', \'modAboutDiv_'+app.mods[i].name+'\', this); return false;">About</button></h4>' + (ciphered?('<button onclick="app.changeCipher(\''+app.mods[i].name+'\', \'' + app.mods[i].cipherKey + '\'); return false;">CipherKey: ' + app.mods[i].cipherKey + '</button><br/><br/>'):'') + '<div id="modAboutDiv_'+app.mods[i].name+'"></div>';
+		}
+		t += '</div>';
+		app.popupShow(t);
+		$('.about').click(function(){ 
+			app.popupHide();
+		});
+
+		// show the first 10 modules
+		var firstTen = function(i) {
+			if (!i) i = 0;
+			if (i >= 10 || i >= app.mods.length) return;
+			var modName = app.mods[i].name;
+			app.showModuleAbout(modName, 'modAboutDiv_'+modName, $('#modAboutButton_'+modName), function() {
+				firstTen(++i);
+			});
+		};
+		firstTen();
+
+		return;
+	},
+	showModuleAbout: function(modName, targetElement, toHide, callback) {
+		if (toHide) {
+			$(toHide).hide();
+		}
+		if ($('#'+targetElement).text().length > 0) {
+			$('#'+targetElement).html('');
+			return callback ? callback() : false;
+		}
+		SWORD.mgr.getModuleByName(modName, function(module) {
+			module.getConfigEntry('About', function(about) {
+				var t = about + '<br/>';
+				if (module.shortPromo && module.shortPromo.length) t += '<div class="promoLine">' + module.shortPromo +'</div>';
+				t += '<br/>';
+				$('#'+targetElement).html(t);
+				callback ? callback() : false;
+			});
 		});
 	},
 	shareVerse: function() {

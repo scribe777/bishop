@@ -750,12 +750,16 @@ div.lexiconentry {
 	line-height: 0.3em;
 }
 
-.currentverse {
+.currentVerse {
 	background-color: #eee;
 	font-family:cardo,tahoma,code2000,code2001,arial unicode ms,arial,sans serif,serif;
 }
-.verse,.intro {
+.verse,.intro,.word {
 	font-family:cardo,tahoma,code2000,code2001,arial unicode ms,arial,sans serif,serif;
+}
+
+tr.currentWord td,.currentVerseWord {
+	background-color: #ddd;
 }
 
 .intro {
@@ -858,7 +862,7 @@ color:#f00;
 	padding: 0px .5em 0px .5em;
 }
 
-#paralleldisplay td.currentverse {
+#paralleldisplay td.currentVerse {
 	background-color: #eee;
 }
 

@@ -30,8 +30,9 @@ var verseStudy = {
     },
 
     
-	colorLemmas : function(wordnum, key, morph) {
-		$('#client').find('span').each(function() { 
+	colorLemmas : function(wordnum, key, morph, target) {
+		if (!target) target = '#client';
+		$(target).find('span').each(function() { 
 			var span = $(this);
 			var onClickFunction = $(this).attr('onclick');
 			if (onClickFunction) {
@@ -71,7 +72,8 @@ var verseStudy = {
 		});
 	},
 
-	wordSearch: function(mod, term, mod2, morph) {
+	wordSearch: function(mod, term, mod2, morph, target) {
+		if (!target) target = '#client';
 console.log('********* wordSearch; mod: ' + mod + '; term:' + term + '; mod2: ' + mod2);
 		verseStudy.closeMenus();
 		var showTwo = mod2; // (activeModule2 != null && activeModule2.getRenderText().trim().length() > 0);
@@ -84,7 +86,7 @@ console.log('********* wordSearch; mod: ' + mod + '; term:' + term + '; mod2: ' 
                         var rtol = (direction && 'RTOL' == direction.toUpperCase());
 			module.search('Word//Lemma./'+term+'/', module.SEARCHTYPE_ENTRYATTR, 0, null, function(e) {
 				if (e.status == 'update') {
-					$('#client').html('<h3>Searching for "'+term+'" in ' + mod + '</h3>' + installMgr.getProgressHTML(e.percent + '%', e.percent));
+					$(target).html('<h3>Searching for "'+term+'" in ' + mod + '</h3>' + installMgr.getProgressHTML(e.percent + '%', e.percent));
 				}
 				else if (e.status == 'complete') {
 console.log('wordSearch module.search, complete. results.length: ' + e.results.length);
@@ -95,8 +97,8 @@ console.log('wordSearch module.search, complete. results.length: ' + e.results.l
 						if (i >= results.length) {
 							// finish up results loop
 							t += '</dl>';
-							$('#client').html(t);
-							setTimeout(function() { verseStudy.colorLemmas('x', term, morph, true); }, 50);
+							$(target).html(t);
+							setTimeout(function() { verseStudy.colorLemmas('x', term, morph, target); }, 50);
 							return;
 						}
 						var dispKey = results[i].key;
@@ -133,15 +135,16 @@ console.log('wordSearch renderText mod2 complete.');
 	},
 
 
-	wordStudyWordClick: function(word) {
+	wordStudyWordClick: function(word, target) {
+		if (!target) target = '#client';
 		var lemma = $(word).attr('data-lemma');
 		var morph = $(word).attr('data-morph').replace(/-/g, '\\-');
 		$('#aux').html(
 		    '<a href="#" onclick="return false;"><b style="white-space:nowrap">Show all occurrences of ' + lemma + ':</b></a>' +
-		    '<a href="#" onclick="verseStudy.wordSearch(\''+app.lastDisplayMods[0].name+'\', \''+lemma+'\', \''+app.lastDisplayMods[1].name+'\', \''+morph+'\'); return false;">... any morphology in ' + app.lastDisplayMods[0].name + '</a>' +
-//		    '<a href="#" onclick="verseStudy.wordSearch(\''+app.lastDisplayMods[0].name+'\', \''+lemma+\'@\'+morph+'\', \''+app.lastDisplayMods[1].name+'\', \''+morph+'\'); return false;">... same morphology in ' + app.lastDisplayMods[0].name + '</a>' + 
-		    '<a href="#" onclick="verseStudy.wordSearch(\'LXX\', \''+lemma+'\', \'' + app.lastDisplayMods[0].name +'\', \''+morph+'\'); return false;">... any morphology in LXX</a>' +
-//		    '<a href="#" onclick="verseStudy.wordSearch(\'LXX\', \''+lemma+'\', \'' + app.lastDisplayMods[0].name +'\', \''+morph+'\'); return false;">... same morphology in LXX</a>' +
+		    '<a href="#" onclick="verseStudy.wordSearch(\''+app.lastDisplayMods[0].name+'\', \''+lemma+'\', \''+app.lastDisplayMods[1].name+'\', \''+morph+'\', \''+target+'\'); return false;">... any morphology in ' + app.lastDisplayMods[0].name + '</a>' +
+//		    '<a href="#" onclick="verseStudy.wordSearch(\''+app.lastDisplayMods[0].name+'\', \''+lemma+\'@\'+morph+'\', \''+app.lastDisplayMods[1].name+'\', \''+morph+'\', \''+target+'\'); return false;">... same morphology in ' + app.lastDisplayMods[0].name + '</a>' + 
+		    '<a href="#" onclick="verseStudy.wordSearch(\'LXX\', \''+lemma+'\', \'' + app.lastDisplayMods[0].name +'\', \''+morph+'\', \''+target+'\'); return false;">... any morphology in LXX</a>' +
+//		    '<a href="#" onclick="verseStudy.wordSearch(\'LXX\', \''+lemma+'\', \'' + app.lastDisplayMods[0].name +'\', \''+morph+'\', \''+target+'\'); return false;">... same morphology in LXX</a>' +
 		'');
 		setTimeout(function() {
 		var v = $('#aux');
@@ -177,9 +180,11 @@ console.log('aux.position: ' + JSON.stringify($('#aux').position()));
 	},
 
 
-	wordStudy: function() {
+	wordStudy: function(target) {
+console.log('*** Starting wordStudy');
+		if (!target) target = '#client';
 		verseStudy.closeMenus();
-		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
 console.log('*** wordStudy begin');
 		setTimeout(function() {
 		var wordStudyBible = app.getWordStudyBible();
@@ -197,6 +202,7 @@ console.log('*** wordStudy begin');
 			// finally, we want the name, not the ModInfo struct
 			if (wordStudyBible) wordStudyBible = wordStudyBible.name;
 		}
+console.log('*** wordStudy bible: ' + wordStudyBible);
 		var errorText = null;
 		var greekLex = app.greekDefMods.length > 0 ? app.greekDefMods[0] : null;
 		var hebrewLex = app.hebrewDefMods.length > 0 ? app.hebrewDefMods[0] : null;
@@ -209,7 +215,7 @@ console.log('*** wordStudy begin');
 		if (errorText) {
 			errorText += '<div><center><p>We would suggest installing from "CrossWire" the KJV, WLC, WHNU, StrongsGreek, and StrongsHebrew modules for a minimal set of modules which allow basic Greek and Hebrew word study.</p>';
 			errorText += '<p>I can do all of this for you now, if you would like; simply press this button:</p><p><button style="height:3em;" onclick="app.basicStartup(1);return false;">Basic Module Set</button></p></center></div>';
-			$('#client').html(errorText);
+			$(target).html(errorText);
 			return;
 		}
 
@@ -223,10 +229,17 @@ console.log('*** wordStudy setting mod.keyText: ' + JSON.stringify(app.getCurren
 						mod.getRenderText(function(unused) {
 console.log('*** wordStudy getting word list');
 							mod.getEntryAttribute('Word', '-', '-', false, function(words) {
-								var h = '<table class="clean" style="table-layout:fixed;width:100%;"><tbody>';
+								var h = '';
+								var lexUsed = null;
 								var loopFinish = function () {
-									h += '</tbody></table>';
-									$('#client').html(h);
+									var t = '<table class="clean" style="table-layout:fixed;width:100%;"><tbody>';
+									t += '<tr class="roweven" onclick="return false;">';
+									t += '<td colspan="2" class="modDesc" style="width:100%;">'+ (lexUsed ? lexUsed : '&nbsp;') +'</td>';
+									t += '</tr>';
+									t += h;
+									t += '</tbody></table>';
+									t += '<div style="height:30em;">&nbsp;</div>';
+									$(target).html(t);
 								};
 console.log('*** words.length: ' + words.length);
 								var loop = function(i) {
@@ -240,12 +253,13 @@ console.log('*** word['+i+'] wordAttrs: ' + JSON.stringify(wordAttrs));
 										var text = ''; for (var j = 0; j < wordAttrs.length; ++j) { var keyval = wordAttrs[j].split('='); if (keyval.length > 1 && 'Text' == keyval[0]) { text = keyval[1]; break; }}
 										var lemma = ''; for (var j = 0; j < wordAttrs.length; ++j) { var keyval = wordAttrs[j].split('='); if (keyval.length > 1 && 'Lemma' == keyval[0]) { lemma = keyval[1]; break; }}
 										var morph = ''; for (var j = 0; j < wordAttrs.length; ++j) { var keyval = wordAttrs[j].split('='); if (keyval.length > 1 && 'Morph' == keyval[0]) { morph = keyval[1]; break; }}
-										var partCount = 0; for (var j = 0; j < wordAttrs.length; ++j) { var keyval = wordAttrs[j].split('='); if (keyval.length > 1 && 'PartCount' == keyval[0]) { partCount = parseInt(keyval[1]); break; }}
+										var partCount = 0; for (var j = 0; j < wordAttrs.length; ++j) { var keyval = wordAttrs[j].split('='); if (keyval.length > 1 && 'PartCount' == keyval[0] && keyval[1].length > 0) { try { partCount = parseInt(keyval[1]); } catch (e) { partCount = 0; };  break; }}
 console.log('text: ' + text + '; lemma: '+lemma+'; morph: '+morph+'; partCount: '+ partCount);
-										h += '<tr class="roweven" onclick="return false;">';
+										h += '<tr class="roweven wordHeading" onclick="return false;">';
 										h += '<td class="word">'+ (text.length ? text : '')+'</td>';
-										h += '<td class="strong">'+(lemma.length ? lemma : '')+'</td>';
+//										h += '<td class="strong">'+(lemma.length ? lemma : '')+'</td>';
 										h += '<td class="morph">'+(morph.length ? morph : '')+'</td>';
+										h += '<td class="wordNum" style="display:none;">'+i+'</td>';
 										h += '</tr>';
 										var loopj = function(j) {
 											if (!j) j = 1;
@@ -262,10 +276,15 @@ console.log('lemmaPart: '+lemmaPart+'; lemmaClass: '+lemmaClass);
 												var lex = lemmaPart[0] == 'G' ? glex : hlex;
 console.log('lex: ' + JSON.stringify(lex));
 												if (lex) {
-													lex.setKeyText(lemmaPart.substring(1), function() {
+													var lexKeyText = lemmaPart.substring(1);
+console.log('wordStudy, about to lex.setKeyText; lemmaPart: ' + lemmaPart + '; lexKeyText: ' + lexKeyText);
+													lex.setKeyText(lexKeyText, function() {
+console.log('wordStudy, after lex.setKeyText');
 													lex.getRenderText(function(renderText) {
-														h += '<tr data-lemma="'+lemmaPart+'" data-morph="'+morphPart+'" class="dropclick" onclick="verseStudy.wordStudyWordClick(this); return false;">';
-														h += '<td colspan="3" class="def">'+renderText+'</td>';
+														if (!lexUsed) lexUsed = lex.description;
+console.log('wordStudy, after lex.getRenderText');
+														h += '<tr data-lemma="'+lemmaPart+'" data-morph="'+morphPart+'" class="wordDef dropclick" onclick="verseStudy.wordStudyWordClick(this, \''+target+'\'); return false;">';
+														h += '<td colspan="2" class="def">'+renderText+'</td>';
 														h += '</tr>';
 														loopj(++j);
 													}); });
@@ -286,9 +305,10 @@ console.log('lex: ' + JSON.stringify(lex));
 		});
 		}, 50);
 	},
-	witnessStudy : function() {
+	witnessStudy : function(target) {
+		if (!target) target = '#client';
 		verseStudy.closeMenus();
-		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
 		var limit = 40;
 		var verseKey = app.getCurrentVerseKey();
 		var postData = {
@@ -345,16 +365,18 @@ console.log('lex: ' + JSON.stringify(lex));
 				});
 				t += '</tbody></table>';
 				t += '<div class="copyLine"><br/>This dataset is by no means exhaustive and is growing rapidly. Check back soon for more results.<br/><br/>Courtesy of <a href="http://egora.uni-muenster.de/intf/index_en.shtml">Institut für Neutestamentliche Textforschung</a></div>';
-				$('#client').html(t);
+				$(target).html(t);
 			}
 		});
 	},
-	showRemote : function(remoteURL) {
-		$('#client').html('<iframe src="'+remoteURL+'"/>');
+	showRemote : function(remoteURL, target) {
+		if (!target) target = '#client';
+		$(target).html('<iframe src="'+remoteURL+'"/>');
 	},
-	variantGraph : function() {
+	variantGraph : function(target) {
+		if (!target) target = '#client';
 		verseStudy.closeMenus();
-		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
 		var verseKey = app.getCurrentVerseKey();
 		var postData = {
 			baseText : 'NA28',
@@ -370,12 +392,13 @@ console.log('lex: ' + JSON.stringify(lex));
 		}
 		var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/collate/';
 		SWORD.httpUtils.makeRequest(url, $.param(postData), function(o) {
-			$('#client').html(o);
+			$(target).html(o);
 		});
 	},
-	alignmentTable : function() {
+	alignmentTable : function(target) {
+		if (!target) target = '#client';
 		verseStudy.closeMenus();
-		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
 		var verseKey = app.getCurrentVerseKey();
 		var postData = {
 			baseText : 'NA28',
@@ -391,21 +414,23 @@ console.log('lex: ' + JSON.stringify(lex));
 		}
 		var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/collate/';
 		SWORD.httpUtils.makeRequest(url, $.param(postData), function(o) {
-			$('#client').html(o);
+			$(target).html(o);
 		});
 	},
-	dECMApp : function() {
+	dECMApp : function(target) {
+		if (!target) target = '#client';
 		verseStudy.closeMenus();
 		var verseKey = app.getCurrentVerseKey();
 		// var url = 'https://apokalypse.isbtf.de/community/vmr/api/variant/apparatus/get/?format=html&indexContent='+verseKey.osisRef;
 		var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/variant/apparatus/get/?format=html&indexContent='+verseKey.osisRef;
 
-		$('#client').html('<iframe class="client" src="'+url+'"/>');
+		$(target).html('<iframe class="client" src="'+url+'"/>');
 	},
-	commentary : function() {
+	commentary : function(target) {
+		if (!target) target = '#client';
 		verseStudy.closeMenus();
 		setTimeout(function() {
-		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
 		var t = '<table class="clean" style="width:100%;"><tbody>';
 		SWORD.mgr.getModInfoList(function(mods) {
 			function loop(i) {
@@ -427,7 +452,8 @@ console.log('lex: ' + JSON.stringify(lex));
 			} loop();
 			function loopFinish() {
 				t += '</tbody></table>';
-				$('#client').html(t);
+				t += '<div style="height:30em;">&nbsp;</div>';
+				$(target).html(t);
 				
 			}
 		});
