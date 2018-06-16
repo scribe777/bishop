@@ -360,7 +360,7 @@ console.log('app.firstTime: ' + app.firstTime);
 	},
 	startBibleSync : function() {
 console.log('starting BibleSync');
-		var bibleSyncAppName = 'BishopAndroid';
+		var bibleSyncAppName = 'Bishop'+device.platform;
 			
 		var bibleSyncUserName = window.localStorage.getItem('bibleSyncUserName');
 		if (!bibleSyncUserName) bibleSyncUserName = 'BishopUser';
@@ -813,7 +813,7 @@ console.log('auxDisplayCountdown: ' + app.auxDisplayCountdown);
 		case 'Bibles':
 			break;
 		case 'Language Assist':
-			verseStudy.wordStudy('#altDisplay');
+			verseStudy.wordStudy('#altDisplay', '');
 			break;
 		case 'Commentary Assist':
 			verseStudy.commentary('#altDisplay');

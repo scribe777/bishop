@@ -180,14 +180,14 @@ console.log('aux.position: ' + JSON.stringify($('#aux').position()));
 	},
 
 
-	wordStudy: function(target) {
+	wordStudy: function(target, module) {
 console.log('*** Starting wordStudy');
 		if (!target) target = '#client';
 		verseStudy.closeMenus();
 		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
 console.log('*** wordStudy begin');
 		setTimeout(function() {
-		var wordStudyBible = app.getWordStudyBible();
+		var wordStudyBible = ((module || module == '') ? module : app.getWordStudyBible());
 		// if wordStudyBible not choosen or 'First Active'
 		if (wordStudyBible == '') {
 			// check active modules in order for Strongs
