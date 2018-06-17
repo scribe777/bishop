@@ -1,6 +1,5 @@
 var app = {
-	// change version here and in config.xml, near top
-	version: '1.1.4',
+	version: '1.1.5', // change version here and in config.xml, near top
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -556,6 +555,7 @@ console.log('updateMainViewSetting: ' + viewType);
 		app.mainViewType = viewType;
 		$('#mainViewType').text(app.mainViewType);
 		window.localStorage.setItem('mainViewType', app.mainViewType);
+		$('#altDisplay').html('');
 		switch (app.mainViewType) {
 		case 'Bibles':
 			$('#textDisplay').css('width', '100%');
@@ -573,7 +573,6 @@ console.log('updateMainViewSetting: ' + viewType);
 			app.closeMenu();
 		}, 200);
 		app.displayCurrentChapter();
-		app.displayAlt();
 	},
 	decreaseUIFont : function() {
 		app.adjustUIFont(-10);
@@ -796,14 +795,15 @@ console.log('closing footnotes');
 		if (app.auxDisplayCountdown > 0) {
 			--app.auxDisplayCountdown;
 console.log('auxDisplayCountdown: ' + app.auxDisplayCountdown);
-			if (!app.auxDisplayCountdown) {
+			if (app.auxDisplayCountdown < 1) {
 				app.displayAux(app.auxDisplayCallback);
+				app.auxDisplayCallback = false;
 			}
 		}
 	}, 100),
 	requestAuxDisplay : function(callback) {
 		app.auxDisplayCountdown = 5;
-		app.auxDisplayCallback = callback;
+		if (callback) app.auxDisplayCallback = callback;
 	},
 	displayAux : function(callback) {
 		app.displayFootnotes(function() {
@@ -1008,8 +1008,7 @@ console.log('parDispModules.length: ' + parDispModules.length);
 					var new_position = $('.currentVerse').offset();
 					$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
 				}
-				app.requestAuxDisplay(function() {
-				});
+				app.requestAuxDisplay();
 			}, 500);
 		};
 
@@ -1102,7 +1101,7 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 
 			t += '</tr></tbody></table>';
 			t += '<div class="screenPad">';
-			t += '<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>';
+			t += '<div style="height:3em;">&nbsp;</div>';
 			t += '</div>';
 			t += '<ul class="booknav">';
 			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">previous chapter</a></li>';
@@ -1110,6 +1109,7 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 			t += '</ul>';
 			t += '</div>';
 			t += '<div id="footerBuffer"></div>';
+			t += '<div style="height:30em;">&nbsp;</div>';
 			
 			chapterDisplay(t, mods);
 		};

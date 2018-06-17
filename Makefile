@@ -1,5 +1,5 @@
-PLATFORM=ios
-#PLATFORM=android
+#PLATFORM=ios
+PLATFORM=android
 
 all: release
 
@@ -15,7 +15,7 @@ runandroid:
 	cordova emulate android
 
 
-debug: refreshplugins copysourcefromplatform${PLATFORM} copydebug${PLATFORM} run
+debug: refreshplugins copysourcefromplatform${PLATFORM} builddebug${PLATFORM} copydebug${PLATFORM}
 release: refreshplugins copysourcefromplatform${PLATFORM} buildrelease${PLATFORM} copyrelease${PLATFORM}
 
 build:
@@ -28,8 +28,16 @@ buildreleaseandroid:
 buildreleaseios:
 	cordova build --device --release ios
 
+builddebugandroid:
+	find platforms/android/res/ -name screen.png -exec rm {} \;
+	cordova build android --debug
+
+builddebugios:
+	cordova build --device --debug ios
+
 copydebugandroid:
 	cp platforms/android/build/outputs/apk/android-debug.apk bishop.apk || true
+	cp platforms/android/build/outputs/apk/debug/android-debug.apk bishop.apk || true
 
 copydebugios:
 	echo should copy ios debug app to root folder
