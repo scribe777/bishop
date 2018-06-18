@@ -84,7 +84,9 @@ console.log('**** Received Intent. confBlob: ' + confBlob);
 			SWORD.mgr.addExtraConfig(confBlob, function(newMods) {
 console.log('**** newMods.length: ' + newMods.length);
 				app.waitingInstall = newMods;
-
+				setTimeout(function() {
+					app.displayCurrentChapter();
+				}, 1000);
 			});
 		}
 		}
