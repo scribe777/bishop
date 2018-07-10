@@ -1,5 +1,5 @@
 var app = {
-	version: '1.1.5', // change version here and in config.xml, near top
+	version: '1.1.6', // change version here and in config.xml, near top
 	enableBibleSync : true,
 	bibleSyncRefs : [],
 	isPopupShowing : false,
@@ -45,8 +45,8 @@ console.log('**** a click event from: ' + $(this).prop('outerHTML'));
 			e.preventDefault();
 			var elem = $(this);
 			var url = elem.attr('href');
-			if (url.indexOf('http://') !== -1) {
-				window.open(url, '_system');
+			if (url.indexOf('http://') != -1 || url.indexOf('https://') != -1) {
+				window.open(url, '_blank');
 			}
 console.log('**** a click event url: ' + url);
 			// check for display verse number click and make this verse the current verse

@@ -64,7 +64,8 @@ body,td,div,span,p,.verse,.currentVerse {
 	background-color:#202020;
 	position:absolute;
 	opacity:0.90;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	color: #000000;
 	margin: 0px 0px 0px 0px;
 	z-index:10;
@@ -83,7 +84,8 @@ body,td,div,span,p,.verse,.currentVerse {
 	height:100%;
 	background-color:#303030;
 	position:absolute;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	left:-16em;
 	opacity:0.90;
 	z-index:5;
@@ -145,7 +147,8 @@ table.nobottom td, table.nobottom th {
 	height:100%;
 	top:0px;
 	background-color:#444444;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	opacity:0.90;
 }
 
@@ -183,7 +186,8 @@ table.nobottom td, table.nobottom th {
 	border-radius: .75em;
 	background-color: #FFF;
 	position:absolute;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	height:90%;
 	width:80%;
 	top:5%;
@@ -205,7 +209,8 @@ table.clean tr.roweven {
 
 #textDisplay {
 	position:absolute;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	height:100%;
 	width:100%;
 	color: #000000;
@@ -217,7 +222,8 @@ table.clean tr.roweven {
 
 #altDisplay {
 	position:absolute;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	height:100%;
 	width:50%;
 	right:0px;
@@ -233,7 +239,8 @@ table.clean tr.roweven {
 }
 #footnotes {
 	position:absolute;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	bottom:0;
 	height:0;
 	width:100%;
@@ -246,7 +253,8 @@ table.clean tr.roweven {
 
 #client {
 	position:absolute;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	height:100%;
 	width:100%;
 	color: #000000;
@@ -256,7 +264,8 @@ table.clean tr.roweven {
 }
 .client {
 	position:absolute;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	height:100%;
 	width:100%;
 	color: #000000;

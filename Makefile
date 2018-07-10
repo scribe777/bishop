@@ -1,5 +1,5 @@
-#PLATFORM=ios
-PLATFORM=android
+PLATFORM=ios
+#PLATFORM=android
 
 all: release
 
@@ -63,9 +63,9 @@ installandroid:
 deployandroid:
 	scp bishop.apk scribe@crosswire.org:/home/crosswire/html/
 
-installios:
-	scp "$(ls -td ~/Desktop/Bishop*|head -1)"/Bishop.ipa crosswire.org:/home/crosswire/html/
-	scp "$(ls -td ~/Desktop/Bishop*|head -1)"/manifest.plist crosswire.org:/home/crosswire/html/bishop/
+deployios:
+	scp "$(shell ls -td ~/Desktop/Bishop*|head -1)"/Bishop.ipa crosswire.org:/home/crosswire/html/
+	scp "$(shell ls -td ~/Desktop/Bishop*|head -1)"/manifest.plist crosswire.org:/home/crosswire/html/bishop/
 
 uninstall: uinstall${PLATFORM}
 
@@ -98,8 +98,8 @@ refreshplatformandroid:
 refreshplatformios:
 	cordova platform remove ios || true
 	cordova platform add ios || true
-	cordova-icon --icon=res/swordlogo-512.png
-	cordova-splash --splash=res/swordlogo-512.png
+	cordova-icon --icon=res/swordlogo-1024.png
+	cordova-splash --splash=res/swordlogo-1024.png
 
 setup: clearplugins refreshplatform addplugins 
 	# one last refresh platform to get the plugin patches deployed
@@ -110,6 +110,7 @@ setup: clearplugins refreshplatform addplugins
 # make setup adds them in the right order after platform
 #
 addplugins:
+	cordova plugin add cordova-plugin-inappbrowser || true
 	cordova plugin add cordova-custom-config || true
 	cordova plugin add cordova-plugin-intent || true
 	cordova plugin add com.napolitano.cordova.plugin.intent || true
@@ -121,6 +122,7 @@ addplugins:
 	patch -p0 < patches/cordova-plugin-intent.patch
 
 clearplugins:
+	cordova plugin remove cordova-plugin-inappbrowser || true
 	cordova plugin remove cordova-plugin-whitelist || true
 	cordova plugin remove cordova-custom-config || true
 	cordova plugin remove cordova-plugin-intent || true
