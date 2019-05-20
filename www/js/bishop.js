@@ -173,6 +173,8 @@ console.log('showing image by data: ' + msg.imageData.substring(0,10));
 		if (!window.localStorage.getItem('bibleSyncUserName')) window.localStorage.setItem('bibleSyncUserName', 'BishopUser');
 		if (!window.localStorage.getItem('bibleSyncPassphrase')) window.localStorage.setItem('bibleSyncPassphrase', 'BibleSync');
 		if (!window.localStorage.getItem('mainViewType')) window.localStorage.setItem('mainViewType', 'Bibles');
+		if (!window.localStorage.getItem('appLocale')) window.localStorage.setItem('appLocale', 'en');
+		app.setAppLocale(window.localStorage.getItem('appLocale'));
 		app.showingFootnotes = window.localStorage.getItem('showingFootnotes');
 		app.mainViewType = window.localStorage.getItem('mainViewType');
 		app.setCurrentKey(app.getCurrentKey());
@@ -332,14 +334,77 @@ console.log('****************** ------------- ***********************');
 console.log('firstTime check. mods.length: ' + mods.length);
 			app.firstTime = !mods.length;
 console.log('app.firstTime: ' + app.firstTime);
-			app.show();
+			if (app.firstTime) {
+				app.copyBundledResources(function() {
+					app.show();
+				});
+			}
+			else app.show();
 		});
+	},
+	copyBundledResources: function(callback) {
+		var resPath = cordova.file.applicationDirectory + 'www/bundledResources/';
+		var destPath = cordova.file.dataDirectory;
+console.log('*** copying bundled resources... looking at ' +resPath);
+		window.resolveLocalFileSystemURL(resPath, function(resBundle) {
+			window.resolveLocalFileSystemURL(destPath, function(destBundle) {
+				if (resBundle && resBundle.isDirectory) {
+console.log('found resource bundle at: '+resBundle.fullPath);
+					var entries = [];
+					var copyEntries = function(i) {
+						if (!i) i = 0;
+						if (i >= entries.length) {
+console.log('Done copying bundledResources. Entry count: ' + i);
+							if (callback) callback();
+							return;
+						}
+console.log('copying: '+entries[i].fullPath + ' to ' + cordova.file.dataDirectory);
+						entries[i].copyTo(destBundle, null, function() {
+							copyEntries(++i);
+						});
+					};
+					var resBundleReader = resBundle.createReader();
+					var readEntries = function() {
+						resBundleReader.readEntries(function(results) {
+							if (!results.length) {
+								copyEntries();
+							} else {
+								entries = entries.concat(Array.prototype.slice.call(results || [], 0));
+								readEntries();
+							}
+						}, function(err) {
+console.log('ERROR: ' + err);
+						});
+					};
+
+					readEntries(); // Start reading dirs.
+
+				
+				}
+				else {
+console.log('Could NOT find resource bundle at: '+(resBundle ? resBundle.fullPath : 'null'));
+					if (callback) callback();
+				}
+			});
+		});
+
 	},
 	setWordStudyBible: function(modName) {
 		window.localStorage.setItem('wordStudyBible', modName);
 	},
 	getWordStudyBible: function() {
 		var retVal = window.localStorage.getItem('wordStudyBible');
+		if (!retVal) retVal = '';
+		return retVal;
+	},
+	setAppLocale: function(localeName) {
+		window.localStorage.setItem('appLocale', localeName);
+		SWORD.mgr.setDefaultLocale(localeName, function() {
+console.log('Finished setting SWORD locale to ' + localeName);
+		});
+	},
+	getAppLocale: function() {
+		var retVal = window.localStorage.getItem('appLocale');
 		if (!retVal) retVal = '';
 		return retVal;
 	},
@@ -426,8 +491,17 @@ console.log('stopping BibleSync');
 console.log('currentMod1 from localStorage: ' + mainMod);
 		var modOptions = '';
 		var strongsBibleOptions = '<option value="">First Active</option>';
+		var appLocaleOptions = '';
 		app.greekDefMods = [];
 		app.hebrewDefMods = [];
+console.log('************ getting available locales');
+		SWORD.mgr.getAvailableLocales(function(locales) {
+console.log('************ received ' + locales.length + ' locales.');
+		for (var i = 0; i < locales.length; ++i) {
+			appLocaleOptions += '<option>' + locales[i] + '</option>';
+		}
+		if (!appLocaleOptions.length) appLocaleOptions = '<option value="en">English</option>';
+
 		for (var i = 0; i < mods.length; ++i) {
 console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i].features.length + '; features: ' + mods[i].features);
 			if (mods[i].category == SWORD.CATEGORY_BIBLES) {
@@ -513,6 +587,7 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		t += '<div>BibleSync User <input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
 		t += '<div>BibleSync Passphrase <input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
 		t += '<div>WordStudy Bible <select style="width:9em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
+		t += '<div>Language <select style="width:9em;" onchange="app.setAppLocale($(this).val()); return false;" id="appLocale"></select></div>';
 		t += '</div></td></tr>';
 
 		// About
@@ -535,11 +610,14 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 		$('#bibleSyncPassphrase').val(window.localStorage.getItem('bibleSyncPassphrase'));
 		$('#wordStudyBible').append(strongsBibleOptions);
 		$('#wordStudyBible').val(app.getWordStudyBible());
+		$('#appLocale').append(appLocaleOptions);
+		$('#appLocale').val(app.getAppLocale());
 		$('input[name=viewSelector]').prop('checked', false);
 		$('input[name=viewSelector][value="'+app.mainViewType+'"]').prop('checked', true);
 		app.updateBibleSyncDisplay();
 		app.updateBookmarkDisplay();
 		if (!app.getCurrentMod1() && mods.length) app.setCurrentMod1(mods[0].name);
+		}); // getAvailableLocales()
 
 	},
 	mainViewType : 'Bibles',
@@ -751,6 +829,7 @@ console.log('updateMainViewSetting: ' + viewType);
 		return true;
 	},
 	openMenu: function() {
+console.log("****** opening menu");
 		if ($('.menutab').hasClass('tohide')) return;
 //		$( ".menutab, .menupanel" ).css('left', "+="+app.menuWidth+"em");
 		$( ".menutab, .menupanel" ).animate({ left: "+="+app.menuWidth+"em" }, 350, function() {
@@ -766,6 +845,7 @@ console.log('updateMainViewSetting: ' + viewType);
 		$('.menutab').removeClass('toshow').addClass('tohide');
 	},
 	closeMenu: function() {
+console.log("****** closing menu");
 		if ($('.menutab').hasClass('toshow')) return false;
 		$( ".menutab, .menupanel" ).animate({ left: "-="+app.menuWidth+"em" }, 350, function() { });
 		$('.menutab').removeClass('tohide').addClass('toshow');    

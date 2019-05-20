@@ -22,22 +22,22 @@ build:
 	cordova build
 
 buildreleaseandroid:
-	find platforms/android/res/ -name screen.png -exec rm {} \;
+	find platforms/android/app/src/main/res/ -name screen.png -exec rm {} \;
 	cordova build android --release
 
 buildreleaseios:
 	cordova build --device --release ios
 
 builddebugandroid:
-	find platforms/android/res/ -name screen.png -exec rm {} \;
+	find platforms/android/app/src/main/res/ -name screen.png -exec rm {} \;
 	cordova build android --debug
 
 builddebugios:
 	cordova build --device --debug ios
 
 copydebugandroid:
-	cp platforms/android/build/outputs/apk/android-debug.apk bishop.apk || true
-	cp platforms/android/build/outputs/apk/debug/android-debug.apk bishop.apk || true
+	cp platforms/android/app/build/outputs/android-debug.apk bishop.apk || true
+	cp platforms/android/app/build/outputs/debug/android-debug.apk bishop.apk || true
 
 copydebugios:
 	echo should copy ios debug app to root folder
@@ -45,9 +45,9 @@ copydebugios:
 
 copyreleaseandroid:
 	#try both unsigned and signed, old and new paths; prefer signed new path if available
-	cp platforms/android/build/outputs/apk/android-release-unsigned.apk bishop.apk || true
-	cp platforms/android/build/outputs/apk/android-release.apk bishop.apk || true
-	cp platforms/android/build/outputs/apk/release/android-release.apk bishop.apk || true
+	cp platforms/android/app/build/outputs/android-release-unsigned.apk bishop.apk || true
+	cp platforms/android/app/build/outputs/android-release.apk bishop.apk || true
+	cp platforms/android/app/build/outputs/release/android-release.apk bishop.apk || true
 
 copyreleaseios:
 	echo should copy ios release to root folder
@@ -111,6 +111,7 @@ setup: clearplugins refreshplatform addplugins
 #
 addplugins:
 	cordova plugin add cordova-plugin-inappbrowser || true
+	cordova plugin add cordova-plugin-file || true
 	cordova plugin add cordova-custom-config || true
 	cordova plugin add com-darryncampbell-cordova-plugin-intent || true
 	cordova plugin add cordova-plugin-add-swift-support || true
@@ -122,6 +123,7 @@ addplugins:
 
 clearplugins:
 	cordova plugin remove cordova-plugin-inappbrowser || true
+	cordova plugin remove cordova-plugin-file || true
 	cordova plugin remove cordova-plugin-whitelist || true
 	cordova plugin remove cordova-custom-config || true
 	cordova plugin remove com-darryncampbell-cordova-plugin-intent || true
