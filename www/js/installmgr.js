@@ -6,22 +6,17 @@ var installMgr = {
 		app.currentWindow = installMgr;
 		$('#main').html('<div id="toolbar"></div><div id="client"></div>');
 		installMgr.setupMenu(function() {
-			installMgr.showInstalled(callback);
+			installMgr.showInstalled(function() {
+				app.setAppLocale();
+				if (callback) callback();
+			});
 		});
 	},
 	setupMenu: function(callback) {
-		/*
-        var t  = '<table style="width:100%"><tbody><tr>';
-        t += '<td style="width:1%;height:100%" class="dropbtn"><button class="dropbtn dropclick" style="width:100%;height:100%;;" onclick="app.handleBackButton(); return false;"> <span style="font-size:170%;font-weight:bold;vertical-align:middle;">&lt; </span><span style="vertical-align:middle;"> Back</span></button></td>';
-        t += '<td style="height:100%;overflow:hidden;" class="dropbtn">Modules<br/><select style="overflow:hidden;" id="modSource" onchange="installMgr.modSourceChanged();"><option>Installed</option></select></td>';
-        t += '<td style="height:100%;overflow:hidden;" class="dropbtn">Type<br/><select style="overflow:hidden;" id="catFilter" onchange="installMgr.modSourceChanged();"><option>' + SWORD.CATEGORY_BIBLES + '</option></select></td>';
-        t += '<td style="width:1%;;height:100%" class="dropbtn"><button class="dropbtn dropclick" style="width:100%;height:100%;" onclick="installMgr.refreshSources(); return false;"><span style="font-size:170%;font-weight:bold;vertical-align:middle;"> &#x21bb; </span></button></td>';
-        t += '</tr></tbody></table>';
-        */
     var t  = '<header class="toolbar" id="installtoolbar">';
-        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> Back</div></button>';
-        t += '<button class="dropbtn dropclick midLeft" onclick="return false;"><span><label for="modSource">Modules</label></span><select id="modSource" onchange="installMgr.modSourceChanged();"><option>Installed</option></select></button>';
-        t += '<button class="dropbtn dropclick midRight" onclick="return false;"><span><label for="catFilter">Type</label></span><select id="catFilter" onchange="installMgr.modSourceChanged();"><option>' + SWORD.CATEGORY_BIBLES + '</option></select></button>';
+        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> <span data-english="Back">Back</span></div></button>';
+        t += '<button class="dropbtn dropclick midLeft" onclick="return false;"><span><label for="modSource"><span data-english="Modules">Modules</span></label></span><select id="modSource" onchange="installMgr.modSourceChanged();"><option>Installed</option></select></button>';
+        t += '<button class="dropbtn dropclick midRight" onclick="return false;"><span><label for="catFilter"><span data-english="Type">Type</span></label></span><select id="catFilter" onchange="installMgr.modSourceChanged();"><option value="'+SWORD.CATEGORY_BIBLES+'" data-english="'+SWORD.CATEGORY_BIBLES+'">' + SWORD.CATEGORY_BIBLES + '</option></select></button>';
         t += '<button class="dropbtn dropclick right" onclick="installMgr.refreshSources(); return false;"><span style="font-size:170%;font-weight:bold;vertical-align:middle;"> &#x21bb; </span></button>';
         t += '</header>';
 
@@ -59,14 +54,15 @@ var installMgr = {
 		}
 		h += '</tbody></table>';
 
-		var t = '<option>All Modules</option>';
+		var t = '<option value="All Modules" data-english="All Modules">All Modules</option>';
 		for (var c in categories) {
-			t += '<option>'+c+'</option>';
+			t += '<option value="'+c+'" data-english="'+c+'">'+c+'</option>';
 		}
 		$('#catFilter').html(t);
 		$('#catFilter').val(catFilter);
 
 		$('#client').html(h);
+		app.setAppLocale();
 
 		setTimeout(function() {
 console.log('scrolling top to: ' + installMgr.lastScrollTop);
@@ -77,12 +73,15 @@ console.log('scrolling top to: ' + installMgr.lastScrollTop);
 	modSelected: function(row) {
 		var installed = $('#modSource').val() == 'Installed';
 		var modName = $(row).find('.instName').text();
-		if (confirm((installed?'Uninstall':'Install') + ' Module: ' + modName + '?')) {
-			if (installed) SWORD.installMgr.uninstallModule(modName, function() {
-				installMgr.modSourceChanged();
-			});
-			else installMgr.installModule($('#modSource').val(), modName);
-		}
+		var prompt = (installed?'Uninstall':'Install') + ' Module:';
+		SWORD.mgr.translate(prompt, function(translated) {
+			if (confirm(translated + ' ' + modName)) {
+				if (installed) SWORD.installMgr.uninstallModule(modName, function() {
+					installMgr.modSourceChanged();
+				});
+				else installMgr.installModule($('#modSource').val(), modName);
+			}
+		});
 	},
 	getProgressHTML: function(text, percent) {
 	var buffer ='';
@@ -116,7 +115,8 @@ console.log('**** installMgr.installModule. disclaimer not yet accepted');
 
 console.log('**** installMgr.installModule. disclaimer accepted. installing module');
 
-		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Installing Module: '+modName+'.  Please wait...</h3></center><br/><br/><div id="totalProgress"></div><br/><div id="status"></div></div>');
+		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Installing Module:">Installing Module:</span> '+modName+'.  <span data-english="Please wait...">Please wait...</span></h3></center><br/><br/><div id="totalProgress"></div><br/><div id="status"></div></div>');
+		app.setAppLocale();
 		setTimeout(function() {
 			var lastMessage = '';
 			var totalBytes = 0;
@@ -146,7 +146,10 @@ console.log('**** installMgr.installModule. disclaimer accepted. installing modu
 	setDisclaimerAccepted: function() {
 		installMgr.isDisclaimerAccepted = true;
 		SWORD.installMgr.setUserDisclaimerConfirmed(function() {
-			if (installMgr.remoteAction.action == 'refresh') installMgr.refreshSources(installMgr.remoteAction.callback);
+			if (installMgr.remoteAction.action == 'refresh') {
+				if (!installMgr.remoteAction.callback) installMgr.remoteAction.callback=installMgr.modSourceChanged;
+				installMgr.refreshSources(installMgr.remoteAction.callback);
+			}
 			else if (installMgr.remoteAction.action == 'install') installMgr.installModule(installMgr.remoteAction.modSource, installMgr.remoteAction.modName, installMgr.remoteAction.callback);
 		});
 	},
@@ -186,12 +189,13 @@ console.log('**** installMgr.installModule. disclaimer accepted. installing modu
 		else installMgr.showRemoteModules(sourceName);
 	},
 	refreshModSourceList: function(callback) {
-		var t = '<option>Installed</option>';
+		var t = '<option value="Installed" data-english="Installed">Installed</option>';
 		SWORD.installMgr.getRemoteSources(function(sources) {
 			for (var i = 0; i < sources.length; ++i) {
 				t += '<option>'+sources[i]+'</option>';
 			}
 			$('#modSource').html(t);
+			app.setAppLocale();
 			if (callback) callback();
 		});
 	},
@@ -204,7 +208,8 @@ console.log('**** installMgr.installModule. disclaimer accepted. installing modu
 			return installMgr.showDisclaimer();
 		}
 
-		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Discovering Remote Repositories.<br/>Please wait...</h3></center></div>');
+		$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Discovering Remote Repositories.">Discovering Remote Repositories.</span><br/><span data-english="Please wait...>Please wait...</span></h3></center></div>');
+		app.setAppLocale();
 		// let our loading page draw before we do the work
 		setTimeout(function() {
 			SWORD.installMgr.syncConfig(function() {
@@ -213,7 +218,8 @@ console.log('**** installMgr.installModule. disclaimer accepted. installing modu
 					var loop = function(srcs, callback, i) {
 						if (!i) { i = 0; }
 						if (i >= srcs.length) { callback(); return; }
-						$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Refreshing Repository: '+srcs[i]+'.  <br/>Please wait...</h3></center></div>');
+						$('#client').html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Refreshing Repository:">Refreshing Repository:</span> '+srcs[i]+'.  <br/><span data-english="Please wait...">Please wait...</span></h3></center></div>');
+						app.setAppLocale();
 						setTimeout(function() {
 							SWORD.installMgr.refreshRemoteSource(srcs[i], function() {
 								loop(srcs, callback, ++i);

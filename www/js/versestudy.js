@@ -1,32 +1,37 @@
 var verseStudy = {
+	lastWitnessStudy : null,
+	lastWitnessStudyTarget : null,
 	show: function(startAt) {
 		app.currentWindow = verseStudy;
 		$('#main').html('<div id="toolbar"></div><div id="client"></div><div id="aux" class="dropdown-content"></div>');
-		verseStudy.setupMenu();
-		if (startAt == 'app') {
-			verseStudy.variantStudyClick();
-		}
-		else verseStudy.wordStudy();
-		$('#client').click(function(event) {
-			if (!$(event.target).hasClass('dropclick') && !$(event.target).parent().hasClass('dropclick')) {
-				verseStudy.closeMenus();
+		verseStudy.setupMenu(function() {
+			if (startAt == 'app') {
+				verseStudy.variantStudyClick();
 			}
+			else verseStudy.wordStudy();
+			app.setAppLocale();
+			$('#client').click(function(event) {
+				if (!$(event.target).hasClass('dropclick') && !$(event.target).parent().hasClass('dropclick')) {
+					verseStudy.closeMenus();
+				}
+			});
 		});
 	},
     
     
-    setupMenu: function() {
+    setupMenu: function(callback) {
 
     var t  = '<header class="toolbar" id="versestudytoolbar">';
-        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> Back</div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveOne" onclick="verseStudy.wordStudy(); return false;"><div>Word</div><div>Study</div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveTwo" onclick="verseStudy.commentary(); return false;"><div>&nbsp;</div><div>Commentary</div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveThree" onclick="verseStudy.witnessStudy(); return false;"><div>Witness</div><div>Study</div></button>';
+        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> <span data-english="Back">Back</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveOne" onclick="verseStudy.wordStudy(); return false;"><div><span data-english="Word">Word</span></div><div><span data-english="Study">Study</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveTwo" onclick="verseStudy.commentary(); return false;"><div>&nbsp;</div><div><span data-english="Commentary">Commentary</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveThree" onclick="verseStudy.witnessStudy(); return false;"><div><span data-english="Witness">Witness</span></div><div><span data-english="Study">Study</span></div></button>';
 //        t += '<div style="width:100%" class="dropdown twentyFiveFour">';
-        t += '<button id="variantButton" class="dropbtn dropclick twentyFiveFour" onclick="verseStudy.variantStudyClick(); return false;"><div>Variant</div><div>Study</div></button>';
+        t += '<button id="variantButton" class="dropbtn dropclick twentyFiveFour" onclick="verseStudy.variantStudyClick(); return false;"><div><span data-english="Variant">Variant</span></div><div><span data-english="Study">Study</span></div></button>';
 //        t += '</div>';
         t += '</header>';
         $('#toolbar').html(t);
+	if (callback) callback();
     },
 
     
@@ -167,8 +172,9 @@ console.log('wordSearch renderText mod2 complete.');
 
 	variantStudyClick: function() {
 		var verseKey = app.getCurrentVerseKey();
-		$('#aux').html('<a href="#" onclick="verseStudy.variantGraph(); return false;">Variant Graph</a> <a href="#" onclick="verseStudy.alignmentTable(); return false;">Alignment Table</a>' + (verseKey.bookName == 'Acts' ? '<a href="#" onclick="verseStudy.dECMApp(); return false;">Digital ECM</a>' : '')
+		$('#aux').html('<a href="#" onclick="verseStudy.variantGraph(); return false;"><span data-english="Variant Graph">Variant Graph</span></a> <a href="#" onclick="verseStudy.alignmentTable(); return false;"><span data-english="Alignment Table">Alignment Table</span></a>' + (verseKey.osisRef.startsWith('Acts.') ? '<a href="#" onclick="verseStudy.dECMApp(); return false;"><span data-english="Digital ECM">Digital ECM</span></a>' : '')
 		);
+		app.setAppLocale();
 		var v = $('#aux');
 		var b = $('#variantButton');
 		$(v).toggleClass("show");
@@ -184,7 +190,8 @@ console.log('aux.position: ' + JSON.stringify($('#aux').position()));
 console.log('*** Starting wordStudy');
 		if (!target) target = '#client';
 		verseStudy.closeMenus();
-		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Please wait...">Please wait...</span></h3></center></div>');
+		app.setAppLocale();
 console.log('*** wordStudy begin');
 		setTimeout(function() {
 		var wordStudyBible = ((module || module == '') ? module : app.getWordStudyBible());
@@ -308,7 +315,8 @@ console.log('wordStudy, after lex.getRenderText');
 	witnessStudy : function(target) {
 		if (!target) target = '#client';
 		verseStudy.closeMenus();
-		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Fetching data from INTF.">Fetching data from INTF.</span><br/><span data-english="Please wait...">Please wait...</span></h3></center></div>');
+		app.setAppLocale();
 		var limit = 40;
 		var verseKey = app.getCurrentVerseKey();
 		var postData = {
@@ -324,9 +332,9 @@ console.log('wordStudy, after lex.getRenderText');
 				alert('error: '+$(error).attr('message'));
 			}
 			else {
-				var t = '<p><b>Some Manuscript Witnesses for ' + verseKey.shortText + '</b></p>';
+				var t = '<p><b><span data-english="Some Manuscript Witnesses for Verse:">Some Manuscript Witnesses for Verse:</span> ' + verseKey.shortText + '</b></p>';
 				t += '<table class="clean" width="100%">';
-				t += '<thead class="fixedHeader"><tr><th>Manuscript</th><th>Century</th><th>Folio</th><th>Content</th><th>Image</th></tr></thead>';
+				t += '<thead class="fixedHeader"><tr><th data-english="Manuscript">Manuscript</th><th data-english="Century">Century</th><th data-english="Folio">Folio</th><th data-english="Content">Content</th><th data-english="Image">Image</th></tr></thead>';
 				t += '<tbody class="scrollContent">';
 				$(xml).find('manuscript').each(function() {
 					var m = this;
@@ -364,19 +372,30 @@ console.log('wordStudy, after lex.getRenderText');
 					});
 				});
 				t += '</tbody></table>';
-				t += '<div class="copyLine"><br/>This dataset is by no means exhaustive and is growing rapidly. Check back soon for more results.<br/><br/>Courtesy of <a href="http://egora.uni-muenster.de/intf/index_en.shtml">Institut für Neutestamentliche Textforschung</a></div>';
+				t += '<div class="copyLine"><br/><span data-english="This dataset is by no means exhaustive and is growing rapidly. Check back soon for more results.">This dataset is by no means exhaustive and is growing rapidly. Check back soon for more results.</span><br/><br/><span data-english="Courtesy of">Courtesy of</span> <a href="http://egora.uni-muenster.de/intf/index_en.shtml">Institut für Neutestamentliche Textforschung</a></div>';
+				verseStudy.lastWitnessStudy = t;
+				verseStudy.lastWitnessStudyTarget = target;
 				$(target).html(t);
+				app.setAppLocale();
 			}
 		});
 	},
 	showRemote : function(remoteURL, target) {
+		if (verseStudy.lastWitnessStudy && verseStudy.lastWitnessStudyTarget) {
+			app.backFunction = function() {
+				$(verseStudy.lastWitnessStudyTarget).html(verseStudy.lastWitnessStudy);
+				app.setAppLocale();
+			}
+		};
 		if (!target) target = '#client';
 		$(target).html('<iframe src="'+remoteURL+'"/>');
 	},
 	variantGraph : function(target) {
+console.log('variantGraph showing...');
 		if (!target) target = '#client';
 		verseStudy.closeMenus();
-		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Fetching data from INTF.">Fetching data from INTF.</span><br/><span data-english="Please wait...">Please wait...</span></h3></center></div>');
+		app.setAppLocale();
 		var verseKey = app.getCurrentVerseKey();
 		var postData = {
 			baseText : 'NA28',
@@ -391,14 +410,17 @@ console.log('wordStudy, after lex.getRenderText');
 			format : 'graph'
 		}
 		var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/collate/';
+console.log('requesting from INTF...');
 		SWORD.httpUtils.makeRequest(url, $.param(postData), function(o) {
+console.log('received response from INTF...');
 			$(target).html(o);
 		});
 	},
 	alignmentTable : function(target) {
 		if (!target) target = '#client';
 		verseStudy.closeMenus();
-		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Fetching data from INTF.<br/>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Fetching data from INTF.">Fetching data from INTF.</span><br/><span data-english="Please wait...">Please wait...</span></h3></center></div>');
+		app.setAppLocale();
 		var verseKey = app.getCurrentVerseKey();
 		var postData = {
 			baseText : 'NA28',
@@ -430,8 +452,9 @@ console.log('wordStudy, after lex.getRenderText');
 		if (!target) target = '#client';
 		verseStudy.closeMenus();
 		setTimeout(function() {
-		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3>Please wait...</h3></center></div>');
+		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Please wait...">Please wait...</span></h3></center></div>');
 		var t = '<table class="clean" style="width:100%;"><tbody>';
+		app.setAppLocale();
 		SWORD.mgr.getModInfoList(function(mods) {
 			function loop(i) {
 				if (!i) i = 0; if (i >= mods.length) return loopFinish();

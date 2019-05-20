@@ -113,11 +113,13 @@ addplugins:
 	cordova plugin add cordova-plugin-inappbrowser || true
 	cordova plugin add cordova-plugin-file || true
 	cordova plugin add cordova-custom-config || true
+	cordova plugin add cordova-plugin-whitelist || true
 	cordova plugin add com-darryncampbell-cordova-plugin-intent || true
 	cordova plugin add cordova-plugin-add-swift-support || true
 	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose || true
 	cordova plugin add https://github.com/phonegap/phonegap-mobile-accessibility.git || true
-	cordova plugin add es.keensoft.fullscreenimage || true
+#	cordova plugin add es.keensoft.fullscreenimage || true
+	cordova plugin add com-sarriaroman-photoviewer || true
 	cordova plugin add cordova-plugin-x-toast || true
 #	patch -p0 < patches/cordova-plugin-intent.patch
 
@@ -130,7 +132,8 @@ clearplugins:
 	cordova plugin remove org.crosswire.sword.cordova.SWORD || true
 	cordova plugin remove cordova-plugin-add-swift-support || true
 	cordova plugin remove phonegap-plugin-mobile-accessibility || true
-	cordova plugin remove es.keensoft.fullscreenimage || true
+#	cordova plugin remove es.keensoft.fullscreenimage || true
+	cordova plugin remove com-sarriaroman-photoviewer || true
 	cordova plugin remove cordova-plugin-x-toast || true
 
 #copy any changes made to plugin via xcode
