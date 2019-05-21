@@ -1102,8 +1102,8 @@ console.log('parDispModules.length: ' + parDispModules.length);
 
 			var t = '<div id="paralleldisplay">';
 			t += '<ul class="booknav">';
-			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">previous chapter</a></li>';
-			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">next chapter</a></li>';
+			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="previous chapter">previous chapter</span></a></li>';
+			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="next chapter">next chapter</span></a></li>';
 			t += '</ul>';
 
 			t += '<h2>'+currentVerse.bookName + ' ' + currentVerse.chapter +'</h2>';
@@ -1113,6 +1113,7 @@ console.log('parDispModules.length: ' + parDispModules.length);
 
 		var chapterDisplay = function(htmlText, mods) {
 			$('#textDisplay').html(htmlText);
+			app.setAppLocale();
 			app.lastDisplayMods=mods;
 			setTimeout(function() {
 				if (app.getCurrentVerseKey().verse > 1) {
@@ -1215,8 +1216,8 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 			t += '<div style="height:3em;">&nbsp;</div>';
 			t += '</div>';
 			t += '<ul class="booknav">';
-			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">previous chapter</a></li>';
-			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;">next chapter</a></li>';
+			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="previous chapter">previous chapter</span></a></li>';
+			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="next chapter">next chapter</span></a></li>';
 			t += '</ul>';
 			t += '</div>';
 			t += '<div id="footerBuffer"></div>';
