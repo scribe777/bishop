@@ -471,6 +471,7 @@ console.log('stopping BibleSync');
 	popupShow: function(content) {
 		app.isPopupShowing = true;
 		$('#popup').html(content);
+		app.setAppLocale();
 		$('#popup').show();
 	},
 	popupHide: function(content) {
@@ -568,7 +569,7 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 			t += '</tr></tbody></table>';
 			t += '</td></tr>';
 			// View Selector
-			t += '<tr><td class="menuLabel" onclick="app.toggleViewSelector(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span id="viewLabel" data-english="View">View</span>: <span style="font-size:70%;" id="mainViewType" data-type="'+app.mainViewType+'">' + app.mainViewType + '</span></td></tr>';
+			t += '<tr><td class="menuLabel" onclick="app.toggleViewSelector(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span id="viewLabel" data-english="View">View</span>: <span style="font-size:70%;" id="mainViewType" data-english="'+app.mainViewType+'">' + app.mainViewType + '</span></td></tr>';
 			t += '<tr><td style="width:100%;"><div style="padding-left:1em;" class="viewSelectorPanel toshow">';
 			t +=     '<div><input type="radio" id="viewBibles" name="viewSelector" value="Bibles" onclick="app.setViewBibles();return false;"/> <label id="viewBiblesLabel" data-english="Bibles" for="viewBibles">Bibles</label></div>';
 			t +=     '<div><input type="radio" id="viewLanguageAssist" name="viewSelector" value="Language Assist" onclick="app.setViewLanguageAssist();return false;"/> <label id="viewLALabel" data-english="Language Assist" for="viewLanguageAssist">Language Assist</label></div>';
@@ -661,7 +662,9 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 	updateMainViewSetting : function(viewType) {
 console.log('updateMainViewSetting: ' + viewType);
 		app.mainViewType = viewType;
-		$('#mainViewType').text(app.mainViewType);
+		SWORD.mgr.translate(app.mainViewType, function(translated) {
+			$('#mainViewType').text(translated);
+		});
 		window.localStorage.setItem('mainViewType', app.mainViewType);
 		$('#altDisplay').html('');
 		switch (app.mainViewType) {
@@ -1268,16 +1271,19 @@ console.log('calling headerLoop : ' + (i + 1));
 		var t = '<div class="about">';
 		t += '<div style="float:right;"><img style="height:5em;margin-top:.7em;" src="img/swordlogo.png"/></div>';
 		t += '<div style="width:100%;text-align:center;"><div style="display:inline-block;"><h2><span style="font-size:130%;">Bishop</span> <span style="font-size:70%;">version: '+app.version+'</span></h2>';
-		t += '<i>SWORD engine version: ' + SWORD.version + '</i></div></div>';
+		t += '<i><span data-english="SWORD engine version:">SWORD engine version:</span> ' + SWORD.version + '</i></div></div>';
 		t += '<br/>';
 		t += '<br/>';
 		t += '<div style="float:right;padding-left:1em;"><img style="height:5em;margin-top:.5em;" src="img/crosswire_medium.png"/></div>';
-		t += '<h3>The CrossWire Bible Society</h3>';
-		t += '<p>';
+		t += '<h3><span data-english="App About Header|The CrossWire Bible Society">The CrossWire Bible Society</span></h3>';
+		t += '<p data-english="App About L1|Bishop is a Bible study application from The CrossWire Bible Society and is a member of The SWORD Project family of Bible study tools.">';
 		t += 'Bishop is a Bible study application from The CrossWire Bible Society and is a member of The SWORD Project family of Bible study tools.';
 		t += '</p>';
-		t += '<p>To learn more, visit us online<br/><center><a href="http://crosswire.org">The CrossWire Bible Society</a></center></p>';
-		t += '<p>May God bless you as you seek to know Him more.</p>';
+		t += '<p data-english="App About L2|To learn more, visit us online">';
+		t += 'To learn more, visit us online</p>';
+		t += '<p data-english="App About L3|&lt;div style=&quot;margin:auto;width:90%;text-align:center;&quot;&gt;&lt;a href=&quot;http://crosswire.org&quot;&gt;The CrossWire Bible Society&lt;/a&gt;&lt;/div&gt;"><a href="http://crosswire.org">The CrossWire Bible Society</a>';
+		t += '</p>';
+		t += '<p data-english="App About L4|May God bless you as you seek to know Him more.">May God bless you as you seek to know Him more.</p>';
 		t += '<br/>';
 		if (app.enableBibleSync) {
 			t += '<div style="float:right;"><img style="height:2em;" src="img/biblesync-v1-50.png"/></div>';
@@ -1386,7 +1392,7 @@ console.log('refreshing sources complete');
 	},
 	setAppLocale: function(localeName) {
 		if (!localeName) localeName = app.getAppLocale();
-		var englishSpans = $('span[data-english],option[data-english],th[data-english]');
+		var englishSpans = $('span[data-english],option[data-english],th[data-english],p[data-english],label[data-english]');
 		window.localStorage.setItem('appLocale', localeName);
 		SWORD.mgr.setDefaultLocale(localeName, function() {
 			var setHTMLControls = function(i) {
@@ -1395,8 +1401,18 @@ console.log('refreshing sources complete');
 console.log('Finished setting SWORD locale to ' + localeName);
 					return;
 				}
-				SWORD.mgr.translate($(englishSpans[i]).attr('data-english'), function(translated) {
-console.log('Setting #'+$(englishSpans[i]).attr('data-english')+' to: ' + translated);
+				var trKey = $(englishSpans[i]).attr('data-english');
+				// if no locale entry, default to data-english
+				var trDefault = trKey;
+				// if default is supplied in data-english, split with a pipe |, then use this default
+				// e.g., data-english="About L1|Bishop is a SWORD Project app."
+				if (trKey.indexOf('|') > -1) {
+					trDefault = trKey.substring(trKey.indexOf('|')+1);
+					trKey = trKey.substring(0, trKey.indexOf('|'));
+				}
+				SWORD.mgr.translate(trKey, function(translated) {
+					if (translated == trKey) translated = trDefault;
+console.log('Setting tr key '+trKey+' to: ' + translated);
 					$(englishSpans[i]).html(translated);
 					setHTMLControls(i+1);
 				});

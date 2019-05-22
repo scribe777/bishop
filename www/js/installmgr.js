@@ -154,23 +154,39 @@ console.log('**** installMgr.installModule. disclaimer accepted. installing modu
 		});
 	},
 	showDisclaimer: function() {
-		var h = '<center><h2>-=+* WARNING *+=-</h2></center>';
-		h += '<p>Although Install Manager provides a convenient way for installing ';
+		var h = '<center><h2><span data-english="InstallMgr Warning Header|-=+* WARNING *+=-">-=+* WARNING *+=-</span></h2></center>';
+		h += '<p data-english="InstallMgr Warning L1|Although Install Manager provides a convenient way for installing ';
 		h += 'and upgrading SWORD components, it also uses a systematic method ';
 		h += 'for accessing sites which gives packet sniffers a target to lock ';
-		h += 'into for singling out users.</p><p>';
+		h += 'into for singling out users.">Although Install Manager provides a convenient way for installing ';
+		h += 'and upgrading SWORD components, it also uses a systematic method ';
+		h += 'for accessing sites which gives packet sniffers a target to lock ';
+		h += 'into for singling out users.</p>';
+		h += '<p data-english="InstallMgr Warning L2|IF YOU LIVE IN A PERSECUTED COUNTRY AND DO NOT WISH TO RISK DETECTION, ';
+		h += 'YOU SHOULD *NOT* USE INSTALL MANAGER\'S REMOTE SOURCE FEATURES.">';
 		h += 'IF YOU LIVE IN A PERSECUTED COUNTRY AND DO NOT WISH TO RISK DETECTION, ';
-		h += 'YOU SHOULD *NOT* USE INSTALL MANAGER\'S REMOTE SOURCE FEATURES.</p><p>';
+		h += 'YOU SHOULD *NOT* USE INSTALL MANAGER\'S REMOTE SOURCE FEATURES.</p>';
+		h += '<p data-english="InstallMgr Warning L3|';
 		h += 'Also, Remote Sources other than CrossWire may contain less than ';
 		h += 'quality modules, modules with unorthodox content, or even modules ';
 		h += 'which are not legitimately distributable.  Many repositories ';
 		h += 'contain wonderfully useful content.  These repositories simply ';
 		h += 'are not reviewed or maintained by CrossWire and CrossWire ';
-		h += 'cannot be held responsible for their content. CAVEAT EMPTOR.</p><p>';
+		h += 'cannot be held responsible for their content. CAVEAT EMPTOR.">';
+		h += 'Also, Remote Sources other than CrossWire may contain less than ';
+		h += 'quality modules, modules with unorthodox content, or even modules ';
+		h += 'which are not legitimately distributable.  Many repositories ';
+		h += 'contain wonderfully useful content.  These repositories simply ';
+		h += 'are not reviewed or maintained by CrossWire and CrossWire ';
+		h += 'cannot be held responsible for their content. CAVEAT EMPTOR.</p>';
+		h += '<p data-english="InstallMgr Warning L4|';
 		h += 'If you understand this and are willing to enable remote source features ';
-		h += 'then click the "Accept" button below</p>';
-		h += '<p><center><button style="height:3em;" onclick="installMgr.setDisclaimerAccepted();return false;">Accept</button></center></p>';
+		h += 'then click the &quot;Accept&quot; button below.">';
+		h += 'If you understand this and are willing to enable remote source features ';
+		h += 'then click the "Accept" button below.</p>';
+		h += '<p><center><button style="height:3em;" onclick="installMgr.setDisclaimerAccepted();return false;"><span data-english="InstallMgr Warning Accept|Accept">Accept</span></button></center></p>';
 		$('#client').html(h);
+		app.setAppLocale();
 	},
 	showInstalled: function(callback) {
 		SWORD.mgr.getModInfoList(function(modInfoList) {

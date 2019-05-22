@@ -23,11 +23,11 @@ var verseStudy = {
 
     var t  = '<header class="toolbar" id="versestudytoolbar">';
         t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> <span data-english="Back">Back</span></div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveOne" onclick="verseStudy.wordStudy(); return false;"><div><span data-english="Word">Word</span></div><div><span data-english="Study">Study</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveOne" onclick="verseStudy.wordStudy(); return false;"><div><span data-english="Word Study L1|Word">Word</span></div><div><span data-english="Word Study L2|Study">Study</span></div></button>';
         t += '<button class="dropbtn dropclick twentyFiveTwo" onclick="verseStudy.commentary(); return false;"><div>&nbsp;</div><div><span data-english="Commentary">Commentary</span></div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveThree" onclick="verseStudy.witnessStudy(); return false;"><div><span data-english="Witness">Witness</span></div><div><span data-english="Study">Study</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveThree" onclick="verseStudy.witnessStudy(); return false;"><div><span data-english="Witness Study L1|Witness">Witness</span></div><div><span data-english="Witness Study L2|Study">Study</span></div></button>';
 //        t += '<div style="width:100%" class="dropdown twentyFiveFour">';
-        t += '<button id="variantButton" class="dropbtn dropclick twentyFiveFour" onclick="verseStudy.variantStudyClick(); return false;"><div><span data-english="Variant">Variant</span></div><div><span data-english="Study">Study</span></div></button>';
+        t += '<button id="variantButton" class="dropbtn dropclick twentyFiveFour" onclick="verseStudy.variantStudyClick(); return false;"><div><span data-english="Variant Study L1|Variant">Variant</span></div><div><span data-english="Variant Study L2|Study">Study</span></div></button>';
 //        t += '</div>';
         t += '</header>';
         $('#toolbar').html(t);
