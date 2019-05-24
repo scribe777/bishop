@@ -76,8 +76,9 @@ uninstallios:
 	echo uninstall app from iphone
 
 refreshplugins:
-	cordova plugin remove org.crosswire.sword.cordova.SWORD || true
-	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose
+####	Only do this if we are working on local plugin regularly
+#	cordova plugin remove cordova-plugin-crosswire-sword || true
+#	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose
 
 copysourcefromplatformandroid:
 	echo "do nothing for now"; #cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/ || true
@@ -116,8 +117,11 @@ addplugins:
 	cordova plugin add cordova-plugin-whitelist || true
 	cordova plugin add com-darryncampbell-cordova-plugin-intent || true
 	cordova plugin add cordova-plugin-add-swift-support || true
-	cordova plugin add ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/ --nofetch -verbose || true
+####	Local dev SWORD plugin or published version of SWORD plugin
+#	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose || true
+	cordova plugin add cordova-plugin-crosswire-sword
 	cordova plugin add https://github.com/phonegap/phonegap-mobile-accessibility.git || true
+####	Trying photoviewer instead of fullscreenimage, which stopped working on newer Android
 #	cordova plugin add es.keensoft.fullscreenimage || true
 	cordova plugin add com-sarriaroman-photoviewer || true
 	cordova plugin add cordova-plugin-x-toast || true
@@ -129,7 +133,7 @@ clearplugins:
 	cordova plugin remove cordova-plugin-whitelist || true
 	cordova plugin remove cordova-custom-config || true
 	cordova plugin remove com-darryncampbell-cordova-plugin-intent || true
-	cordova plugin remove org.crosswire.sword.cordova.SWORD || true
+	cordova plugin remove cordova-plugin-crosswire-sword || true
 	cordova plugin remove cordova-plugin-add-swift-support || true
 	cordova plugin remove phonegap-plugin-mobile-accessibility || true
 #	cordova plugin remove es.keensoft.fullscreenimage || true
@@ -138,5 +142,5 @@ clearplugins:
 
 #copy any changes made to plugin via xcode
 back:
-	cp platforms/ios/Bishop/Plugins/org.crosswire.sword.cordova.SWORD/SWORD.swift ../sword/bindings/cordova/org.crosswire.sword.cordova.SWORD/src/ios/SWORD.swift 
-	cp platforms/ios/Bishop/Plugins/org.crosswire.sword.cordova.SWORD/flatapi.h ../sword/include/
+	cp platforms/ios/Bishop/Plugins/cordova-plugin-crosswire-sword/SWORD.swift ../sword/bindings/cordova/cordova-plugin-crosswire-sword/src/ios/SWORD.swift 
+	cp platforms/ios/Bishop/Plugins/cordova-plugin-crosswire-sword/flatapi.h ../sword/include/
