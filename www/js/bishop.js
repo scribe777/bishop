@@ -370,7 +370,8 @@ console.log('app.firstTime: ' + app.firstTime);
 	},
 	copyBundledResources: function(callback) {
 		var resPath = cordova.file.applicationDirectory + 'www/bundledResources/';
-		var destPath = cordova.file.dataDirectory;
+		var destPath = cordova.file.documentsDirectory + 'sword/';
+//		var destPath = cordova.file.dataDirectory;
 console.log('*** copying bundled resources... looking at ' +resPath);
 		window.resolveLocalFileSystemURL(resPath, function(resBundle) {
 			window.resolveLocalFileSystemURL(destPath, function(destBundle) {
@@ -381,19 +382,30 @@ console.log('found resource bundle at: '+resBundle.fullPath);
 						if (!i) i = 0;
 						if (i >= entries.length) {
 console.log('Done copying bundledResources. Entry count: ' + i);
-							if (callback) callback();
+							// setting an extraConfig forces a re-init and will pick up newly copied resources
+							var buffer = '[bishop]\n';
+							buffer += 'Version='+app.version;
+							SWORD.mgr.addExtraConfig(buffer, function() {
+								if (callback) callback();
+								return;
+							});
 							return;
 						}
+						var copy = function() {
 console.log('copying: '+entries[i].fullPath + ' to ' + cordova.file.dataDirectory);
-						window.resolveLocalFileSystemURL(destPath+entries[i].name, function(existing) {
-							var copy = function() {
-								entries[i].copyTo(destBundle, null, function() {
-									copyEntries(++i);
-								}, function(err) {
+							entries[i].copyTo(destBundle, null, function() {
+								copyEntries(++i);
+							}, function(err) {
 console.log('ERROR copying: '+JSON.stringify(err));
-								});
-							};
+							});
+						};
+console.log('checking to see if destination already exists: '+destPath+entries[i].fullPath);
+						window.resolveLocalFileSystemURL(destPath+entries[i].name, function(existing) {
+console.log('removing: '+existing.fullPath);
 							existing.removeRecursively(copy, copy);
+						}, function(e) {
+console.log('could not resolve path: '+destPath+entries[i].fullPath);
+							copy();
 						});
 					};
 					var resBundleReader = resBundle.createReader();
@@ -418,9 +430,15 @@ console.log('ERROR: ' + err);
 console.log('Could NOT find resource bundle at: '+(resBundle ? resBundle.fullPath : 'null'));
 					if (callback) callback();
 				}
+			}, function(err) {
+console.log('ERROR resolving path: '+JSON.stringify(err));
+			if (callback) callback();
 			});
+		}, function(err) {
+console.log('ERROR resolving path: '+JSON.stringify(err));
+			if (callback) callback();
 		});
-
+//if (callback) callback();
 	},
 	setWordStudyBible: function(modName) {
 		window.localStorage.setItem('wordStudyBible', modName);
@@ -819,7 +837,7 @@ console.log('updateMainViewSetting: ' + viewType);
 	},
 	openSettings: function() {
 		if ($('.settingsPanel').hasClass('tohide')) return;
-		$(".settingsPanel").animate({height: "15em"});
+		$(".settingsPanel").animate({height: "17em"});
 		$('.settingsPanel').removeClass('toshow').addClass('tohide');
 	},
 	closeSettings: function() {
