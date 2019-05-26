@@ -1,5 +1,5 @@
 var app = {
-	version: '1.1.6', // change version here and in config.xml, near top
+	version: '1.2.0', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -205,8 +205,42 @@ console.log('showing image by data: ' + msg.imageData.substring(0,10));
 		app.currentWindow = app;
 		var main = $('#main');
 console.log("*** in show. main.length: " + main.length);
-		var t = '<div id="textDisplay"></div><div class="menupanel"></div><a href="javascript:void(0);" class="menutab toshow">&nbsp;</a><div id="footnotes" class="toshow"></div>';
-		t += '<div id="altDisplay"></div><div id="aux" class="dropdown-content"></div>';
+/*
+		var t = `
+<div id="textDisplay"></div>
+<div class="menupanel"></div>
+<a href="javascript:void(0);" class="menutab toshow">&nbsp;</a>
+<div class="header"></div>
+	<input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
+	<label for="openSidebarMenu" class="sidebarIconToggle">
+		<div class="spinner diagonal part-1"></div>
+		<div class="spinner horizontal"></div>
+		<div class="spinner diagonal part-2"></div>
+	</label>
+  <div id="sidebarMenu">
+    <ul class="sidebarMenuInner">
+      <li>Jelena Jovanovic <span>Web Developer</span></li>
+      <li><a href="https://vanila.io" target="_blank">Company</a></li>
+      <li><a href="https://instagram.com/plavookac" target="_blank">Instagram</a></li>
+      <li><a href="https://twitter.com/plavookac" target="_blank">Twitter</a></li>
+      <li><a href="https://www.youtube.com/channel/UCDfZM0IK6RBgud8HYGFXAJg" target="_blank">YouTube</a></li>
+      <li><a href="https://www.linkedin.com/in/plavookac/" target="_blank">Linkedin</a></li>
+    </ul>
+  </div>
+
+<div id="footnotes" class="toshow"></div>
+<div id="altDisplay"></div>
+<div id="aux" class="dropdown-content"></div>';
+`;
+*/
+		var t = `
+<div id="textDisplay"></div>
+<div class="menupanel"></div>
+<a href="javascript:void(0);" class="menutab toshow">&nbsp;</a>
+<div id="footnotes" class="toshow"></div>
+<div id="altDisplay"></div>
+<div id="aux" class="dropdown-content"></div>';
+`;
 		$(main).html(t);
 		var textDisplay = $('#textDisplay');
 console.log("*** in show. after setting textDisplay.length: " + textDisplay.length);
@@ -354,86 +388,117 @@ console.log('****************** ------------- ***********************');
 			if (!app.zoomLevel) app.zoomLevel = 100;
 			app.adjustUIFont(0);
 		});
+
 		app.popupHide();
+
 		// first time check
-		SWORD.mgr.getModInfoList(function(mods) {
+		var firstCheck = function() {
+			SWORD.mgr.getModInfoList(function(mods) {
 console.log('firstTime check. mods.length: ' + mods.length);
-			app.firstTime = !mods.length;
+				app.firstTime = !mods.length;
 console.log('app.firstTime: ' + app.firstTime);
-			if (true || app.firstTime) {
+				app.show();
+			});
+		};
+
+		app.getLastAppVersion(function(lastVersion) {
+			if (lastVersion != app.version) {
 				app.copyBundledResources(function() {
-					app.show();
+					// setting an extraConfig forces a re-init and will pick up newly copied resources
+					app.setLastAppVersion(function() {
+						return firstCheck();
+					});
 				});
 			}
-			else app.show();
+			else firstCheck();
+		
+		});
+	},
+	setLastAppVersion : function(callback) {
+console.log('**** setting lastAppVersion: ' + app.version);
+		var buffer = '[bishop]\n';
+		buffer += 'Version='+app.version;
+		SWORD.mgr.addExtraConfig(buffer, function() {
+			if (callback) callback();
+		});
+	},
+	getLastAppVersion : function(callback) {
+		SWORD.mgr.getExtraConfigValue('bishop', 'version', function(value) {
+console.log('**** retrieving lastAppVersion: ' + value);
+			if (callback) callback(value);
 		});
 	},
 	copyBundledResources: function(callback) {
 		var resPath = cordova.file.applicationDirectory + 'www/bundledResources/';
-		var destPath = cordova.file.documentsDirectory + 'sword/';
-//		var destPath = cordova.file.dataDirectory;
+		var destPath = [
+			cordova.file.documentsDirectory + 'sword/',
+			cordova.file.dataDirectory
+		];
 console.log('*** copying bundled resources... looking at ' +resPath);
-		window.resolveLocalFileSystemURL(resPath, function(resBundle) {
-			window.resolveLocalFileSystemURL(destPath, function(destBundle) {
-				if (resBundle && resBundle.isDirectory) {
+		var entries = [];
+		var performCopy = function(resBundle, destBundle) {
 console.log('found resource bundle at: '+resBundle.fullPath);
-					var entries = [];
-					var copyEntries = function(i) {
-						if (!i) i = 0;
-						if (i >= entries.length) {
+			var copyEntries = function(i) {
+				if (!i) i = 0;
+				if (i >= entries.length) {
 console.log('Done copying bundledResources. Entry count: ' + i);
-							// setting an extraConfig forces a re-init and will pick up newly copied resources
-							var buffer = '[bishop]\n';
-							buffer += 'Version='+app.version;
-							SWORD.mgr.addExtraConfig(buffer, function() {
-								if (callback) callback();
-								return;
-							});
-							return;
-						}
-						var copy = function() {
-console.log('copying: '+entries[i].fullPath + ' to ' + cordova.file.dataDirectory);
-							entries[i].copyTo(destBundle, null, function() {
-								copyEntries(++i);
-							}, function(err) {
-console.log('ERROR copying: '+JSON.stringify(err));
-							});
-						};
-console.log('checking to see if destination already exists: '+destPath+entries[i].fullPath);
-						window.resolveLocalFileSystemURL(destPath+entries[i].name, function(existing) {
-console.log('removing: '+existing.fullPath);
-							existing.removeRecursively(copy, copy);
-						}, function(e) {
-console.log('could not resolve path: '+destPath+entries[i].fullPath);
-							copy();
-						});
-					};
-					var resBundleReader = resBundle.createReader();
-					var readEntries = function() {
-						resBundleReader.readEntries(function(results) {
-							if (!results.length) {
-								copyEntries();
-							} else {
-								entries = entries.concat(Array.prototype.slice.call(results || [], 0));
-								readEntries();
-							}
-						}, function(err) {
-console.log('ERROR: ' + err);
-						});
-					};
-
-					readEntries(); // Start reading dirs.
-
-				
-				}
-				else {
-console.log('Could NOT find resource bundle at: '+(resBundle ? resBundle.fullPath : 'null'));
 					if (callback) callback();
+					return;
 				}
-			}, function(err) {
-console.log('ERROR resolving path: '+JSON.stringify(err));
-			if (callback) callback();
-			});
+				var copy = function() {
+console.log('copying: '+entries[i].fullPath + ' to ' + destBundle.fullPath);
+					entries[i].copyTo(destBundle, null, function() {
+						copyEntries(++i);
+					}, function(err) {
+console.log('ERROR copying: '+JSON.stringify(err));
+					});
+				};
+console.log('checking to see if destination already exists: '+destBundle.toURL() + ':'+entries[i].name);
+				destBundle.getDirectory(entries[i].name, {create:false,exclusive:false}, function(existing) {
+console.log('removing: '+existing.fullPath);
+					existing.removeRecursively(copy, copy);
+				}, function() {
+					copy();
+				});
+			};
+			var resBundleReader = resBundle.createReader();
+			var readEntries = function() {
+				resBundleReader.readEntries(function(results) {
+					if (!results.length) {
+						copyEntries();
+					} else {
+						entries = entries.concat(Array.prototype.slice.call(results || [], 0));
+						readEntries();
+					}
+				}, function(err) {
+console.log('ERROR: ' + err);
+				});
+			};
+			readEntries(); // Start reading dirs.
+		};
+
+		window.resolveLocalFileSystemURL(resPath, function(resBundle) {
+			if (resBundle && resBundle.isDirectory) {
+				var findDest = function(i) {
+					if (!i) i = 0;
+					if (i >= destPath.length) {
+					}
+					window.resolveLocalFileSystemURL(destPath[i], function(destBundle) {
+						performCopy(resBundle, destBundle);
+					}, function(err) {
+						if (i == destPath.length -1) {
+							console.log('ERROR resolving path: '+JSON.stringify(err));
+							if (callback) callback();
+						}
+						findDest(++i);
+					});
+				};
+				findDest();
+			}
+			else {
+console.log('Could NOT find resource bundle at: '+(resBundle ? resBundle.fullPath : 'null'));
+				if (callback) callback();
+			}
 		}, function(err) {
 console.log('ERROR resolving path: '+JSON.stringify(err));
 			if (callback) callback();
@@ -1123,8 +1188,8 @@ console.log('parDispModules.length: ' + parDispModules.length);
 
 			var t = '<div id="paralleldisplay">';
 			t += '<ul class="booknav">';
-			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="previous chapter">previous chapter</span></a></li>';
-			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="next chapter">next chapter</span></a></li>';
+			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="previous chapter" style="white-space:nowrap">previous chapter</span></a></li>';
+			t += ' <li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="next chapter" style="white-space:nowrap">next chapter</span></a></li>';
 			t += '</ul>';
 
 			t += '<h2>'+currentVerse.bookName + ' ' + currentVerse.chapter +'</h2>';
@@ -1237,8 +1302,8 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 			t += '<div style="height:3em;">&nbsp;</div>';
 			t += '</div>';
 			t += '<ul class="booknav">';
-			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="previous chapter">previous chapter</span></a></li>';
-			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="next chapter">next chapter</span></a></li>';
+			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="previous chapter" style="white-space:nowrap">previous chapter</span></a></li>';
+			t += ' <li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="next chapter" style="white-space:nowrap">next chapter</span></a></li>';
 			t += '</ul>';
 			t += '</div>';
 			t += '<div id="footerBuffer"></div>';
@@ -1411,6 +1476,7 @@ console.log('refreshing sources complete');
 	setAppLocale: function(localeName) {
 		if (!localeName) localeName = app.getAppLocale();
 		var englishSpans = $('span[data-english],option[data-english],th[data-english],p[data-english],label[data-english]');
+		var reInit = (localeName != app.getAppLocale());
 		window.localStorage.setItem('appLocale', localeName);
 		SWORD.mgr.setDefaultLocale(localeName, function() {
 			var setHTMLControls = function(i) {
@@ -1435,7 +1501,15 @@ console.log('Setting tr key '+trKey+' to: ' + translated);
 					setHTMLControls(i+1);
 				});
 			};
-			setHTMLControls();
+			if (reInit) {
+				// setting an extraConfig forces a re-init and will pick up newly copied resources
+				app.setLastAppVersion(function() {
+					app.setCurrentKey(app.getCurrentKey(), function() {
+						setHTMLControls();
+					});
+				});
+			}
+			else setHTMLControls();
 		});
 	}
 };

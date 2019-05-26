@@ -36,8 +36,7 @@ builddebugios:
 	cordova build --device --debug ios
 
 copydebugandroid:
-	cp platforms/android/app/build/outputs/android-debug.apk bishop.apk || true
-	cp platforms/android/app/build/outputs/debug/android-debug.apk bishop.apk || true
+	cp platforms/android/app/build/outputs/apk/debug/app-debug.apk bishop.apk || true
 
 copydebugios:
 	echo should copy ios debug app to root folder
@@ -45,9 +44,7 @@ copydebugios:
 
 copyreleaseandroid:
 	#try both unsigned and signed, old and new paths; prefer signed new path if available
-	cp platforms/android/app/build/outputs/android-release-unsigned.apk bishop.apk || true
-	cp platforms/android/app/build/outputs/android-release.apk bishop.apk || true
-	cp platforms/android/app/build/outputs/release/android-release.apk bishop.apk || true
+	cp platforms/android/app/build/outputs/apk/release/app-release.apk bishop.apk || true
 
 copyreleaseios:
 	echo should copy ios release to root folder
@@ -77,8 +74,8 @@ uninstallios:
 
 refreshplugins:
 ####	Only do this if we are working on local plugin regularly
-#	cordova plugin remove cordova-plugin-crosswire-sword || true
-#	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose
+	cordova plugin remove cordova-plugin-crosswire-sword || true
+	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose
 
 copysourcefromplatformandroid:
 	echo "do nothing for now"; #cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/ || true
@@ -118,8 +115,8 @@ addplugins:
 	cordova plugin add com-darryncampbell-cordova-plugin-intent || true
 	cordova plugin add cordova-plugin-add-swift-support || true
 ####	Local dev SWORD plugin or published version of SWORD plugin
-#	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose || true
-	cordova plugin add cordova-plugin-crosswire-sword
+	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose || true
+#	cordova plugin add cordova-plugin-crosswire-sword
 	cordova plugin add https://github.com/phonegap/phonegap-mobile-accessibility.git || true
 ####	Trying photoviewer instead of fullscreenimage, which stopped working on newer Android
 #	cordova plugin add es.keensoft.fullscreenimage || true
