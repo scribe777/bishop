@@ -74,8 +74,8 @@ uninstallios:
 
 refreshplugins:
 ####	Only do this if we are working on local plugin regularly
-	cordova plugin remove cordova-plugin-crosswire-sword || true
-	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose
+#	cordova plugin remove cordova-plugin-crosswire-sword || true
+#	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose
 
 copysourcefromplatformandroid:
 	echo "do nothing for now"; #cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/ || true
@@ -115,8 +115,8 @@ addplugins:
 	cordova plugin add com-darryncampbell-cordova-plugin-intent || true
 	cordova plugin add cordova-plugin-add-swift-support || true
 ####	Local dev SWORD plugin or published version of SWORD plugin
-	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose || true
-#	cordova plugin add cordova-plugin-crosswire-sword
+#	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose || true
+	cordova plugin add cordova-plugin-crosswire-sword
 	cordova plugin add https://github.com/phonegap/phonegap-mobile-accessibility.git || true
 ####	Trying photoviewer instead of fullscreenimage, which stopped working on newer Android
 #	cordova plugin add es.keensoft.fullscreenimage || true
