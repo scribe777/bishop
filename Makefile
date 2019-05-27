@@ -102,6 +102,7 @@ refreshplatformios:
 setup: clearplugins refreshplatform addplugins 
 	# one last refresh platform to get the plugin patches deployed
 	make refreshplatform
+	cp -a ../sword/locales.d www/bundledResources/
 
 ###
 # Plugins should not be committed to config.xml
