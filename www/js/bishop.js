@@ -608,127 +608,142 @@ console.log('currentMod1 from localStorage: ' + mainMod);
 console.log('************ getting available locales');
 		SWORD.mgr.getAvailableLocales(function(locales) {
 console.log('************ received ' + locales.length + ' locales.');
-			for (var i = 0; i < locales.length; ++i) {
-				appLocaleOptions += '<option>' + locales[i] + '</option>';
+			var buildLocaleNames = function(i, callback) {
+				if (!i) i = 0;
+				if (i >= locales.length) {
+					if (!appLocaleOptions.length) appLocaleOptions = '<option value="en">English</option>';
+					return callback();
+				}
+				SWORD.mgr.translate(locales[i], 'locales', function(lt) {
+					if (lt && lt != locales[i]) {
+						appLocaleOptions += '<option value="'+locales[i]+'">' + lt + ' (' + locales[i] + ')</option>';
+					}
+					else {
+						appLocaleOptions += '<option>' + locales[i] + '</option>';
+					}
+					buildLocaleNames(++i, callback);
+				});
+			};
+			
+			buildLocaleNames(0, function() {
+
+				for (var i = 0; i < mods.length; ++i) {
+	console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i].features.length + '; features: ' + mods[i].features);
+					if (mods[i].category == SWORD.CATEGORY_BIBLES) {
+						if (!mainMod) {
+							mainMod = mods[i].name;
+							app.setCurrentMod1(mainMod);
+						}
+						modOptions += '<option>' + mods[i].name + '</option>';
+						if (mods[i].features && mods[i].features.indexOf('StrongsNumbers') !== -1) {
+							strongsBibleOptions += '<option>' + mods[i].name + '</option>';
+						}
+					}
+					else if (mods[i].category == SWORD.CATEGORY_LEXDICTS) {
+						if (mods[i].features && mods[i].features.indexOf('GreekDef') !== -1) {
+							app.greekDefMods.push(mods[i].name);
+						}
+						if (mods[i].features && mods[i].features.indexOf('HebrewDef') !== -1) {
+							app.hebrewDefMods.push(mods[i].name);
+						}
+					}
+				}
+				var t = '<table class="slidemenu"><tbody>';
+				t += '<tr><td>';
+				t += '<table class="keySelector"><tbody><tr><td id="keyDisplay" style="height:2.5em;width:100%;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="padding-right:.4em;" onclick="app.shareVerse(); return false;"><img style="height:2.4em;" src="img/ic_action_share.png"/></td></tr></tbody></table>';
+				t += '</td></tr>';
+				t += '<tr><td>';
+				t += '<table class="keySelector" style="width:100%;"><tbody><tr>';
+				t += '<td><select id="currentMod1" style="width:100%;" onchange="app.setCurrentMod1($(\'#currentMod1\').val()); app.closeMenu(); app.displayCurrentChapter(); return false;">';
+				t += modOptions;
+				t += '</select></td>';
+				t += '<td><select id="currentMod2" style="width:100%;" onchange="app.setCurrentMod2($(\'#currentMod2\').val()); app.displayCurrentChapter(); return false;"><option></option>';
+				t += modOptions;
+				t += '</select></td>';
+				t += '<td><select id="currentMod3" style="width:100%;" onchange="app.setCurrentMod3($(\'#currentMod3\').val()); app.displayCurrentChapter(); return false;"><option></option>';
+				t += modOptions;
+				t += '</select></td>';
+				t += '</tr></tbody></table>';
+				t += '</td></tr>';
+				// View Selector
+				t += '<tr><td class="menuLabel" onclick="app.toggleViewSelector(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span id="viewLabel" data-english="View">View</span>: <span style="font-size:70%;" id="mainViewType" data-english="'+app.mainViewType+'">' + app.mainViewType + '</span></td></tr>';
+				t += '<tr><td style="width:100%;"><div style="padding-left:1em;" class="viewSelectorPanel toshow">';
+				t +=     '<div><input type="radio" id="viewBibles" name="viewSelector" value="Bibles" onclick="app.setViewBibles();return false;"/> <label id="viewBiblesLabel" data-english="Bibles" for="viewBibles">Bibles</label></div>';
+				t +=     '<div><input type="radio" id="viewLanguageAssist" name="viewSelector" value="Language Assist" onclick="app.setViewLanguageAssist();return false;"/> <label id="viewLALabel" data-english="Language Assist" for="viewLanguageAssist">Language Assist</label></div>';
+				t +=     '<div><input type="radio" id="viewCommentaryAssist" name="viewSelector" value="Commentary Assist" onclick="app.setViewCommentaryAssist();return false;"/> <label id="viewCALabel" data-english="Commentary Assist" for="viewCommentaryAssist">Commentary Assist</label></div>';
+				t += '</div></td></tr>';
+
+				// Verse Study
+				t += '<tr class="menuLabel" onclick="verseStudy.show();return false;"><td><img src="img/ic_action_location_searching.png" style="height:1em;"/> <span id="verseStudyLabel" data-english="Verse Study">Verse Study</span></td></tr>';
+
+				// Bookmarks
+				t += '<tr><td class="menuLabel" onclick="app.toggleBookmarks(); return false;"><img src="img/bookmarks.png" style="height:1em;"/> <span id="bookmarksLabel" data-english="Bookmarks">Bookmarks</span></td></tr>';
+				t += '<tr><td style="width:100%;"><div class="bookmarkPanel toshow">';
+				t +=     '<div><button id="addBookmarkButton" onclick="app.bookmarkAdd(app.getCurrentKey());return false;">Add Current</button><button id="clearBookmarks" onclick="app.bookmarksClear();return false;">Clear All</button></div>';
+				t +=     '<div id="bookmarkResults"></div>';
+				t += '</div></td></tr>';
+
+				// Search
+				t += '<tr><td class="menuLabel" onclick="app.toggleSearch(); return false;"><img src="img/ic_action_search.png" style="height:1em;"/> <span id="searchLabel" data-english="Search">Search</span></td></tr>';
+				t += '<tr><td style="width:100%;"><div class="searchPanel toshow">';
+				t +=     '<div><input id="searchExpression" type="search"/><button id="searchButton" onclick="app.search();return false;">Go</button></div>';
+				t +=     '<div id="searchResults"></div>';
+				t += '</div></td></tr>';
+
+				// BibleSync
+			if (app.enableBibleSync) {
+				t += '<tr><td class="menuLabel"><div style="display:inline-block" onclick="app.toggleBibleSyncPanel(); return false;"><img src="img/ic_action_group.png" style="height:1em;"/> <span data-english="BibleSync">BibleSync</span></div><label style="float:right;" class="switch"><input id="bibleSyncSwitch" onchange="app.toggleBibleSync(); return false;" type="checkbox"><span class="slider round"></span></label></td></tr>';
+				t += '<tr><td style="width:100%;"><div class="bibleSyncPanel toshow">';
+				t +=     '<div><button id="sendBibleSync" onclick="app.sendBibleSyncMessage(app.getCurrentVerseKey().osisRef);return false;">Send Current</button><button id="clearBibleSync" onclick="app.bibleSyncClear();return false;">Clear All</button></div>';
+				t +=     '<div id="bibleSyncResults"></div>';
+				t += '</div></td></tr>';
 			}
-			if (!appLocaleOptions.length) appLocaleOptions = '<option value="en">English</option>';
 
-			for (var i = 0; i < mods.length; ++i) {
-console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i].features.length + '; features: ' + mods[i].features);
-				if (mods[i].category == SWORD.CATEGORY_BIBLES) {
-					if (!mainMod) {
-						mainMod = mods[i].name;
-						app.setCurrentMod1(mainMod);
+				// Library
+				t += '<tr class="menuLabel" onclick="installMgr.show();return false;"><td><img src="img/ic_action_download.png" style="height:1em;"/> <span data-english="Library">Library</span></td></tr>';
+
+				// Toggle Notes
+				t += '<tr class="menuLabel" onclick="app.closeMenu(); app.toggleFootnotes();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> <span data-english="Toggle Notes">Toggle Notes</span></td></tr>';
+
+				// Settings
+				t += '<tr><td class="menuLabel" onclick="app.toggleSettings(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span data-english="Settings">Settings</span></td></tr>';
+				t += '<tr><td style="width:100%;"><div class="settingsPanel toshow">';
+				t +=     '<div>&nbsp;&nbsp;&nbsp;&nbsp;<button id="decreaseUIFontButton" onclick="app.decreaseUIFont();return false;" style="width:2em;font-size:150%"> - </button>&nbsp;&nbsp; <span data-english="Font Size">Font Size</span> &nbsp;&nbsp;<button id="increaseUIFontButton" onclick="app.increaseUIFont();return false;" style="width:2em;font-size:150%"> + </button></div>';
+				t += '<div><span data-english="BibleSync User">BibleSync User</span> <input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
+				t += '<div><span data-english="BibleSync Passphrase">BibleSync Passphrase</span> <input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
+				t += '<div>WordStudy Bible <select style="width:9em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
+				t += '<div><span data-english="Language">Language</span> <select style="width:9em;" onchange="app.setAppLocale($(this).val()); return false;" id="appLocale"></select></div>';
+				t += '</div></td></tr>';
+
+				// About
+				t += '<tr class="menuLabel" onclick="app.closeMenu(); app.about();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> <span data-english="About">About</span></td></tr>';
+				t += '</tbody></table>';
+				$('.menupanel').html(t);
+				$('.menutab').click(function(){
+					if ($(this).hasClass('toshow'))	{ app.openMenu();  }
+					else 				{ app.closeMenu(); }
+				});
+				$(window).on('swiperight', function() { app.openMenu();  });
+				$(window).on('swipeleft' , function() { app.closeMenu(); });
+				$('#searchExpression').keypress(function(e){
+					if (e.keyCode == 13) {
+						$('#searchButton').focus();
+						$('#searchButton').click();
 					}
-					modOptions += '<option>' + mods[i].name + '</option>';
-					if (mods[i].features && mods[i].features.indexOf('StrongsNumbers') !== -1) {
-						strongsBibleOptions += '<option>' + mods[i].name + '</option>';
-					}
-				}
-				else if (mods[i].category == SWORD.CATEGORY_LEXDICTS) {
-					if (mods[i].features && mods[i].features.indexOf('GreekDef') !== -1) {
-						app.greekDefMods.push(mods[i].name);
-					}
-					if (mods[i].features && mods[i].features.indexOf('HebrewDef') !== -1) {
-						app.hebrewDefMods.push(mods[i].name);
-					}
-				}
-			}
-			var t = '<table class="slidemenu"><tbody>';
-			t += '<tr><td>';
-			t += '<table class="keySelector"><tbody><tr><td id="keyDisplay" style="height:2.5em;width:100%;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="padding-right:.4em;" onclick="app.shareVerse(); return false;"><img style="height:2.4em;" src="img/ic_action_share.png"/></td></tr></tbody></table>';
-			t += '</td></tr>';
-			t += '<tr><td>';
-			t += '<table class="keySelector" style="width:100%;"><tbody><tr>';
-			t += '<td><select id="currentMod1" style="width:100%;" onchange="app.setCurrentMod1($(\'#currentMod1\').val()); app.closeMenu(); app.displayCurrentChapter(); return false;">';
-			t += modOptions;
-			t += '</select></td>';
-			t += '<td><select id="currentMod2" style="width:100%;" onchange="app.setCurrentMod2($(\'#currentMod2\').val()); app.displayCurrentChapter(); return false;"><option></option>';
-			t += modOptions;
-			t += '</select></td>';
-			t += '<td><select id="currentMod3" style="width:100%;" onchange="app.setCurrentMod3($(\'#currentMod3\').val()); app.displayCurrentChapter(); return false;"><option></option>';
-			t += modOptions;
-			t += '</select></td>';
-			t += '</tr></tbody></table>';
-			t += '</td></tr>';
-			// View Selector
-			t += '<tr><td class="menuLabel" onclick="app.toggleViewSelector(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span id="viewLabel" data-english="View">View</span>: <span style="font-size:70%;" id="mainViewType" data-english="'+app.mainViewType+'">' + app.mainViewType + '</span></td></tr>';
-			t += '<tr><td style="width:100%;"><div style="padding-left:1em;" class="viewSelectorPanel toshow">';
-			t +=     '<div><input type="radio" id="viewBibles" name="viewSelector" value="Bibles" onclick="app.setViewBibles();return false;"/> <label id="viewBiblesLabel" data-english="Bibles" for="viewBibles">Bibles</label></div>';
-			t +=     '<div><input type="radio" id="viewLanguageAssist" name="viewSelector" value="Language Assist" onclick="app.setViewLanguageAssist();return false;"/> <label id="viewLALabel" data-english="Language Assist" for="viewLanguageAssist">Language Assist</label></div>';
-			t +=     '<div><input type="radio" id="viewCommentaryAssist" name="viewSelector" value="Commentary Assist" onclick="app.setViewCommentaryAssist();return false;"/> <label id="viewCALabel" data-english="Commentary Assist" for="viewCommentaryAssist">Commentary Assist</label></div>';
-			t += '</div></td></tr>';
-
-			// Verse Study
-			t += '<tr class="menuLabel" onclick="verseStudy.show();return false;"><td><img src="img/ic_action_location_searching.png" style="height:1em;"/> <span id="verseStudyLabel" data-english="Verse Study">Verse Study</span></td></tr>';
-
-			// Bookmarks
-			t += '<tr><td class="menuLabel" onclick="app.toggleBookmarks(); return false;"><img src="img/bookmarks.png" style="height:1em;"/> <span id="bookmarksLabel" data-english="Bookmarks">Bookmarks</span></td></tr>';
-			t += '<tr><td style="width:100%;"><div class="bookmarkPanel toshow">';
-			t +=     '<div><button id="addBookmarkButton" onclick="app.bookmarkAdd(app.getCurrentKey());return false;">Add Current</button><button id="clearBookmarks" onclick="app.bookmarksClear();return false;">Clear All</button></div>';
-			t +=     '<div id="bookmarkResults"></div>';
-			t += '</div></td></tr>';
-
-			// Search
-			t += '<tr><td class="menuLabel" onclick="app.toggleSearch(); return false;"><img src="img/ic_action_search.png" style="height:1em;"/> <span id="searchLabel" data-english="Search">Search</span></td></tr>';
-			t += '<tr><td style="width:100%;"><div class="searchPanel toshow">';
-			t +=     '<div><input id="searchExpression" type="search"/><button id="searchButton" onclick="app.search();return false;">Go</button></div>';
-			t +=     '<div id="searchResults"></div>';
-			t += '</div></td></tr>';
-
-			// BibleSync
-		if (app.enableBibleSync) {
-			t += '<tr><td class="menuLabel"><div style="display:inline-block" onclick="app.toggleBibleSyncPanel(); return false;"><img src="img/ic_action_group.png" style="height:1em;"/> <span data-english="BibleSync">BibleSync</span></div><label style="float:right;" class="switch"><input id="bibleSyncSwitch" onchange="app.toggleBibleSync(); return false;" type="checkbox"><span class="slider round"></span></label></td></tr>';
-			t += '<tr><td style="width:100%;"><div class="bibleSyncPanel toshow">';
-			t +=     '<div><button id="sendBibleSync" onclick="app.sendBibleSyncMessage(app.getCurrentVerseKey().osisRef);return false;">Send Current</button><button id="clearBibleSync" onclick="app.bibleSyncClear();return false;">Clear All</button></div>';
-			t +=     '<div id="bibleSyncResults"></div>';
-			t += '</div></td></tr>';
-		}
-
-			// Library
-			t += '<tr class="menuLabel" onclick="installMgr.show();return false;"><td><img src="img/ic_action_download.png" style="height:1em;"/> <span data-english="Library">Library</span></td></tr>';
-
-			// Toggle Notes
-			t += '<tr class="menuLabel" onclick="app.closeMenu(); app.toggleFootnotes();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> <span data-english="Toggle Notes">Toggle Notes</span></td></tr>';
-
-			// Settings
-			t += '<tr><td class="menuLabel" onclick="app.toggleSettings(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span data-english="Settings">Settings</span></td></tr>';
-			t += '<tr><td style="width:100%;"><div class="settingsPanel toshow">';
-			t +=     '<div>&nbsp;&nbsp;&nbsp;&nbsp;<button id="decreaseUIFontButton" onclick="app.decreaseUIFont();return false;" style="width:2em;font-size:150%"> - </button>&nbsp;&nbsp; Font Size &nbsp;&nbsp;<button id="increaseUIFontButton" onclick="app.increaseUIFont();return false;" style="width:2em;font-size:150%"> + </button></div>';
-			t += '<div>BibleSync User <input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
-			t += '<div>BibleSync Passphrase <input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
-			t += '<div>WordStudy Bible <select style="width:9em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
-			t += '<div>Language <select style="width:9em;" onchange="app.setAppLocale($(this).val()); return false;" id="appLocale"></select></div>';
-			t += '</div></td></tr>';
-
-			// About
-			t += '<tr class="menuLabel" onclick="app.closeMenu(); app.about();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> <span data-english="About">About</span></td></tr>';
-			t += '</tbody></table>';
-			$('.menupanel').html(t);
-			$('.menutab').click(function(){
-				if ($(this).hasClass('toshow'))	{ app.openMenu();  }
-				else 				{ app.closeMenu(); }
+				});
+				$('#bibleSyncUserName').val(window.localStorage.getItem('bibleSyncUserName'));
+				$('#bibleSyncPassphrase').val(window.localStorage.getItem('bibleSyncPassphrase'));
+				$('#wordStudyBible').append(strongsBibleOptions);
+				$('#wordStudyBible').val(app.getWordStudyBible());
+				$('#appLocale').append(appLocaleOptions);
+				$('#appLocale').val(app.getAppLocale());
+				$('input[name=viewSelector]').prop('checked', false);
+				$('input[name=viewSelector][value="'+app.mainViewType+'"]').prop('checked', true);
+				app.updateBibleSyncDisplay();
+				app.updateBookmarkDisplay();
+				if (!app.getCurrentMod1() && mods.length) app.setCurrentMod1(mods[0].name);
+				if (callback) callback();
 			});
-			$(window).on('swiperight', function() { app.openMenu();  });
-			$(window).on('swipeleft' , function() { app.closeMenu(); });
-			$('#searchExpression').keypress(function(e){
-				if (e.keyCode == 13) {
-					$('#searchButton').focus();
-					$('#searchButton').click();
-				}
-			});
-			$('#bibleSyncUserName').val(window.localStorage.getItem('bibleSyncUserName'));
-			$('#bibleSyncPassphrase').val(window.localStorage.getItem('bibleSyncPassphrase'));
-			$('#wordStudyBible').append(strongsBibleOptions);
-			$('#wordStudyBible').val(app.getWordStudyBible());
-			$('#appLocale').append(appLocaleOptions);
-			$('#appLocale').val(app.getAppLocale());
-			$('input[name=viewSelector]').prop('checked', false);
-			$('input[name=viewSelector][value="'+app.mainViewType+'"]').prop('checked', true);
-			app.updateBibleSyncDisplay();
-			app.updateBookmarkDisplay();
-			if (!app.getCurrentMod1() && mods.length) app.setCurrentMod1(mods[0].name);
-			if (callback) callback();
 		}); // getAvailableLocales()
 
 	},
