@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0', // change version here and in config.xml, near top
+	version: '1.2.0pre1', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -197,7 +197,17 @@ console.log('showing image by data: ' + msg.imageData.substring(0,10));
 		if (!window.localStorage.getItem('bibleSyncUserName')) window.localStorage.setItem('bibleSyncUserName', 'BishopUser');
 		if (!window.localStorage.getItem('bibleSyncPassphrase')) window.localStorage.setItem('bibleSyncPassphrase', 'BibleSync');
 		if (!window.localStorage.getItem('mainViewType')) window.localStorage.setItem('mainViewType', 'Bibles');
-		if (!window.localStorage.getItem('appLocale')) window.localStorage.setItem('appLocale', 'en');
+		if (!window.localStorage.getItem('appLocale')) {
+			navigator.globalization.getLocaleName(function(language) {    
+				var localeName = language.value;
+				if (localeName.indexOf('-') > -1) localeName = localeName.substring(0,localeName.indexOf('-'));
+console.log('*********** Initially setting locale to: ' + localeName);
+				window.localStorage.setItem('appLocale', localeName);
+			},
+			function() {
+				window.localStorage.setItem('appLocale', 'en');
+			});
+		}
 		app.setAppLocale();
 		app.showingFootnotes = window.localStorage.getItem('showingFootnotes');
 		app.mainViewType = window.localStorage.getItem('mainViewType');

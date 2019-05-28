@@ -64,7 +64,7 @@ deployios:
 	scp "$(shell ls -td ~/Desktop/Bishop*|head -1)"/Bishop.ipa crosswire.org:/home/crosswire/html/
 	scp "$(shell ls -td ~/Desktop/Bishop*|head -1)"/manifest.plist crosswire.org:/home/crosswire/html/bishop/
 
-uninstall: uinstall${PLATFORM}
+uninstall: uninstall${PLATFORM}
 
 uninstallandroid:
 	adb uninstall org.crosswire.bishop
@@ -111,6 +111,7 @@ setup: clearplugins refreshplatform addplugins
 addplugins:
 	cordova plugin add cordova-plugin-inappbrowser || true
 	cordova plugin add cordova-plugin-file || true
+	cordova plugin add cordova-plugin-globalization || true
 	cordova plugin add cordova-custom-config || true
 	cordova plugin add cordova-plugin-whitelist || true
 	cordova plugin add com-darryncampbell-cordova-plugin-intent || true
@@ -128,6 +129,7 @@ addplugins:
 clearplugins:
 	cordova plugin remove cordova-plugin-inappbrowser || true
 	cordova plugin remove cordova-plugin-file || true
+	cordova plugin remove cordova-plugin-globalization || true
 	cordova plugin remove cordova-plugin-whitelist || true
 	cordova plugin remove cordova-custom-config || true
 	cordova plugin remove com-darryncampbell-cordova-plugin-intent || true
