@@ -458,7 +458,7 @@ console.log('variantGraph showing...');
 		verseStudy.closeMenus();
 		var verseKey = app.getCurrentVerseKey();
 		// var url = 'https://apokalypse.isbtf.de/community/vmr/api/variant/apparatus/get/?format=html&indexContent='+verseKey.osisRef;
-		var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/variant/apparatus/get/?format=html&indexContent='+verseKey.osisRef;
+		var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/variant/apparatus/get/?format=html&includeBaseline=ECM&indexContent='+verseKey.osisRef;
 
 		$(target).html('<iframe class="client" src="'+url+'"/>');
 	},
