@@ -517,43 +517,43 @@ table.clean tr.roweven {
 }
 
 .toolbar button.left {
-	width: 3em;
+	width: 4em;
 	left: 0;
 }
 
 .toolbar button.right {
-	width: 3em;
+	width: 4em;
 	right: 0;
 }
 
 .toolbar button.midLeft {
-	left: 3em;
-	width: calc(50% - 3em);
+	left: 4em;
+	width: calc(50% - 4em);
 }
 
 .toolbar button.midRight {
-	right: 3em;
-	width: calc(50% - 3em);
+	right: 4em;
+	width: calc(50% - 4em);
 }
 
 .toolbar .twentyFiveOne {
-	left: 3em;
-	width: calc((100% - 3em) / 4);
+	left: 4em;
+	width: calc((100% - 4em) / 4);
 }
 
 .toolbar .twentyFiveTwo {
-	left: calc(3em + ((100% - 3em) / 4));
-	width: calc((100% - 3em) / 4);
+	left: calc(4em + ((100% - 4em) / 4));
+	width: calc((100% - 4em) / 4);
 }
 
 .toolbar .twentyFiveThree {
-	left: calc(3em + ((100% - 3em) / 4 * 2));
-	width: calc((100% - 3em) / 4);
+	left: calc(4em + ((100% - 4em) / 4 * 2));
+	width: calc((100% - 4em) / 4);
 }
 
 .toolbar .twentyFiveFour {
 	right: 0;
-	width: calc((100% - 3em) / 4);
+	width: calc((100% - 4em) / 4);
 }
 
 

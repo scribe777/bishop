@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0pre1', // change version here and in config.xml, near top
+	version: '1.2.0pre3', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -208,12 +208,12 @@ console.log('*********** Initially setting locale to: ' + localeName);
 				window.localStorage.setItem('appLocale', 'en');
 			});
 		}
-		app.setAppLocale();
-		app.showingFootnotes = window.localStorage.getItem('showingFootnotes');
-		app.mainViewType = window.localStorage.getItem('mainViewType');
-		app.setCurrentKey(app.getCurrentKey());
-		app.currentWindow = app;
-		var main = $('#main');
+		app.setAppLocale(false, function() {
+			app.showingFootnotes = window.localStorage.getItem('showingFootnotes');
+			app.mainViewType = window.localStorage.getItem('mainViewType');
+			app.setCurrentKey(app.getCurrentKey());
+			app.currentWindow = app;
+			var main = $('#main');
 console.log("*** in show. main.length: " + main.length);
 /*
 		var t = `
@@ -251,21 +251,22 @@ console.log("*** in show. main.length: " + main.length);
 <div id="altDisplay"></div>
 <div id="aux" class="dropdown-content"></div>';
 `;
-		$(main).html(t);
-		var textDisplay = $('#textDisplay');
-console.log("*** in show. after setting textDisplay.length: " + textDisplay.length);
-		$(textDisplay).scroll(app.textScroll);
-		$('#altDisplay').scroll(app.altScroll);
-		SWORD.mgr.getModInfoList(function(mods) {
-			app.mods = mods;
-			app.setupMenu(function() {
-				$('#currentMod1').val(app.getCurrentMod1());
-				$('#currentMod2').val(app.getCurrentMod2());
-				$('#currentMod3').val(app.getCurrentMod3());
-					if (app.showingFootnotes) app.openFootnotes();
-					if (app.firstTime) app.showFirstTime();
-					else app.displayCurrentChapter();
-					app.setAppLocale();
+			$(main).html(t);
+			var textDisplay = $('#textDisplay');
+	console.log("*** in show. after setting textDisplay.length: " + textDisplay.length);
+			$(textDisplay).scroll(app.textScroll);
+			$('#altDisplay').scroll(app.altScroll);
+			SWORD.mgr.getModInfoList(function(mods) {
+				app.mods = mods;
+				app.setupMenu(function() {
+					$('#currentMod1').val(app.getCurrentMod1());
+					$('#currentMod2').val(app.getCurrentMod2());
+					$('#currentMod3').val(app.getCurrentMod3());
+						if (app.showingFootnotes) app.openFootnotes();
+						if (app.firstTime) app.showFirstTime();
+						else app.displayCurrentChapter();
+						app.setAppLocale();
+				});
 			});
 		});
 	},
@@ -564,8 +565,9 @@ console.log('stopping BibleSync');
 	popupShow: function(content) {
 		app.isPopupShowing = true;
 		$('#popup').html(content);
-		app.setAppLocale();
-		$('#popup').show();
+		app.setAppLocale(false, function() {
+			$('#popup').show();
+		});
 	},
 	popupHide: function(content) {
 		$('#popup').hide();
@@ -1224,15 +1226,16 @@ console.log('parDispModules.length: ' + parDispModules.length);
 
 		var chapterDisplay = function(htmlText, mods) {
 			$('#textDisplay').html(htmlText);
-			app.setAppLocale();
-			app.lastDisplayMods=mods;
-			setTimeout(function() {
-				if (app.getCurrentVerseKey().verse > 1) {
-					var new_position = $('.currentVerse').offset();
-					$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
-				}
-				app.requestAuxDisplay();
-			}, 500);
+			app.setAppLocale(false, function () {
+				app.lastDisplayMods=mods;
+				setTimeout(function() {
+					if (app.getCurrentVerseKey().verse > 1) {
+						var new_position = $('.currentVerse').offset();
+						$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
+					}
+					app.requestAuxDisplay();
+				}, 500);
+			});
 		};
 
 
@@ -1498,7 +1501,7 @@ console.log('refreshing sources complete');
 			break;
 		}
 	},
-	setAppLocale: function(localeName) {
+	setAppLocale: function(localeName, callback) {
 		if (!localeName) localeName = app.getAppLocale();
 		var englishSpans = $('span[data-english],option[data-english],th[data-english],p[data-english],label[data-english]');
 		var reInit = (localeName != app.getAppLocale());
@@ -1508,6 +1511,7 @@ console.log('refreshing sources complete');
 				if (!i) i = 0;
 				if (i >= englishSpans.length) {
 console.log('Finished setting SWORD locale to ' + localeName);
+					if (callback) callback();
 					return;
 				}
 				var trKey = $(englishSpans[i]).attr('data-english');
