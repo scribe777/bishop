@@ -327,25 +327,34 @@ console.log('*** wordStudy begin');
 				limit : limit
 			};
 			var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/metadata/liste/search/';
-	console.log('****** Making request to: ' + url +'; params: '+JSON.stringify(postData));
+console.log('****** Making request to: ' + url +'; params: '+JSON.stringify(postData));
 			SWORD.httpUtils.makeRequest(url, $.param(postData), function(o) {
-	console.log('****** Returned from request to: ' + url +'; result: '+JSON.stringify(o));
-				var xml = $.parseXML(o);
-	console.log('****** parsed XML.');
-				var error = $(xml).find('error');
+console.log('****** Returned from request to: ' + url);
+console.log('****** About to parse result as XML. result.length:'+o.length);
+				var xml = false;
+				try {
+					if (o) xml = $.parseXML(o);
+				}
+				catch (e) {
+console.log('problem parsing XML: ' + e);
+					xml = false;
+				}
+console.log('****** parsed XML.');
+				var error = (xml ? $(xml).find('error').attr('message') : 'An error occurred requesting the data from the INTF');
+				var t = '';
 				if (error && error.length) {
-					alert('error: '+$(error).attr('message'));
+					t = '<p><b><span data-english="'+error+'">'+error+'</span></b></p>';
 				}
 				else {
-	console.log('****** No error found.');
-					var t = '<p><b><span data-english="Some Manuscript Witnesses for Verse:">Some Manuscript Witnesses for Verse:</span> ' + verseKey.shortText + '</b></p>';
+console.log('****** No error found.');
+					t = '<p><b><span data-english="Some Manuscript Witnesses for Verse:">Some Manuscript Witnesses for Verse:</span> ' + verseKey.shortText + '</b></p>';
 					t += '<table class="clean" width="100%">';
 					t += '<thead class="fixedHeader"><tr><th data-english="Manuscript">Manuscript</th><th data-english="Century">Century</th><th data-english="Folio">Folio</th><th data-english="Content">Content</th><th data-english="Image">Image</th></tr></thead>';
 					t += '<tbody class="scrollContent">';
-	console.log('****** iterating manuscripts.');
+console.log('****** iterating manuscripts.');
 					$(xml).find('manuscript').each(function() {
 						var m = this;
-	console.log('****** iterating pages.');
+console.log('****** iterating pages.');
 						$(this).find('page').each(function() {
 							var thumbURL = null;
 							var imageURL = null;
@@ -379,16 +388,16 @@ console.log('*** wordStudy begin');
 							t += '</td></tr>';
 						});
 					});
-	console.log('****** done iterating manuscripts.');
+console.log('****** done iterating manuscripts.');
 					t += '</tbody></table>';
 					t += '<div class="copyLine"><br/><span data-english="This dataset is by no means exhaustive and is growing rapidly. Check back soon for more results.">This dataset is by no means exhaustive and is growing rapidly. Check back soon for more results.</span><br/><br/><span data-english="Courtesy of">Courtesy of</span> <a href="http://egora.uni-muenster.de/intf/index_en.shtml">Institut für Neutestamentliche Textforschung</a></div>';
-	console.log('****** setting result to UI.');
+console.log('****** setting result to UI.');
 					verseStudy.lastWitnessStudy = t;
 					verseStudy.lastWitnessStudyTarget = target;
-					$(target).html(t);
-	console.log('****** translating UI.');
-					app.setAppLocale();
 				}
+				$(target).html(t);
+console.log('****** translating UI.');
+				app.setAppLocale();
 			});
 		});
 	},
