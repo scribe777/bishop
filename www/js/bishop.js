@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0pre5', // change version here and in config.xml, near top
+	version: '1.2.0pre7', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -1130,7 +1130,7 @@ console.log("**** done showing firstime ****");
 		return;
 	},
 	showNewUnlockInstall : function(mod) {
-		var t = '<div style="margin:1em;"><center><h3><span data-english="New Unlock Code">New Unlock Code</span></h3>';
+		var t = '<div style="margin:1em;"><center><h3><span data-english="New Unlock Key">New Unlock Key</span></h3>';
 		t    += '<p><span data-english="Bishop has just received a new unlock code for a module which doesn\'t appear to be installed.">Bishop has just received a new unlock code for a module which doesn\'t appear to be installed.</span> ('+mod+') <span data-english="Would you like to install this module?">Would you like to install this module?</span>';
 		t    += '<p><button onclick="app.installModule(\''+mod+'\');return false;"><span data-english="Install Module">Install Module</span></button></p></center></div>';
 		$('#textDisplay').html(t);
@@ -1292,7 +1292,7 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 
 				for (var i = 0; i < renderData.length; ++i) {
 
-					var rtol = ("RtoL".toUpperCase() == mods[i].direction.toUpperCase());
+					var rtol = (mods[i].direction && "RtoL".toUpperCase() == mods[i].direction.toUpperCase());
 					var style = (mods[i].font && mods[i].font.length > 0)?('font-family:'+mods[i].font) : '';
 					t += '<td style="'+ style +'" ' + (rtol ? 'dir="rtl"' : '') + ' class="' + mods[i].language + ' ' + (verseKey.verse == currentVerse.verse ? 'currentVerse' : 'verse') + '">';
 
@@ -1453,14 +1453,16 @@ console.log('About: showing modules, count: ' + app.mods.length);
 		});
 	},
 	changeCipher: function(modName, currentCipher) {
-		var cipher = prompt('Unlock Code for ' + modName, currentCipher);
-		if (cipher != null) {
-			var buffer = '['+modName+']\n';
-			buffer += 'CipherKey='+cipher;
-			SWORD.mgr.addExtraConfig(buffer, function(newMods) {
-				app.show();
-			});
-		}
+		SWORD.mgr.translate('Unlock key for', function(translation) {
+			var cipher = prompt(translation + ' ' + modName, currentCipher);
+			if (cipher != null) {
+				var buffer = '['+modName+']\n';
+				buffer += 'CipherKey='+cipher;
+				SWORD.mgr.addExtraConfig(buffer, function(newMods) {
+					app.show();
+				});
+			}
+		});
 	},
 	basicStartup: function(stage) {
 console.log('basicStartup called, stage: ' + stage);
@@ -1503,7 +1505,7 @@ console.log('refreshing sources complete');
 	},
 	setAppLocale: function(localeName, callback) {
 		if (!localeName) localeName = app.getAppLocale();
-		var englishSpans = $('span[data-english],option[data-english],th[data-english],p[data-english],label[data-english]');
+		var englishSpans = $('button[data-english],span[data-english],option[data-english],th[data-english],p[data-english],label[data-english]');
 		var reInit = (localeName != app.getAppLocale());
 		window.localStorage.setItem('appLocale', localeName);
 		SWORD.mgr.setDefaultLocale(localeName, function() {

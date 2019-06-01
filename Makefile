@@ -59,6 +59,7 @@ installandroid:
 
 deployandroid:
 	scp bishop.apk scribe@crosswire.org:/home/crosswire/html/
+	scp bishop.apk scribe@crosswire.org:public_html/
 
 deployios:
 	scp "$(shell ls -td ~/Desktop/Bishop*|head -1)"/Bishop.ipa crosswire.org:/home/crosswire/html/

@@ -70,18 +70,57 @@ console.log('scrolling top to: ' + installMgr.lastScrollTop);
 			installMgr.lastScrollTop = 0;
 		}, 200);
 	},
+	setCipher: function(modName, cipher, callback) {
+		var buffer = '['+modName+']\n';
+		buffer += 'CipherKey='+cipher;
+		SWORD.mgr.addExtraConfig(buffer, function(newMods) {
+			if (callback) callback();
+		});
+	},
 	modSelected: function(row) {
 		var installed = $('#modSource').val() == 'Installed';
 		var modName = $(row).find('.instName').text();
-		var prompt = (installed?'Uninstall':'Install') + ' Module:';
-		SWORD.mgr.translate(prompt, function(translated) {
-			if (confirm(translated + ' ' + modName)) {
-				if (installed) SWORD.installMgr.uninstallModule(modName, function() {
-					installMgr.modSourceChanged();
+		if (installed) {
+			SWORD.mgr.translate('Uninstall Module:', function(translated) {
+				if (confirm(translated + ' ' + modName)) {
+					SWORD.installMgr.uninstallModule(modName, function() {
+						installMgr.modSourceChanged();
+					});
+				}
+			});
+		}
+		else {
+			var sourceName = $('#modSource').val();
+			SWORD.installMgr.getRemoteModuleByName(sourceName, modName, function(remoteMod) {
+console.log('remoteMod: ' + JSON.stringify(remoteMod));
+				remoteMod.getConfigEntry('UnlockInfo', function(unlockInfo) {
+					var ciphered = remoteMod.cipherKey !== undefined;
+					var t = '<div class="about">';
+					t += '<h4>' + remoteMod.name + ' - ' + remoteMod.description + '</h4>';
+					if (ciphered) {
+						t += '<p data-english="The module you have requested for install is locked and requires an unlock key which can be provided below.">The module you have requested for install is locked and requires an unlock key which can be provided below.</p>';
+						if (unlockInfo && unlockInfo.length) {
+							t += '<p data-english="Instructions from the publisher on how to obtain an unlock key follow:">Instructions from the publisher on how to obtain an unlock key follow:</p>';
+							t += '<p>'+unlockInfo+'</p>';
+						}
+						t += '<br/>';
+						t += '<p><span data-english="Unlock Key:">Unlock Key:</span> <input id="cipherKey"/><button data-english="Install" onclick="installMgr.setCipher(\''+modName+'\', $(\'#cipherKey\').val(), function() { app.popupHide(); installMgr.installModule(\''+sourceName+'\', \''+modName+'\');}); return false;">Install</button></p>';
+						t += '<p data-english="If you do not yet have an unlock key, you can still install this module now and provide the key later using the \'About\' screen of this application.">If you do not yet have an unlock key, you can still install this module now and provide the key later using the \'About\' screen of this application.</p>';
+					}
+					else {
+						t += '<p><button data-english="Install" onclick="app.popupHide(); installMgr.installModule(\''+sourceName+'\', \''+modName+'\'); return false;">Install</button>';
+					}
+					t += '<button data-english="Cancel" onclick="app.popupHide(); return false;">Cancel</button></p>';
+					remoteMod.getConfigEntry('About', function(about) {
+						t += '<div>'+about+'</div>';
+						if (remoteMod.shortPromo && remoteMod.shortPromo.length) t += '<div class="promoLine">' + remoteMod.shortPromo +'</div>';
+				t += '<br/>';
+						t += '</div>';
+						app.popupShow(t);
+					});
 				});
-				else installMgr.installModule($('#modSource').val(), modName);
-			}
-		});
+			});
+		}
 	},
 	getProgressHTML: function(text, percent) {
 	var buffer ='';
