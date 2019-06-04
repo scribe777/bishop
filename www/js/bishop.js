@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0pre7', // change version here and in config.xml, near top
+	version: '1.2.0pre12', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -13,6 +13,7 @@ var app = {
 	greekDefMods : [],
 	hebrewDefMods : [],
 	menuWidth : 16,
+	topBarHeight : 3,
 	mods : [],
 
 	// ------------- local sample data for testing in a web browser and not on a phone with a real SWORD engine installation
@@ -190,7 +191,16 @@ console.log('showing image by data: ' + msg.imageData.substring(0,10));
 		}
 		else if (app.isPopupShowing) app.popupHide();
 		else if (app.currentWindow != app) app.show();
+		else if ($('#openTopBar').is(':checked')) app.closeTopBar();
 		else if (!app.closeMenu()) navigator.app.exitApp();
+	},
+	onMainClick : function(o) {
+		// close the menu, if it didn't need to be closed then...
+		if (!app.closeMenu()) {
+			// close the topBar, if it didn't need to be closed then...
+			if (!$('#openTopBar').is(':checked'))	{ app.openTopBar();  }
+			else 					{ app.closeTopBar(); }
+		}
 	},
 	show: function() {
 		
@@ -215,18 +225,27 @@ console.log('*********** Initially setting locale to: ' + localeName);
 			app.currentWindow = app;
 			var main = $('#main');
 console.log("*** in show. main.length: " + main.length);
-/*
 		var t = `
 <div id="textDisplay"></div>
-<div class="menupanel"></div>
-<a href="javascript:void(0);" class="menutab toshow">&nbsp;</a>
-<div class="header"></div>
-	<input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
+<input type="checkbox" class="openTopBar" id="openTopBar">
+<div id="topBarBand" class="topBarBand">
+  <div style="display:table-cell;padding-left:2.8em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;" id="keyDisplay" onclick="app.closeMenu();app.closeTopBar(); app.selectKey(); return false;"></div>
+  <div style="display:table-cell;padding-right:2em;padding-top:.2em;" onclick="app.shareVerse(); return false;"><img style="height:2.3em;opacity:0.80;" src="img/ic_action_share.png"/></div>
+  <div style="display:table-cell;color:white;padding-left:.4em;padding-right:.4em;height:100%;vertical-align:middle;padding-bottom:.4em;font-size: 175%;" class="notesButton">✎</div>
+</div>
+<input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
 	<label for="openSidebarMenu" class="sidebarIconToggle">
 		<div class="spinner diagonal part-1"></div>
 		<div class="spinner horizontal"></div>
 		<div class="spinner diagonal part-2"></div>
 	</label>
+<div class="menupanel"></div>
+<div id="footnotes" class="toshow"></div>
+<div id="altDisplay"></div>
+<div id="aux" class="dropdown-content"></div>';
+`;
+/*
+  <div class="notesButton" style="display:table-cell;float:right;padding-right:1em;">X⏿<X</div>
   <div id="sidebarMenu">
     <ul class="sidebarMenuInner">
       <li>Jelena Jovanovic <span>Web Developer</span></li>
@@ -237,12 +256,6 @@ console.log("*** in show. main.length: " + main.length);
       <li><a href="https://www.linkedin.com/in/plavookac/" target="_blank">Linkedin</a></li>
     </ul>
   </div>
-
-<div id="footnotes" class="toshow"></div>
-<div id="altDisplay"></div>
-<div id="aux" class="dropdown-content"></div>';
-`;
-*/
 		var t = `
 <div id="textDisplay"></div>
 <div class="menupanel"></div>
@@ -251,11 +264,17 @@ console.log("*** in show. main.length: " + main.length);
 <div id="altDisplay"></div>
 <div id="aux" class="dropdown-content"></div>';
 `;
+*/
 			$(main).html(t);
+			$('.notesButton').on('click', function() {
+				if (!app.showingFootnotes)	{ app.openFootnotes();  }
+				else 				{ app.closeFootnotes(); }
+			});
+
 			var textDisplay = $('#textDisplay');
 	console.log("*** in show. after setting textDisplay.length: " + textDisplay.length);
-			$(textDisplay).scroll(app.textScroll);
-			$('#altDisplay').scroll(app.altScroll);
+			$(textDisplay).scroll(app.textScroll).on('click', app.onMainClick);
+			$('#altDisplay').scroll(app.altScroll).on('click', app.onMainClick);
 			SWORD.mgr.getModInfoList(function(mods) {
 				app.mods = mods;
 				app.setupMenu(function() {
@@ -562,12 +581,15 @@ console.log('stopping BibleSync');
 		app.closeBibleSync();
 		SWORD.mgr.stopBibleSync();
 	},
-	popupShow: function(content) {
+	popupShow: function(content, skipTranslation) {
 		app.isPopupShowing = true;
 		$('#popup').html(content);
-		app.setAppLocale(false, function() {
-			$('#popup').show();
-		});
+		if (!skipTranslation) {
+			app.setAppLocale(false, function() {
+				$('#popup').show();
+			});
+		}
+		else $('#popup').show();
 	},
 	popupHide: function(content) {
 		$('#popup').hide();
@@ -662,9 +684,11 @@ console.log('************ received ' + locales.length + ' locales.');
 				}
 				var t = '<table class="slidemenu"><tbody>';
 				t += '<tr><td>';
+/*
 				t += '<table class="keySelector"><tbody><tr><td id="keyDisplay" style="height:2.5em;width:100%;" onclick="app.closeMenu(); app.selectKey(); return false;">'+app.getCurrentKey()+'<td style="padding-right:.4em;" onclick="app.shareVerse(); return false;"><img style="height:2.4em;" src="img/ic_action_share.png"/></td></tr></tbody></table>';
 				t += '</td></tr>';
 				t += '<tr><td>';
+*/
 				t += '<table class="keySelector" style="width:100%;"><tbody><tr>';
 				t += '<td><select id="currentMod1" style="width:100%;" onchange="app.setCurrentMod1($(\'#currentMod1\').val()); app.closeMenu(); app.displayCurrentChapter(); return false;">';
 				t += modOptions;
@@ -729,6 +753,9 @@ console.log('************ received ' + locales.length + ' locales.');
 
 				// About
 				t += '<tr class="menuLabel" onclick="app.closeMenu(); app.about();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> <span data-english="About">About</span></td></tr>';
+				t += '<tr class="menuLabel" onclick="app.closeMenu(); app.about();return false;"><td style="padding-left:.3em; padding-bottom:.7em;border-top:1px dotted grey;font-size:75%;font-style:italic;text-align:left;"> <span data-english="Bishop">Bishop</span> '+app.version+'</td></tr>';
+				t += '<tr class="menuLabel"><td>&nbsp</td></tr>';
+				t += '<tr class="menuLabel"><td>&nbsp</td></tr>';
 				t += '</tbody></table>';
 				$('.menupanel').html(t);
 				$('.menutab').click(function(){
@@ -971,6 +998,8 @@ console.log('updateMainViewSetting: ' + viewType);
 	},
 	openMenu: function() {
 console.log("****** opening menu");
+		$('#openSidebarMenu').prop('checked', true);
+/*
 		if ($('.menutab').hasClass('tohide')) return;
 //		$( ".menutab, .menupanel" ).css('left', "+="+app.menuWidth+"em");
 		$( ".menutab, .menupanel" ).animate({ left: "+="+app.menuWidth+"em" }, 350, function() {
@@ -984,15 +1013,49 @@ console.log("****** opening menu");
 		// end of silly workaround for older Android devices
 
 		$('.menutab').removeClass('toshow').addClass('tohide');
+*/
 	},
 	closeMenu: function() {
 console.log("****** closing menu");
+		if (!$('#openSidebarMenu').is(':checked')) return false;
+		$('#openSidebarMenu').prop('checked', false);
+/*
 		if ($('.menutab').hasClass('toshow')) return false;
 		$( ".menutab, .menupanel" ).animate({ left: "-="+app.menuWidth+"em" }, 350, function() { });
 		$('.menutab').removeClass('tohide').addClass('toshow');    
+*/
+		return true;
+	},
+	openTopBar: function() {
+console.log("****** opening topBar");
+		$('#openTopBar').prop('checked', true);
+/*
+		if ($('.topBar:first').hasClass('tohide')) return;
+		$('.topBar:first').animate({ top: "+="+app.topBarHeight+"em" }, 200, function() {
+		});
+		// this is for some refresh bug in older
+		// Android devices
+		$('.topBar:first').css('display', 'none');
+		setTimeout(function() {
+			$('.topBar:first').css('display', 'block');
+		}, 100);
+		// end of silly workaround for older Android devices
+
+		$('.topBar:first').removeClass('toshow').addClass('tohide');
+*/
+	},
+	closeTopBar: function() {
+		$('#openTopBar').prop('checked', false);
+console.log("****** closing topBar");
+/*
+		if ($('.topBar:first').hasClass('toshow')) return false;
+		$('.topBar:first').animate({ top: "-="+app.topBarHeight+"em" }, 200, function() { });
+		$('.topBar:first').removeClass('tohide').addClass('toshow');    
+*/
 		return true;
 	},
 	openFootnotes: function() {
+		$('.notesButton').css('background-color', '#007D48');
 		app.showingFootnotes = true;
 		window.localStorage.setItem('showingFootnotes', app.showingFootnotes);
 		if ($('#footnotes').hasClass('tohide')) return;
@@ -1003,6 +1066,7 @@ console.log('opening footnotes');
 		app.displayFootnotes();
 	},
 	closeFootnotes: function() {
+		$('.notesButton').css('background', 'initial');
 		app.showingFootnotes = false;
 		window.localStorage.setItem('showingFootnotes', app.showingFootnotes);
 		if ($('#footnotes').hasClass('toshow')) return false;
@@ -1315,7 +1379,9 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 			t += '<tr><td></td>';
 			for (var i = 0; i < renderData.length; ++i) {
 				var copyLine = mods[i].shortCopyright;
+				if (!copyLine) copyLine = '';
 				var promoLine = mods[i].shortPromo;
+				if (!promoLine) promoLine = '';
 				if (mods[i].category == "Cults / Unorthodox / Questionable Material") {
 					copyLine = 'WARNING: This text is considered unorthodox by most of Christendom. ' + copyLine;
 				}
@@ -1407,7 +1473,7 @@ console.log('About: showing modules, count: ' + app.mods.length);
 			t += '<h4>' + app.mods[i].name + ' - ' + app.mods[i].description + '<button id="modAboutButton_' + app.mods[i].name + '" style="float:right;" onclick="event.stopPropagation(); app.showModuleAbout(\''+app.mods[i].name+'\', \'modAboutDiv_'+app.mods[i].name+'\', this); return false;">About</button></h4>' + (ciphered?('<button onclick="app.changeCipher(\''+app.mods[i].name+'\', \'' + app.mods[i].cipherKey + '\'); return false;">CipherKey: ' + app.mods[i].cipherKey + '</button><br/><br/>'):'') + '<div id="modAboutDiv_'+app.mods[i].name+'"></div>';
 		}
 		t += '</div>';
-		app.popupShow(t);
+		app.popupShow(t, true);
 		$('.about').click(function(){ 
 			app.popupHide();
 		});
@@ -1415,7 +1481,10 @@ console.log('About: showing modules, count: ' + app.mods.length);
 		// show the first 10 modules
 		var firstTen = function(i) {
 			if (!i) i = 0;
-			if (i >= 10 || i >= app.mods.length) return;
+			if (i >= 10 || i >= app.mods.length) {
+				app.setAppLocale();
+				return;
+			}
 			var modName = app.mods[i].name;
 			app.showModuleAbout(modName, 'modAboutDiv_'+modName, $('#modAboutButton_'+modName), function() {
 				firstTen(++i);
@@ -1435,7 +1504,7 @@ console.log('About: showing modules, count: ' + app.mods.length);
 		}
 		SWORD.mgr.getModuleByName(modName, function(module) {
 			module.getConfigEntry('About', function(about) {
-				var t = about + '<br/>';
+				var t = (about?about:'') + '<br/>';
 				if (module.shortPromo && module.shortPromo.length) t += '<div class="promoLine">' + module.shortPromo +'</div>';
 				t += '<br/>';
 				$('#'+targetElement).html(t);

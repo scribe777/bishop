@@ -112,7 +112,7 @@ console.log('remoteMod: ' + JSON.stringify(remoteMod));
 					}
 					t += '<button data-english="Cancel" onclick="app.popupHide(); return false;">Cancel</button></p>';
 					remoteMod.getConfigEntry('About', function(about) {
-						t += '<div>'+about+'</div>';
+						t += '<div>'+(about?about:'')+'</div>';
 						if (remoteMod.shortPromo && remoteMod.shortPromo.length) t += '<div class="promoLine">' + remoteMod.shortPromo +'</div>';
 				t += '<br/>';
 						t += '</div>';

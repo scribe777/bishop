@@ -75,32 +75,52 @@ body,td,div,span,p,.verse,.currentVerse {
 	margin-left:auto;
 	margin-right:auto;
 }
-.header {
-    display: block;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 100%;
-    box-shadow: none;
-    background-color: #0F9D58;
-    position: fixed;
-    height: 60px!important;
-    overflow: hidden;
-    z-index: 10;
+
+
+.sidebarIconToggle {
+    display:block;
+    position: absolute;
+    transition: all 0.3s;
+    box-sizing: border-box;
+    cursor: pointer;
+    z-index: 99;
+    top: 1em;
+    left: 15px;
+    height: 3em;
+    width: 1.5em;
+    transform: translateY(-3em);
+}
+.openTopBar:checked ~ .sidebarIconToggle {
+    transform: translateY(0);
 }
 
-
-.topMenu {
-	float:left;
+.topBarBand {
     display: block;
     margin: 0 auto;
     width: 100%;
     max-width: 100%;
     box-shadow: none;
     background-color: #0F9D58;
-    position: fixed;
-    height: 60px!important;
+    position: absolute;
+    height: 3em;
     overflow: hidden;
     z-index: 15;
+    transform: translateY(-3em);
+    transition: transform 250ms ease-in-out;
+}
+.openTopBar:checked ~ #topBarBand {
+    transform: translateY(0);
+}
+.openTopBar {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    display: none;
+}
+
+.openSidebarMenu {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    display: none;
 }
 
 #sidebarMenu {
@@ -108,11 +128,28 @@ body,td,div,span,p,.verse,.currentVerse {
     position: fixed;
     left: 0;
     width: 250px;
-    margin-top: 60px;
+    margin-top: 3em;
     transform: translateX(-250px);
     transition: transform 250ms ease-in-out;
     background: linear-gradient(180deg, #FC466B 0%, #3F5EFB 100%);
 	z-index: 20;
+}
+
+.menupanel {
+	height:100%;
+	top:0px;
+	width:16em;
+	float:left;
+	margin-top: 3em;
+	background-color:#303030;
+	position:fixed;
+	left: 0;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
+	transform: translateX(-16em);
+	transition: transform 250ms ease-in-out;
+	opacity:0.90;
+	z-index:5;
 }
 .sidebarMenuInner{
     margin:0;
@@ -140,28 +177,10 @@ body,td,div,span,p,.verse,.currentVerse {
     cursor: pointer;
     text-decoration: none;
 }
-input[type="checkbox"]:checked ~ #sidebarMenu {
+.openSidebarMenu:checked ~ .menupanel {
     transform: translateX(0);
 }
 
-input[type=checkbox] {
-    transition: all 0.3s;
-    box-sizing: border-box;
-    display: none;
-}
-.sidebarIconToggle {
-    transition: all 0.3s;
-    box-sizing: border-box;
-    cursor: pointer;
-    position: absolute;
-    z-index: 99;
-    height: 100%;
-    width: 100%;
-    top: 22px;
-    left: 15px;
-    height: 22px;
-    width: 22px;
-}
 .spinner {
     transition: all 0.3s;
     box-sizing: border-box;
@@ -190,18 +209,18 @@ input[type=checkbox] {
     float: left;
     margin-top: 3px;
 }
-input[type=checkbox]:checked ~ .sidebarIconToggle > .horizontal {
+.openSidebarMenu:checked ~ .sidebarIconToggle > .horizontal {
     transition: all 0.3s;
     box-sizing: border-box;
     opacity: 0;
 }
-input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
+.openSidebarMenu:checked ~ .sidebarIconToggle > .diagonal.part-1 {
     transition: all 0.3s;
     box-sizing: border-box;
     transform: rotate(135deg);
     margin-top: 8px;
 }
-input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
+.openSidebarMenu:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     transition: all 0.3s;
     box-sizing: border-box;
     transform: rotate(-135deg);
@@ -209,19 +228,6 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
 }
 
 
-.menupanel {
-	top:0px;
-	width:16em;
-	float:left;
-	height:100%;
-	background-color:#303030;
-	position:absolute;
-	overflow-y: scroll;
-	-webkit-overflow-scrolling: touch;
-	left:-16em;
-	opacity:0.90;
-	z-index:5;
-}
 .menutab {
 	background-image:url('../img/slidebaricon.png');
 	background-repeat:no-repeat;
@@ -295,7 +301,8 @@ table.nobottom td, table.nobottom th {
 }
 
 #keyDisplay {
-	font-size: 210%;
+	color: white;
+	font-size: 175%;
 	padding-left: .4em;
 }
 

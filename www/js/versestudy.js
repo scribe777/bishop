@@ -96,7 +96,7 @@ console.log('********* wordSearch; mod: ' + mod + '; term:' + term + '; mod2: ' 
 				else if (e.status == 'complete') {
 console.log('wordSearch module.search, complete. results.length: ' + e.results.length);
 					var t = '<h3>' + (!e.results.length ? 'No':e.results.length) + ' results found.</h3>';
-					t += '<dl class="' + lang + '">';
+					t += '<dl class="' + (lang?lang:'') + '">';
 					var resultLoop = function(results, i) {
 						if (!i) i = 0;
 						if (i >= results.length) {
@@ -382,7 +382,7 @@ console.log('****** iterating pages.');
 					
 							}
 							if (thumbURL) {
-								t += '<img width="50px" src="' + thumbURL + '"/>';
+								t += '<img width="50px" src="' + thumbURL + '">';
 							}
 							if (imageURL) { t += '</div>'; }
 							t += '</td></tr>';
