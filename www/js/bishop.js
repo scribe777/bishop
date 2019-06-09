@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0pre12', // change version here and in config.xml, near top
+	version: '1.2.0pre14', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -15,31 +15,51 @@ var app = {
 	menuWidth : 16,
 	topBarHeight : 3,
 	mods : [],
+	noCSSTransitions : false,
 
 	// ------------- local sample data for testing in a web browser and not on a phone with a real SWORD engine installation
 	localFixup : function() {
 console.log('using localFixup instead of real SWORD plugin');
-		var sampleModInfo = { category : 'Biblical Texts', name : 'KJV' };
+		var sampleModInfo = { category : 'Biblical Texts', name : 'KJV', features: [] };
 		var sampleVerseKey = { testament : 2, book : 4, chapter : 3, verse: 16, chapterMax: 23, verseMax: 40, bookName : 'John', osisRef: 'John.3.16', shortText : 'John 3:16', bookAbbrev : 'John' };
 		var sampleVerse = { verse : $.extend(true, {}, sampleVerseKey), preVerse : '', text:'For God so loved the world that He gave His only Son that whosoever believes in Him would have everlasting life.'}
-		var sampleModule = { name : 'KJV', description : 'King James Version, 1763', direction : 'LtoR', shortCopyright : '(c) 1611, The Crown', shortPromo:'Visit Great Britain for dreary skies and bad food', setKeyText : function(k, callback) {if(callback)callback();}, getKeyText : function() { return 'Jn.2.2';}, getVerseKey: function(callback) { if(callback)callback(sampleVerseKey);return sampleVerseKey; }, getBookNames : function(callback) { var bn = ['Gen', 'Exod', 'Lev', 'Num', 'Deut', 'Josh', 'Matt', 'Mark', 'Luke', 'John']; if(callback)callback(bn);  return bn;}, getRenderChapter : function(mod, callback) { var rc = []; for (var i = 0; i<20; ++i) { var v = $.extend(true, {},sampleVerse); v.verse.verse=i+1; rc.push(v); } if(callback)callback(rc);}, getRenderHeader : function(callback) { if(callback)callback('');return '';} };
+		var sampleModule = { name : 'KJV', description : 'King James Version, 1763', direction : 'LtoR', shortCopyright : '(c) 1611, The Crown', features : [], shortPromo:'Visit Great Britain for dreary skies and bad food', setKeyText : function(k, callback) {if(callback)callback();}, getKeyText : function() { return 'Jn.2.2';}, getVerseKey: function(callback) { if(callback)callback(sampleVerseKey);return sampleVerseKey; }, getBookNames : function(callback) { var bn = ['Gen', 'Exod', 'Lev', 'Num', 'Deut', 'Josh', 'Matt', 'Mark', 'Luke', 'John']; if(callback)callback(bn);  return bn;}, getRenderChapter : function(mod, callback) { var rc = []; for (var i = 0; i<20; ++i) { var v = $.extend(true, {},sampleVerse); v.verse.verse=i+1; rc.push(v); } if(callback)callback(rc);}, getRenderHeader : function(callback) { if(callback)callback('');return '';} };
 		SWORD = {
 			CATEGORY_BIBLES : 'Biblical Texts',
 			version : 'mockup',
 			mgr : {
 				getModInfoList : function(callback) { if(callback)callback([sampleModInfo]); return [sampleModInfo]; },
 				getModuleByName : function(name, callback) { if(callback)callback(sampleModule); return sampleModule; },
-				startBibleSyncListener : function(appName, userName, passphrase, callback) {}
+				startBibleSyncListener : function(appName, userName, passphrase, callback) {},
+				getExtraConfigValue : function(x, y, callback) { callback(y); },
+				addExtraConfig : function(x, callback) { callback(); },
+				getAvailableLocales : function(callback) { callback([]); },
+				setJavascript : function(x) { },
+				translate : function(x, y, callback) { callback?callback(x):y(x); },
+				setDefaultLocale : function(x, callback) { callback(); }
 			},
 			installMgr : {
 				getRemoteSources : function(callback) { if(callback)callback(['CrossWire']); return ['CrossWire']; }
 			}
+		};
+		MobileAccessibility = {
+			setTextZoom : function(zoomLevel, callback) { callback(zoomLevel); }
 		};
 		app.main();
 	},
 	// ------------- end of local sample data -----------------------
 	activeWindow : null,
 	initialize: function() {
+
+		// for old browsers which don't yet support string.startsWith
+		if (!String.prototype.startsWith) {
+			Object.defineProperty(String.prototype, 'startsWith', {
+				value: function(search, pos) {
+					pos = !pos || pos < 0 ? 0 : +pos;
+					return this.substring(pos, pos + search.length) === search;
+				}
+			});
+		}
 		document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
 //if (typeof SWORD == 'undefined') app.localFixup(); else console.log('Using real SWORD plugin');
 		$(document).on('click','a', function(e) {
@@ -125,6 +145,7 @@ console.log('**** mod doesn\'t exist: ' + mods[i]);
 		document.addEventListener("menubutton", function() { app.currentWindow.openMenu(); }, false);
 	},
 	onDeviceReady: function() {
+		app.noCSSTransitions = (device.platform == 'Android' && device.version.startsWith('4.'));
 		app.bindEvents();
 		app.main();
 		window.addEventListener("message", function(event) {
@@ -207,7 +228,7 @@ console.log('showing image by data: ' + msg.imageData.substring(0,10));
 		if (!window.localStorage.getItem('bibleSyncUserName')) window.localStorage.setItem('bibleSyncUserName', 'BishopUser');
 		if (!window.localStorage.getItem('bibleSyncPassphrase')) window.localStorage.setItem('bibleSyncPassphrase', 'BibleSync');
 		if (!window.localStorage.getItem('mainViewType')) window.localStorage.setItem('mainViewType', 'Bibles');
-		if (!window.localStorage.getItem('appLocale')) {
+		if (!window.localStorage.getItem('appLocale') && navigator.globalization) {
 			navigator.globalization.getLocaleName(function(language) {    
 				var localeName = language.value;
 				if (localeName.indexOf('-') > -1) localeName = localeName.substring(0,localeName.indexOf('-'));
@@ -225,25 +246,25 @@ console.log('*********** Initially setting locale to: ' + localeName);
 			app.currentWindow = app;
 			var main = $('#main');
 console.log("*** in show. main.length: " + main.length);
-		var t = `
-<div id="textDisplay"></div>
-<input type="checkbox" class="openTopBar" id="openTopBar">
-<div id="topBarBand" class="topBarBand">
-  <div style="display:table-cell;padding-left:2.8em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;" id="keyDisplay" onclick="app.closeMenu();app.closeTopBar(); app.selectKey(); return false;"></div>
-  <div style="display:table-cell;padding-right:2em;padding-top:.2em;" onclick="app.shareVerse(); return false;"><img style="height:2.3em;opacity:0.80;" src="img/ic_action_share.png"/></div>
-  <div style="display:table-cell;color:white;padding-left:.4em;padding-right:.4em;height:100%;vertical-align:middle;padding-bottom:.4em;font-size: 175%;" class="notesButton">✎</div>
-</div>
-<input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
-	<label for="openSidebarMenu" class="sidebarIconToggle">
-		<div class="spinner diagonal part-1"></div>
-		<div class="spinner horizontal"></div>
-		<div class="spinner diagonal part-2"></div>
-	</label>
-<div class="menupanel"></div>
-<div id="footnotes" class="toshow"></div>
-<div id="altDisplay"></div>
-<div id="aux" class="dropdown-content"></div>';
-`;
+		var t = '';
+		t += '<div id="textDisplay"></div>';
+		t += '<input type="checkbox" class="openTopBar" id="openTopBar">';
+		t += '<div id="topBarBand" class="topBarBand">';
+  		t += 	'<div style="display:table-cell;width:3.8em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;">&nbsp;</div>';
+  		t += 	'<div style="display:table-cell;padding-left:.2em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;" id="keyDisplay" onclick="app.closeMenu();app.closeTopBar(); app.selectKey(); return false;"></div>';
+  		t += 	'<div style="display:table-cell;padding-right:2em;padding-top:.2em;" onclick="app.shareVerse(); return false;"><img style="height:2.3em;opacity:0.80;" src="img/ic_action_share.png"/></div>';
+  		t += 	'<div style="display:table-cell;color:white;padding-left:.4em;padding-right:.4em;height:100%;vertical-align:middle;padding-bottom:.4em;font-size: 175%;" class="notesButton">✎</div>';
+		t += '</div>';
+		t += '<input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">';
+		t += '<label for="openSidebarMenu" class="sidebarIconToggle">';
+		t += 	'<div class="spinner diagonal part-1"></div>';
+		t += 	'<div class="spinner horizontal"></div>';
+		t += 	'<div class="spinner diagonal part-2"></div>';
+		t += '</label>';
+		t += '<div class="menupanel"></div>';
+		t += '<div id="footnotes" class="toshow"></div>';
+		t += '<div id="altDisplay"></div>';
+		t += '<div id="aux" class="dropdown-content"></div>';
 /*
   <div class="notesButton" style="display:table-cell;float:right;padding-right:1em;">X⏿<X</div>
   <div id="sidebarMenu">
@@ -271,6 +292,54 @@ console.log("*** in show. main.length: " + main.length);
 				else 				{ app.closeFootnotes(); }
 			});
 
+			// for old phones which need javascript help for transitions
+			if (app.noCSSTransitions) {
+
+				$('#openSidebarMenu').on('change', function() {
+					if ($('#openSidebarMenu').is(':checked')) {
+console.log('opening sidebar');
+						$( ".menutab, .menupanel" ).animate({ left: 0 }, 250, function() {
+						});
+						// this is for some refresh bug in older
+						// Android devices
+						$('.menupanel').css('display', 'none');
+						setTimeout(function() {
+							$('.menupanel').css('display', 'block');
+						}, 100);
+						// end of silly workaround for older Android devices
+					}
+					else {
+console.log('closing sidebar');
+						$( ".menutab, .menupanel" ).animate({ left: '-'+app.menuWidth+'em' }, 250, function() { });
+					}
+				});
+				$('#openTopBar').on('change', function() {
+					if ($('#openTopBar').is(':checked')) {
+console.log('opening topbar');
+						setTimeout(function() {
+						$('.topBarBand').animate({ top: 0 }, 250, function() { });
+						$('.sidebarIconToggle').animate({ top: '1em' }, 250, function() { });
+						}, 100);
+						// this is for some refresh bug in older Android devices
+						$('.topBarBand, .sidebarIconToggle').css('display', 'none');
+						setTimeout(function() {
+							$('.topBarBand, .sidebarIconToggle').css('display', 'block');
+						}, 100);
+						// end of silly workaround for older Android devices
+					}
+					else {
+console.log('closing topbar');
+						setTimeout(function() {
+						$(".topBarBand, .sidebarIconToggle").animate({ top: '-'+app.topBarHeight+'em' }, 250, function() { });
+						}, 100);
+					}
+				});
+				app.closeMenu();
+				$('#openSidebarMenu').change();
+				app.closeTopBar();
+				$('#openTopBar').change();
+			}
+
 			var textDisplay = $('#textDisplay');
 	console.log("*** in show. after setting textDisplay.length: " + textDisplay.length);
 			$(textDisplay).scroll(app.textScroll).on('click', app.onMainClick);
@@ -281,10 +350,13 @@ console.log("*** in show. main.length: " + main.length);
 					$('#currentMod1').val(app.getCurrentMod1());
 					$('#currentMod2').val(app.getCurrentMod2());
 					$('#currentMod3').val(app.getCurrentMod3());
-						if (app.showingFootnotes) app.openFootnotes();
-						if (app.firstTime) app.showFirstTime();
-						else app.displayCurrentChapter();
-						app.setAppLocale();
+					if (app.showingFootnotes) app.openFootnotes();
+					if (app.firstTime) app.showFirstTime();
+					else app.displayCurrentChapter(function() {
+						app.setAppLocale(false, function() {
+							$('#keyDisplay').html(app.getCurrentKey());
+						});
+					});
 				});
 			});
 		});
@@ -459,6 +531,7 @@ console.log('**** retrieving lastAppVersion: ' + value);
 		});
 	},
 	copyBundledResources: function(callback) {
+		if (typeof cordova == 'undefined') return callback?callback():0;
 		var resPath = cordova.file.applicationDirectory + 'www/bundledResources/';
 		var destPath = [
 			cordova.file.documentsDirectory + 'sword/',
@@ -662,7 +735,7 @@ console.log('************ received ' + locales.length + ' locales.');
 			buildLocaleNames(0, function() {
 
 				for (var i = 0; i < mods.length; ++i) {
-	console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i].features.length + '; features: ' + mods[i].features);
+console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i].features.length + '; features: ' + mods[i].features);
 					if (mods[i].category == SWORD.CATEGORY_BIBLES) {
 						if (!mainMod) {
 							mainMod = mods[i].name;
@@ -997,63 +1070,33 @@ console.log('updateMainViewSetting: ' + viewType);
 		return true;
 	},
 	openMenu: function() {
+		if ($('#openSidebarMenu').is(':checked')) return false;
 console.log("****** opening menu");
-		$('#openSidebarMenu').prop('checked', true);
-/*
-		if ($('.menutab').hasClass('tohide')) return;
-//		$( ".menutab, .menupanel" ).css('left', "+="+app.menuWidth+"em");
-		$( ".menutab, .menupanel" ).animate({ left: "+="+app.menuWidth+"em" }, 350, function() {
-		});
-		// this is for some refresh bug in older
-		// Android devices
-		$('.menupanel').css('display', 'none');
-		setTimeout(function() {
-			$('.menupanel').css('display', 'block');
-		}, 100);
-		// end of silly workaround for older Android devices
-
-		$('.menutab').removeClass('toshow').addClass('tohide');
-*/
+		$('#openSidebarMenu').prop('checked', true).change();
+		return true;
 	},
+
 	closeMenu: function() {
-console.log("****** closing menu");
 		if (!$('#openSidebarMenu').is(':checked')) return false;
-		$('#openSidebarMenu').prop('checked', false);
-/*
-		if ($('.menutab').hasClass('toshow')) return false;
-		$( ".menutab, .menupanel" ).animate({ left: "-="+app.menuWidth+"em" }, 350, function() { });
-		$('.menutab').removeClass('tohide').addClass('toshow');    
-*/
+console.log("****** closing menu");
+		$('#openSidebarMenu').prop('checked', false).change();
 		return true;
 	},
-	openTopBar: function() {
-console.log("****** opening topBar");
-		$('#openTopBar').prop('checked', true);
-/*
-		if ($('.topBar:first').hasClass('tohide')) return;
-		$('.topBar:first').animate({ top: "+="+app.topBarHeight+"em" }, 200, function() {
-		});
-		// this is for some refresh bug in older
-		// Android devices
-		$('.topBar:first').css('display', 'none');
-		setTimeout(function() {
-			$('.topBar:first').css('display', 'block');
-		}, 100);
-		// end of silly workaround for older Android devices
 
-		$('.topBar:first').removeClass('toshow').addClass('tohide');
-*/
-	},
-	closeTopBar: function() {
-		$('#openTopBar').prop('checked', false);
-console.log("****** closing topBar");
-/*
-		if ($('.topBar:first').hasClass('toshow')) return false;
-		$('.topBar:first').animate({ top: "-="+app.topBarHeight+"em" }, 200, function() { });
-		$('.topBar:first').removeClass('tohide').addClass('toshow');    
-*/
+	openTopBar: function() {
+		if ($('#openTopBar').is(':checked')) return false;
+console.log("****** opening topBar");
+		$('#openTopBar').prop('checked', true).change();
 		return true;
 	},
+
+	closeTopBar: function() {
+		if (!$('#openTopBar').is(':checked')) return false;
+console.log("****** closing topBar");
+		$('#openTopBar').prop('checked', false).change();
+		return true;
+	},
+
 	openFootnotes: function() {
 		$('.notesButton').css('background-color', '#007D48');
 		app.showingFootnotes = true;
@@ -1238,7 +1281,7 @@ console.log('**** looping sources');
 			});
 		});
 	},
-	displayCurrentChapter: function() {
+	displayCurrentChapter: function(callback) {
 console.log('**** checking if any modules await installation');
 		if (app.waitingInstall) { app.installNewModules(app.waitingInstall); app.waitingInstall = null; return; }
 		SWORD.mgr.setJavascript(true);
@@ -1297,7 +1340,7 @@ console.log('parDispModules.length: ' + parDispModules.length);
 						var new_position = $('.currentVerse').offset();
 						$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
 					}
-					app.requestAuxDisplay();
+					app.requestAuxDisplay(callback);
 				}, 500);
 			});
 		};

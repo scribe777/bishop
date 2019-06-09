@@ -22,14 +22,14 @@ build:
 	cordova build
 
 buildreleaseandroid:
-	find platforms/android/app/src/main/res/ -name screen.png -exec rm {} \;
+	find platforms/android/ -name screen.png -exec rm {} \;
 	cordova build android --release
 
 buildreleaseios:
 	cordova build --device --release ios
 
 builddebugandroid:
-	find platforms/android/app/src/main/res/ -name screen.png -exec rm {} \;
+	find platforms/android/ -name screen.png -exec rm {} \;
 	cordova build android --debug
 
 builddebugios:
