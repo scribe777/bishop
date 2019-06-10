@@ -22,7 +22,7 @@ var verseStudy = {
     setupMenu: function(callback) {
 
     var t  = '<header class="toolbar" id="versestudytoolbar">';
-        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> <span data-english="Back">Back</span></div></button>';
+        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="height:1.5em;font-size:170%;font-weight:bold;">&lt; </div><div> <span data-english="Back">Back</span></div></button>';
         t += '<button class="dropbtn dropclick twentyFiveOne" onclick="verseStudy.wordStudy(); return false;"><div><span data-english="Word Study L1|Word">Word</span></div><div><span data-english="Word Study L2|Study">Study</span></div></button>';
         t += '<button class="dropbtn dropclick twentyFiveTwo" onclick="verseStudy.commentary(); return false;"><div>&nbsp;</div><div><span data-english="Commentary">Commentary</span></div></button>';
         t += '<button class="dropbtn dropclick twentyFiveThree" onclick="verseStudy.witnessStudy(); return false;"><div><span data-english="Witness Study L1|Witness">Witness</span></div><div><span data-english="Witness Study L2|Study">Study</span></div></button>';

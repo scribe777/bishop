@@ -726,7 +726,7 @@ console.log('************ received ' + locales.length + ' locales.');
 				}
 				SWORD.mgr.translate(locales[i], 'locales', function(lt) {
 					SWORD.mgr.translate(locales[i]+'.en', 'locales', function(lten) {
-						if (lt == locales[i] && lten) lt = lten;
+						if (lt == locales[i] && lten != (lt+'.en')) lt = lten;
 						if (lt && lt != locales[i]) {
 							appLocaleOptions += '<option value="'+locales[i]+'">' + lt + ' (' + locales[i] + ')</option>';
 						}
@@ -824,10 +824,10 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 				t += '<tr><td class="menuLabel" onclick="app.toggleSettings(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span data-english="Settings">Settings</span></td></tr>';
 				t += '<tr><td style="width:100%;"><div class="settingsPanel toshow">';
 				t +=     '<div>&nbsp;&nbsp;&nbsp;&nbsp;<button id="decreaseUIFontButton" onclick="app.decreaseUIFont();return false;" style="width:2em;font-size:150%"> - </button>&nbsp;&nbsp; <span data-english="Font Size">Font Size</span> &nbsp;&nbsp;<button id="increaseUIFontButton" onclick="app.increaseUIFont();return false;" style="width:2em;font-size:150%"> + </button></div>';
-				t += '<div><span data-english="BibleSync User">BibleSync User</span> <input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
-				t += '<div><span data-english="BibleSync Passphrase">BibleSync Passphrase</span> <input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
 				t += '<div>WordStudy Bible <select style="width:9em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
 				t += '<div><span data-english="Language">Language</span> <select style="width:9em;" onchange="app.setAppLocale($(this).val()); return false;" id="appLocale"></select></div>';
+				t += '<div><span data-english="BibleSync User">BibleSync User</span> <input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
+				t += '<div><span data-english="BibleSync Passphrase">BibleSync Passphrase</span> <input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
 				t += '</div></td></tr>';
 
 				// About

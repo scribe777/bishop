@@ -14,7 +14,7 @@ var installMgr = {
 	},
 	setupMenu: function(callback) {
     var t  = '<header class="toolbar" id="installtoolbar">';
-        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="font-size:170%;font-weight:bold;">&lt; </div><div> <span data-english="Back">Back</span></div></button>';
+        t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="height:1.5em;font-size:170%;font-weight:bold;">&lt; </div><div style="padding-bottom:1em;"> <span data-english="Back">Back</span></div></button>';
         t += '<button class="dropbtn dropclick midLeft" onclick="return false;"><span><label for="modSource"><span data-english="Modules">Modules</span></label></span><select id="modSource" onchange="installMgr.modSourceChanged();"><option>Installed</option></select></button>';
         t += '<button class="dropbtn dropclick midRight" onclick="return false;"><span><label for="catFilter"><span data-english="Type">Type</span></label></span><select id="catFilter" onchange="installMgr.modSourceChanged();"><option value="'+SWORD.CATEGORY_BIBLES+'" data-english="'+SWORD.CATEGORY_BIBLES+'">' + SWORD.CATEGORY_BIBLES + '</option></select></button>';
         t += '<button class="dropbtn dropclick right" onclick="installMgr.refreshSources(); return false;"><span style="font-size:170%;font-weight:bold;vertical-align:middle;"> &#x21bb; </span></button>';
