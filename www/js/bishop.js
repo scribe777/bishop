@@ -240,7 +240,8 @@ console.log('*********** Initially setting locale to: ' + localeName);
 			});
 		}
 		app.setAppLocale(false, function() {
-			app.showingFootnotes = window.localStorage.getItem('showingFootnotes');
+			app.showingFootnotes = window.localStorage.getItem('showingFootnotes') == 'true';
+console.log('*** read app.showingFootnotes is set to ' + app.showingFootnotes);
 			app.mainViewType = window.localStorage.getItem('mainViewType');
 			app.setCurrentKey(app.getCurrentKey());
 			app.currentWindow = app;
@@ -350,7 +351,9 @@ console.log('closing topbar');
 					$('#currentMod1').val(app.getCurrentMod1());
 					$('#currentMod2').val(app.getCurrentMod2());
 					$('#currentMod3').val(app.getCurrentMod3());
+console.log('*** app.showingFootnotes is set to ' + app.showingFootnotes);
 					if (app.showingFootnotes) app.openFootnotes();
+					else			  app.closeFootnotes();
 					if (app.firstTime) app.showFirstTime();
 					else app.displayCurrentChapter(function() {
 						app.setAppLocale(false, function() {
@@ -722,13 +725,16 @@ console.log('************ received ' + locales.length + ' locales.');
 					return callback();
 				}
 				SWORD.mgr.translate(locales[i], 'locales', function(lt) {
-					if (lt && lt != locales[i]) {
-						appLocaleOptions += '<option value="'+locales[i]+'">' + lt + ' (' + locales[i] + ')</option>';
-					}
-					else {
-						appLocaleOptions += '<option>' + locales[i] + '</option>';
-					}
-					buildLocaleNames(++i, callback);
+					SWORD.mgr.translate(locales[i]+'.en', 'locales', function(lten) {
+						if (lt == locales[i] && lten) lt = lten;
+						if (lt && lt != locales[i]) {
+							appLocaleOptions += '<option value="'+locales[i]+'">' + lt + ' (' + locales[i] + ')</option>';
+						}
+						else {
+							appLocaleOptions += '<option>' + locales[i] + '</option>';
+						}
+						buildLocaleNames(++i, callback);
+					});
 				});
 			};
 			
@@ -1100,7 +1106,7 @@ console.log("****** closing topBar");
 	openFootnotes: function() {
 		$('.notesButton').css('background-color', '#007D48');
 		app.showingFootnotes = true;
-		window.localStorage.setItem('showingFootnotes', app.showingFootnotes);
+		window.localStorage.setItem('showingFootnotes', app.showingFootnotes?'true':'false');
 		if ($('#footnotes').hasClass('tohide')) return;
 console.log('opening footnotes');
 		$('#footnotes').removeClass('toshow').addClass('tohide');
@@ -1111,7 +1117,7 @@ console.log('opening footnotes');
 	closeFootnotes: function() {
 		$('.notesButton').css('background', 'initial');
 		app.showingFootnotes = false;
-		window.localStorage.setItem('showingFootnotes', app.showingFootnotes);
+		window.localStorage.setItem('showingFootnotes', app.showingFootnotes?'true':'false');
 		if ($('#footnotes').hasClass('toshow')) return false;
 console.log('closing footnotes');
 		$("#footnotes, #footerBuffer").animate({ height: '0' }, 350, function() {
