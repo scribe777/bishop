@@ -1346,6 +1346,7 @@ console.log('parDispModules.length: ' + parDispModules.length);
 
 		var chapterDisplay = function(htmlText, mods) {
 			$('#textDisplay').html(htmlText);
+			if (!app.showingFootnotes) $('.fn').css('display', 'none');
 			app.setAppLocale(false, function () {
 				app.lastDisplayMods=mods;
 				setTimeout(function() {
