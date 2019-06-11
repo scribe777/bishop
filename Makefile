@@ -1,5 +1,6 @@
 #PLATFORM=ios
 PLATFORM=android
+APP_VERSION=$(shell grep 'change version here' www/js/bishop.js |cut -f2 -d\')
 
 all: release
 
@@ -59,7 +60,9 @@ installandroid:
 
 deployandroid:
 	scp bishop.apk scribe@crosswire.org:/home/crosswire/html/
-	scp bishop.apk scribe@crosswire.org:public_html/
+	scp bishop.apk scribe@crosswire.org:public_html/bishop-${APP_VERSION}.apk
+	@echo "http://crosswire.org/~scribe/bishop-${APP_VERSION}.apk"
+	@echo "bishop-${APP_VERSION}.apk size: $(shell ls -l bishop.apk|cut -d' ' -f5) md5: $(shell md5sum bishop.apk|cut -f1 -d' ')"
 
 deployios:
 	scp "$(shell ls -td ~/Desktop/Bishop*|head -1)"/Bishop.ipa crosswire.org:/home/crosswire/html/
