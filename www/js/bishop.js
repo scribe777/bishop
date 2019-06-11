@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0pre14', // change version here and in config.xml, near top
+	version: '1.2.0pre15', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -252,7 +252,7 @@ console.log("*** in show. main.length: " + main.length);
 		t += '<input type="checkbox" class="openTopBar" id="openTopBar">';
 		t += '<div id="topBarBand" class="topBarBand">';
   		t += 	'<div style="display:table-cell;width:3.8em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;">&nbsp;</div>';
-  		t += 	'<div style="display:table-cell;padding-left:.2em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;" id="keyDisplay" onclick="app.closeMenu();app.closeTopBar(); app.selectKey(); return false;"></div>';
+  		t += 	'<div style="display:table-cell;padding-left:.2em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;" id="keyDisplay" onclick="app.closeMenu();app.closeTopBar(); app.selectKey(); return false;">&nbsp;</div>';
   		t += 	'<div style="display:table-cell;padding-right:2em;padding-top:.2em;" onclick="app.shareVerse(); return false;"><img style="height:2.3em;opacity:0.80;" src="img/ic_action_share.png"/></div>';
   		t += 	'<div style="display:table-cell;color:white;padding-left:.4em;padding-right:.4em;height:100%;vertical-align:middle;padding-bottom:.4em;font-size: 175%;" class="notesButton">✎</div>';
 		t += '</div>';
@@ -345,6 +345,7 @@ console.log('closing topbar');
 	console.log("*** in show. after setting textDisplay.length: " + textDisplay.length);
 			$(textDisplay).scroll(app.textScroll).on('click', app.onMainClick);
 			$('#altDisplay').scroll(app.altScroll).on('click', app.onMainClick);
+			app.updateUIKeyText();
 			SWORD.mgr.getModInfoList(function(mods) {
 				app.mods = mods;
 				app.setupMenu(function() {
@@ -357,7 +358,7 @@ console.log('*** app.showingFootnotes is set to ' + app.showingFootnotes);
 					if (app.firstTime) app.showFirstTime();
 					else app.displayCurrentChapter(function() {
 						app.setAppLocale(false, function() {
-							$('#keyDisplay').html(app.getCurrentKey());
+							app.updateUIKeyText();
 						});
 					});
 				});
@@ -445,6 +446,13 @@ console.log('*** app.showingFootnotes is set to ' + app.showingFootnotes);
 	},
 	getCurrentKey: function() { var v = window.localStorage.getItem('currentKey'); if (!v) v = "James 1:19"; return v; },
 	_lastVerseKey: null,
+	
+	updateUIKeyText: function() {
+		var ck = app.getCurrentKey();
+		$('#keyDisplay').html(ck);
+		$('#sendBibleSync').text('Send ' + ck);
+		$('#addBookmarkButton').text('Add ' + ck);
+	},
 	setCurrentKey: function(keyText, callback) {
 //try { throw new Error("====================   SetCurrentKey =============================="); } catch (e) { console.log(e.stack); }
 console.log('setCurrentKey: ' + keyText);
@@ -452,15 +460,10 @@ console.log('setCurrentKey: app.currentVerseKey: ' + app.currentVerseKey);
 		if (app._lastVerseKey == keyText && app.currentVerseKey) return callback?callback():null;
 		app._lastVerseKey = keyText;
 		SWORD.mgr.getModuleByName(app.getCurrentMod1(), function(masterModule) {
-			var updateUIKeyText = function() {
-				$('#keyDisplay').html(app.getCurrentKey());
-				$('#sendBibleSync').text('Send ' + app.getCurrentKey());
-				$('#addBookmarkButton').text('Add ' + app.getCurrentKey());
-			};
 			if (!masterModule) {
 console.log('setCurrentKey: no masterModule');
 				window.localStorage.setItem('currentKey', keyText);
-				updateUIKeyText();
+				app.updateUIKeyText();
 				return callback?callback():null;
 			}
 			else {
@@ -470,7 +473,7 @@ console.log('setCurrentKey: masterModule: ' + JSON.stringify(masterModule));
 						app.currentVerseKey = vk;
 console.log('setCurrentKey: setting app.currentVerseKey: ' + JSON.stringify(app.currentVerseKey));
 					 	window.localStorage.setItem('currentKey', app.currentVerseKey.shortText);
-						updateUIKeyText();
+						app.updateUIKeyText();
 						return callback?callback():null;
 					});
 				});
@@ -823,11 +826,11 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 				// Settings
 				t += '<tr><td class="menuLabel" onclick="app.toggleSettings(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span data-english="Settings">Settings</span></td></tr>';
 				t += '<tr><td style="width:100%;"><div class="settingsPanel toshow">';
-				t +=     '<div>&nbsp;&nbsp;&nbsp;&nbsp;<button id="decreaseUIFontButton" onclick="app.decreaseUIFont();return false;" style="width:2em;font-size:150%"> - </button>&nbsp;&nbsp; <span data-english="Font Size">Font Size</span> &nbsp;&nbsp;<button id="increaseUIFontButton" onclick="app.increaseUIFont();return false;" style="width:2em;font-size:150%"> + </button></div>';
-				t += '<div>WordStudy Bible <select style="width:9em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
-				t += '<div><span data-english="Language">Language</span> <select style="width:9em;" onchange="app.setAppLocale($(this).val()); return false;" id="appLocale"></select></div>';
-				t += '<div><span data-english="BibleSync User">BibleSync User</span> <input style="width:100%;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
-				t += '<div><span data-english="BibleSync Passphrase">BibleSync Passphrase</span> <input style="width:100%;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
+				t +=     '<div style="padding-bottom:.5em;line-height:initial;">&nbsp;&nbsp;&nbsp;&nbsp;<span data-english="Word Study Bible">Word Study Bible</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<select style="width:15em;" onchange="app.setWordStudyBible($(this).val()); return false;" id="wordStudyBible"></select></div>';
+				t +=     '<div style="padding-bottom:.5em;line-height:initial;">&nbsp;&nbsp;&nbsp;&nbsp;<span data-english="Language">Language</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<select style="width:15em;" onchange="app.setAppLocale($(this).val()); return false;" id="appLocale"></select></div>';
+				t +=     '<div style="padding-bottom:.5em;line-height:initial;">&nbsp;&nbsp;&nbsp;&nbsp;<button id="decreaseUIFontButton" onclick="app.decreaseUIFont();return false;" style="width:2em;font-size:130%"> - </button>&nbsp; <span data-english="Font Size">Font Size</span> &nbsp;<button id="increaseUIFontButton" onclick="app.increaseUIFont();return false;" style="width:2em;font-size:130%"> + </button></div>';
+				t +=     '<div style="padding-bottom:.5em;line-height:initial;">&nbsp;&nbsp;&nbsp;&nbsp;<span data-english="BibleSync User">BibleSync User</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<input style="width:15em;" onchange="app.setBibleSyncUserName($(this).val()); return false;" id="bibleSyncUserName"/></div>';
+				t +=     '<div style="padding-bottom:.5em;line-height:initial;">&nbsp;&nbsp;&nbsp;&nbsp;<span data-english="BibleSync Passphrase">BibleSync Passphrase</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<input style="width:15em;" onchange="app.setBibleSyncPassphrase($(this).val()); return false;" id="bibleSyncPassphrase"/></div>';
 				t += '</div></td></tr>';
 
 				// About
@@ -1035,7 +1038,7 @@ console.log('updateMainViewSetting: ' + viewType);
 	},
 	openSettings: function() {
 		if ($('.settingsPanel').hasClass('tohide')) return;
-		$(".settingsPanel").animate({height: "17em"});
+		$(".settingsPanel").animate({height: "22em"});
 		$('.settingsPanel').removeClass('toshow').addClass('tohide');
 	},
 	closeSettings: function() {
@@ -1104,6 +1107,7 @@ console.log("****** closing topBar");
 	},
 
 	openFootnotes: function() {
+		$('.fn').css('display', 'initial');
 		$('.notesButton').css('background-color', '#007D48');
 		app.showingFootnotes = true;
 		window.localStorage.setItem('showingFootnotes', app.showingFootnotes?'true':'false');
@@ -1115,6 +1119,7 @@ console.log('opening footnotes');
 		app.displayFootnotes();
 	},
 	closeFootnotes: function() {
+		$('.fn').css('display', 'none');
 		$('.notesButton').css('background', 'initial');
 		app.showingFootnotes = false;
 		window.localStorage.setItem('showingFootnotes', app.showingFootnotes?'true':'false');
@@ -1178,7 +1183,7 @@ console.log('building footnotes for: ' + mod.description);
 							mod.getEntryAttribute('Footnote', '-', '-', false, function(footnotes) {
 console.log('footnotes: ' + footnotes.length);
 								if (footnotes.length) {
-									t += '<table class="clean nobottom" style="table-layout:fixed;width:100%;"';
+									t += '<table class="clean nobottom" style="width:100%;"';
 									if (mod.name == 'NA28') t += ' onclick="verseStudy.show(\'app\'); return false;"';
 									t += '><tbody>';
 									var loopFinish = function() {
@@ -1189,8 +1194,10 @@ console.log('footnotes: ' + footnotes.length);
 										if (!j) j = 0;
 										if (j >= footnotes.length) return loopFinish();
 										mod.getEntryAttribute('Footnote', footnotes[j], 'body', true, function(fbody) {
-											t += '<tr><td>'+fbody+'</td></tr>';
-											loop(++j);
+											mod.getEntryAttribute('Footnote', footnotes[j], 'n', true, function(n) {
+												t += '<tr><td class="fnBodyLabel">'+n+'</td><td class="fnBody">'+fbody+'</td></tr>';
+												loop(++j);
+											});
 										});
 									}
 									loop();
@@ -1394,7 +1401,7 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 					}
 				}
 	*/
-				t += '<tr'+(!usedCV && verseKey.verse == currentVerse.verse ? ' id="cv"' : '')+'><td style="padding:0;margin:0" valign="top" align="center"><div>';
+				t += '<tr'+(!usedCV && verseKey.verse == currentVerse.verse ? ' id="cv"' : '')+'><td class="eusebianNumber" style="padding:0;margin:0" valign="top" align="center"><div>';
 				if (verseKey.verse == currentVerse.verse) usedCV = true;
 	/*
 				if (myEusNum.length > 0) {
@@ -1407,7 +1414,7 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 
 					var rtol = (mods[i].direction && "RtoL".toUpperCase() == mods[i].direction.toUpperCase());
 					var style = (mods[i].font && mods[i].font.length > 0)?('font-family:'+mods[i].font) : '';
-					t += '<td style="'+ style +'" ' + (rtol ? 'dir="rtl"' : '') + ' class="' + mods[i].language + ' ' + (verseKey.verse == currentVerse.verse ? 'currentVerse' : 'verse') + '">';
+					t += '<td style="'+ style +'" ' + (rtol ? 'dir="rtl"' : '') + ' class="verseText ' + mods[i].language + ' ' + (verseKey.verse == currentVerse.verse ? 'currentVerse' : 'verse') + '">';
 
 					t += renderData[i][v].preVerse;
 
@@ -1417,6 +1424,7 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 					verseText += verseKey.verse;
 					t += '<span class="versenum"><a href="javascript:void(0);"> ' + verseText + '</a></span>';
 					t += renderData[i][v].text;
+//if (verseKey.verse == currentVerse.verse) console.log('current verse data: '+ renderData[i][v].text);
 					t += '</td>';
 				}
 

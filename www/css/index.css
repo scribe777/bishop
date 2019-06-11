@@ -640,3 +640,53 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.currentVerse > .fn:after {
+	content:attr(data-n);
+	font-size: 1rem;
+	letter-spacing: normal;
+	cursor: pointer;
+	vertical-align: super;
+	margin-left: 0;
+	overflow: visible;
+/*	padding: 7px 7px 7px 7px;*/
+	padding-right:.2em;
+	padding-left:.2em;
+	color: #0000FF;
+	font-size: x-small;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-transform: none;
+	text-align: center;
+	text-indent: 0;
+	line-height: normal;
+}
+
+.fnBodyLabel {
+	vertical-align: super;
+	padding-right:.2em;
+	padding-left:1em;
+	color: #0000FF;
+	font-size: x-small;
+	text-align: right;
+	border-right:none !important;
+}
+
+.fnBody {
+	width:100%;
+	border-left:none !important;
+}
+
+.fn {
+	font-size: 1px;
+	letter-spacing: -1px;
+	color: transparent;
+}
+
+.eusebianNumber {
+	width:1px !important;
+	padding:0 0 0 0 !important;
+}
