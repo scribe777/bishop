@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0pre15', // change version here and in config.xml, near top
+	version: '1.2.0pre16', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],

@@ -107,7 +107,7 @@ console.log('wordSearch module.search, complete. results.length: ' + e.results.l
 							return;
 						}
 						var dispKey = results[i].key;
-console.log('wordSearch result['+i+']; key: ' + dispKey);
+//console.log('wordSearch result['+i+']; key: ' + dispKey);
 						module.setKeyText(dispKey, function() {
 						t += '<dt><a href="passagestudy.jsp?key='+ encodeURI(dispKey)+'#cv" title="' + dispKey +'">' + dispKey + '</a></dt>';
 
@@ -115,13 +115,13 @@ console.log('wordSearch result['+i+']; key: ' + dispKey);
 						t += '<table style="width:100%;"><tbody><tr>';
 						t += '<td style="width:' + (showTwo?50:100) + '%;">';
 						module.getRenderText(function(renderText) {
-console.log('wordSearch renderText mod1 complete: ' + renderText);
+//console.log('wordSearch renderText mod1 complete: ' + renderText);
 						t += renderText + '</td>';
 						if (showTwo) {
 							t += '<td style="width:50%;">';
 							module2.setKeyText(dispKey, function() {
 							module2.getRenderText(function(renderText2) {
-console.log('wordSearch renderText mod2 complete.');
+//console.log('wordSearch renderText mod2 complete.');
 							t += renderText2 + '</td>';
 							t += '</tr></tbody></table></dd>';
 							resultLoop(results, ++i);
@@ -146,7 +146,7 @@ console.log('wordSearch renderText mod2 complete.');
 		var morph = $(word).attr('data-morph').replace(/-/g, '\\-');
 		$('#aux').html(
 		    '<a href="#" onclick="return false;"><b style="white-space:nowrap">Show all occurrences of ' + lemma + ':</b></a>' +
-		    '<a href="#" onclick="verseStudy.wordSearch(\''+app.lastDisplayMods[0].name+'\', \''+lemma+'\', \''+app.lastDisplayMods[1].name+'\', \''+morph+'\', \''+target+'\'); return false;">... any morphology in ' + app.lastDisplayMods[0].name + '</a>' +
+		    '<a href="#" onclick="verseStudy.wordSearch(\''+(app.lastDisplayMods.length > 0 ? app.lastDisplayMods[0].name : '')+'\', \''+lemma+'\', \''+(app.lastDisplayMods.length > 1 ? app.lastDisplayMods[1].name : '')+'\', \''+morph+'\', \''+target+'\'); return false;">... any morphology in ' + app.lastDisplayMods[0].name + '</a>' +
 //		    '<a href="#" onclick="verseStudy.wordSearch(\''+app.lastDisplayMods[0].name+'\', \''+lemma+\'@\'+morph+'\', \''+app.lastDisplayMods[1].name+'\', \''+morph+'\', \''+target+'\'); return false;">... same morphology in ' + app.lastDisplayMods[0].name + '</a>' + 
 		    '<a href="#" onclick="verseStudy.wordSearch(\'LXX\', \''+lemma+'\', \'' + app.lastDisplayMods[0].name +'\', \''+morph+'\', \''+target+'\'); return false;">... any morphology in LXX</a>' +
 //		    '<a href="#" onclick="verseStudy.wordSearch(\'LXX\', \''+lemma+'\', \'' + app.lastDisplayMods[0].name +'\', \''+morph+'\', \''+target+'\'); return false;">... same morphology in LXX</a>' +
