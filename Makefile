@@ -144,6 +144,12 @@ clearplugins:
 	cordova plugin remove com-sarriaroman-photoviewer || true
 	cordova plugin remove cordova-plugin-x-toast || true
 
+updatelocales:
+	rm -rf www/bundledResources/locales.d
+	mkdir -p www/bundledResources/locales.d
+	cd www/bundledResources/uilocales.d/; for i in $$(ls); do cp -f ../../../../sword/locales.d/$$i ../locales.d/; done || true
+	cp ../sword/locales.d/locales.conf www/bundledResources/locales.d/
+
 #copy any changes made to plugin via xcode
 back:
 	cp platforms/ios/Bishop/Plugins/cordova-plugin-crosswire-sword/SWORD.swift ../sword/bindings/cordova/cordova-plugin-crosswire-sword/src/ios/SWORD.swift 
