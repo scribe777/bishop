@@ -641,7 +641,7 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-.currentVerse > .fn:after {
+.currentVerse .fn:after {
 	content:attr(data-n);
 	font-size: 1rem;
 	letter-spacing: normal;

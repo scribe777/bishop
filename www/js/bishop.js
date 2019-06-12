@@ -1305,7 +1305,8 @@ console.log('**** checking if any modules await installation');
 
 		// run in background
 		setTimeout(function() {
-			var parDispModules = [ app.getCurrentMod1() ];
+			var parDispModules = [];
+			if (app.getCurrentMod1() && app.getCurrentMod1().length) parDispModules.push(app.getCurrentMod1());
 			if (app.getCurrentMod2() && app.getCurrentMod2().length) parDispModules.push(app.getCurrentMod2());
 			if (app.getCurrentMod3() && app.getCurrentMod3().length) parDispModules.push(app.getCurrentMod3());
 
@@ -1313,10 +1314,23 @@ console.log('**** checking if any modules await installation');
 console.log('masterModule: ' + masterModule);
 console.log('parDispModules.length: ' + parDispModules.length);
 
+		var chapterDisplay = function(htmlText, mods) {
+			$('#textDisplay').html(htmlText);
+			if (!app.showingFootnotes) $('.fn').css('display', 'none');
+			app.setAppLocale(false, function () {
+				app.lastDisplayMods=mods;
+				setTimeout(function() {
+					if (app.getCurrentVerseKey().verse > 1) {
+						var new_position = $('.currentVerse').offset();
+						$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
+					}
+					app.requestAuxDisplay(callback);
+				}, 500);
+			});
+		};
 
 			if (!masterModule) {
-				app.showFirstTime();
-				return;
+				return chapterDisplay('<center><h2>Nothing to display.</h2></center>');
 			}
 			var usedCV = false;
 	//
@@ -1344,20 +1358,6 @@ console.log('parDispModules.length: ' + parDispModules.length);
 			var mods = [];
 			var renderData = [];
 
-		var chapterDisplay = function(htmlText, mods) {
-			$('#textDisplay').html(htmlText);
-			if (!app.showingFootnotes) $('.fn').css('display', 'none');
-			app.setAppLocale(false, function () {
-				app.lastDisplayMods=mods;
-				setTimeout(function() {
-					if (app.getCurrentVerseKey().verse > 1) {
-						var new_position = $('.currentVerse').offset();
-						$('#textDisplay').scrollTop(new_position.top-$('#textDisplay').offset().top-35);
-					}
-					app.requestAuxDisplay(callback);
-				}, 500);
-			});
-		};
 
 
 		var headerLoopContinue = function() {
@@ -1424,8 +1424,8 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 					if (verseKey.bookAbbrev != currentVerse.bookAbbrev || verseKey.chapter != currentVerse.chapter) verseText += verseKey.chapter + '.';
 					verseText += verseKey.verse;
 					t += '<span class="versenum"><a href="javascript:void(0);"> ' + verseText + '</a></span>';
+// if (verseKey.verse == currentVerse.verse) { console.log('current verse data: '+ renderData[i][v].text); }
 					t += renderData[i][v].text;
-//if (verseKey.verse == currentVerse.verse) console.log('current verse data: '+ renderData[i][v].text);
 					t += '</td>';
 				}
 
