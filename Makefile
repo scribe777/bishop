@@ -80,6 +80,8 @@ refreshplugins:
 ####	Only do this if we are working on local plugin regularly
 #	cordova plugin remove cordova-plugin-crosswire-sword || true
 #	cordova plugin add ../sword/bindings/cordova/cordova-plugin-crosswire-sword/ --nofetch -verbose
+# To easily switch back to published plugin without a full setup
+#	cordova plugin add cordova-plugin-crosswire-sword || true
 
 copysourcefromplatformandroid:
 	echo "do nothing for now"; #cp -a platforms/android/assets/www/index.html platforms/android/assets/www/img platforms/android/assets/www/css platforms/android/assets/www/js www/ || true
