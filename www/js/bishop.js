@@ -829,7 +829,7 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 				t += '<tr class="menuLabel" onclick="installMgr.show();return false;"><td><img src="img/ic_action_download.png" style="height:1em;"/> <span data-english="Library">Library</span></td></tr>';
 
 				// Toggle Notes
-				t += '<tr class="menuLabel" onclick="app.closeMenu(); app.toggleFootnotes();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> <span data-english="Toggle Notes">Toggle Notes</span></td></tr>';
+				t += '<tr class="menuLabel" onclick="app.closeMenu(); app.toggleFootnotes();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> <span data-english="Toggle Footnotes">Toggle Footnotes</span></td></tr>';
 
 				// Settings
 				t += '<tr><td class="menuLabel" onclick="app.toggleSettings(); return false;"><img src="img/ic_action_settings.png" style="height:1em;"/> <span data-english="Settings">Settings</span></td></tr>';
