@@ -102,6 +102,9 @@ console.log('wordSearch module.search, complete. results.length: ' + e.results.l
 						if (i >= results.length) {
 							// finish up results loop
 							t += '</dl>';
+							t += '<br/>';
+							t += '<br/>';
+							t += '<br/>';
 							$(target).html(t);
 							setTimeout(function() { verseStudy.colorLemmas('x', term, morph, target); }, 50);
 							return;
@@ -223,6 +226,9 @@ console.log('*** wordStudy begin');
 			if (errorText) {
 				errorText += '<div><center><p>We would suggest installing from "CrossWire" the KJV, WLC, WHNU, StrongsGreek, and StrongsHebrew modules for a minimal set of modules which allow basic Greek and Hebrew word study.</p>';
 				errorText += '<p>I can do all of this for you now, if you would like; simply press this button:</p><p><button style="height:3em;" onclick="app.basicStartup(1);return false;">Basic Module Set</button></p></center></div>';
+				errorText += '<br/>';
+				errorText += '<br/>';
+				errorText += '<br/>';
 				$(target).html(errorText);
 				return;
 			}
@@ -247,6 +253,9 @@ console.log('*** wordStudy begin');
 										t += h;
 										t += '</tbody></table>';
 										t += '<div style="height:30em;">&nbsp;</div>';
+										t += '<br/>';
+										t += '<br/>';
+										t += '<br/>';
 										$(target).html(t);
 									};
 	console.log('*** words.length: ' + words.length);
@@ -392,6 +401,9 @@ console.log('****** done iterating manuscripts.');
 					t += '</tbody></table>';
 					t += '<div class="copyLine"><br/><span data-english="This dataset is by no means exhaustive and is growing rapidly. Check back soon for more results.">This dataset is by no means exhaustive and is growing rapidly. Check back soon for more results.</span><br/><br/><span data-english="Courtesy of">Courtesy of</span> <a href="http://egora.uni-muenster.de/intf/index_en.shtml">Institut für Neutestamentliche Textforschung</a></div>';
 console.log('****** setting result to UI.');
+					t += '<br/>';
+					t += '<br/>';
+					t += '<br/>';
 					verseStudy.lastWitnessStudy = t;
 					verseStudy.lastWitnessStudyTarget = target;
 				}
@@ -420,20 +432,26 @@ console.log('variantGraph showing...');
 			var verseKey = app.getCurrentVerseKey();
 			var postData = {
 				baseText : 'NA28',
-				verse : verseKey.osisRef,
+				indexContent : verseKey.osisRef,
+				extraVerses : 0,
 				documentGroupID : 22 /*-1*/,
 				ignorePunctuation : true,
 				ignoreSupplied : true,
 				ignoreUnclear : true,
+				ignoreAccents : true,
 				lang : 'grc',
-	//			preferUser : 'ALL',
+				preferUser : '',
 				regUserID : 'intfadmin',
+				loadModule: 'ECM',
+				regUserID: 'intfadmin',
 				format : 'graph'
 			}
+
 			var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/collate/';
 	console.log('requesting from INTF...');
 			SWORD.httpUtils.makeRequest(url, $.param(postData), function(o) {
 	console.log('received response from INTF...');
+
 				$(target).html(o);
 			});
 		});
@@ -446,14 +464,18 @@ console.log('variantGraph showing...');
 			var verseKey = app.getCurrentVerseKey();
 			var postData = {
 				baseText : 'NA28',
-				verse : verseKey.osisRef,
+				indexContent : verseKey.osisRef,
+				extraVerses : 0,
 				documentGroupID : 22 /*-1*/,
 				ignorePunctuation : true,
 				ignoreSupplied : true,
 				ignoreUnclear : true,
+				ignoreAccents : true,
 				lang : 'grc',
-	//			preferUser : 'ALL',
+				preferUser : '',
 				regUserID : 'intfadmin',
+				loadModule: 'ECM',
+				regUserID: 'intfadmin',
 				format : 'atable'
 			}
 			var url = 'http://ntvmr.uni-muenster.de/community/vmr/api/collate/';

@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0pre17', // change version here and in config.xml, near top
+	version: '1.2.0', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -685,6 +685,10 @@ console.log('stopping BibleSync');
 							t += '<div class="bookButton" onclick="app.setCurrentKey(\''+bookName+'.'+i+'.1\', function() { app.displayCurrentChapter(); app.popupHide(); return false; });">'+i+'</div> ';
 						}
 						t += '</div>';
+						t += '<br/>';
+						t += '<br/>';
+						t += '<br/>';
+						t += '<br/>';
 						app.popupShow(t);
 					});
 				});
@@ -703,6 +707,10 @@ console.log('stopping BibleSync');
 						t += '<div class="bookButton'+(nt?' ntBook':' otBook')+'" onclick="app.selectChapter(\''+books[i]+'\'); return false;">'+books[i]+'</div> ';
 					}
 					t += '</div>';
+					t += '<br/>';
+					t += '<br/>';
+					t += '<br/>';
+					t += '<br/>';
 					app.popupShow(t);
 				});
 			}
@@ -938,6 +946,9 @@ console.log('updateMainViewSetting: ' + viewType);
 				t += '<tr class="searchHit"><td colspan="2">'+bookmarks[i]+'</td></tr>';
 			}
 			t += '</tbody></table>';
+			t += '<br/>';
+			t += '<br/>';
+			t += '<br/>';
 			$('#bookmarkResults').html(t);
 			app.registerSearchHitsHandler();
 		});
@@ -986,6 +997,9 @@ console.log('updateMainViewSetting: ' + viewType);
 				t += '<tr class="searchHit"><td colspan="2">'+app.bibleSyncRefs[i]+'</td></tr>';
 			}
 			t += '</tbody></table>';
+			t += '<br/>';
+			t += '<br/>';
+			t += '<br/>';
 			$('#bibleSyncResults').html(t);
 			app.registerSearchHitsHandler();
 		}
@@ -1172,6 +1186,8 @@ console.log('auxDisplayCountdown: ' + app.auxDisplayCountdown);
 		setTimeout(function() {
 		var modulesLoop = function(mods, i) {
 			if (!i) i = 0; if (i >= mods.length) {
+				t += '<br/>';
+				t += '<br/>';
 				$('#footnotes').html(t);
 				return callback?callback():null;
 			}
@@ -1232,6 +1248,9 @@ console.log('footnotes: ' + footnotes.length);
 						t += '</tr>';
 					}
 					t += '</tbody></table>';
+					t += '<br/>';
+					t += '<br/>';
+					t += '<br/>';
 					$('#searchResults').html(t);
 					app.registerSearchHitsHandler();
 				}
@@ -1244,6 +1263,9 @@ console.log("**** showing firstime ****");
 		t    += '<p>Select the menu on the left, choose "Library" and press the <button onclick="return false;">Refresh</button> button to see what is available in each module publisher\'s repository.</p>';
 		t    += '<p>We would suggest installing from "CrossWire" the KJV, WLC, WHNU, StrongsGreek, and StrongsHebrew modules for a minimal set of modules which allow basic Greek and Hebrew word study.</p>';
 		t    += '<p>I can do all of this for you now, if you would like; simply press this button:</p><p><button style="height:3em;" onclick="app.basicStartup(1);return false;">Basic Module Set</button></p></center></div>';
+		t += '<br/>';
+		t += '<br/>';
+		t += '<br/>';
 		$('#textDisplay').html(t);
 console.log("**** done showing firstime ****");
 		app.firstTime = false;
@@ -1253,6 +1275,9 @@ console.log("**** done showing firstime ****");
 		var t = '<div style="margin:1em;"><center><h3><span data-english="New Unlock Key">New Unlock Key</span></h3>';
 		t    += '<p><span data-english="Bishop has just received a new unlock code for a module which doesn\'t appear to be installed.">Bishop has just received a new unlock code for a module which doesn\'t appear to be installed.</span> ('+mod+') <span data-english="Would you like to install this module?">Would you like to install this module?</span>';
 		t    += '<p><button onclick="app.installModule(\''+mod+'\');return false;"><span data-english="Install Module">Install Module</span></button></p></center></div>';
+		t += '<br/>';
+		t += '<br/>';
+		t += '<br/>';
 		$('#textDisplay').html(t);
 		app.setAppLocale();
 		return;
@@ -1348,6 +1373,8 @@ console.log('parDispModules.length: ' + parDispModules.length);
 			var nextChapterString = currentVerse.bookName + ' ' + (currentVerse.chapter+1) + ':1';
 
 			var t = '<div id="paralleldisplay">';
+			t += '<br/>';
+			t += '<br/>';
 			t += '<ul class="booknav">';
 			t += '<li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+prevChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="previous chapter" style="white-space:nowrap">previous chapter</span></a></li>';
 			t += ' <li><a href="javascript:void(0);" onclick="app.setCurrentKey(\''+nextChapterString+'\', function() { app.displayCurrentChapter(); }); return false;"><span data-english="next chapter" style="white-space:nowrap">next chapter</span></a></li>';
@@ -1460,6 +1487,9 @@ console.log('headerLoopContinue. mods.length: ' + mods.length + '; renderData.le
 			t += '</div>';
 			t += '<div id="footerBuffer"></div>';
 			t += '<div style="height:30em;">&nbsp;</div>';
+			t += '<br/>';
+			t += '<br/>';
+			t += '<br/>';
 			
 			chapterDisplay(t, mods);
 		};
@@ -1531,6 +1561,10 @@ console.log('About: showing modules, count: ' + app.mods.length);
 			t += '<h4>' + app.mods[i].name + ' - ' + app.mods[i].description + '<button id="modAboutButton_' + app.mods[i].name + '" style="float:right;" onclick="event.stopPropagation(); app.showModuleAbout(\''+app.mods[i].name+'\', \'modAboutDiv_'+app.mods[i].name+'\', this); return false;">About</button></h4>' + (ciphered?('<button onclick="app.changeCipher(\''+app.mods[i].name+'\', \'' + app.mods[i].cipherKey + '\'); return false;">CipherKey: ' + app.mods[i].cipherKey + '</button><br/><br/>'):'') + '<div id="modAboutDiv_'+app.mods[i].name+'"></div>';
 		}
 		t += '</div>';
+		t += '<br/>';
+		t += '<br/>';
+		t += '<br/>';
+		t += '<br/>';
 		app.popupShow(t, true);
 		$('.about').click(function(){ 
 			app.popupHide();

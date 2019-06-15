@@ -53,6 +53,9 @@ var installMgr = {
 			h += '<tr><td style="width:100%;">'+noneMessage+'</td></tr>';
 		}
 		h += '</tbody></table>';
+		h += '<br/>';
+		h += '<br/>';
+		h += '<br/>';
 
 		var t = '<option value="All Modules" data-english="All Modules">All Modules</option>';
 		for (var c in categories) {
@@ -224,6 +227,9 @@ console.log('**** installMgr.installModule. disclaimer accepted. installing modu
 		h += 'If you understand this and are willing to enable remote source features ';
 		h += 'then click the "Accept" button below.</p>';
 		h += '<p><center><button style="height:3em;" onclick="installMgr.setDisclaimerAccepted();return false;"><span data-english="InstallMgr Warning Accept|Accept">Accept</span></button></center></p>';
+		h += '<br/>';
+		h += '<br/>';
+		h += '<br/>';
 		$('#client').html(h);
 		app.setAppLocale();
 	},
