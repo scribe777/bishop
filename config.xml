@@ -46,7 +46,7 @@
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="local" />
     </platform>
-    <plugin name="cordova-plugin-file" source="pgb" />
+    <plugin name="cordova-plugin-file" />
     <plugin name="cordova-plugin-inappbrowser" />
     <plugin name="cordova-plugin-globalization" />
     <plugin name="cordova-custom-config" />
