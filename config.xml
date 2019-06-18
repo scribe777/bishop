@@ -24,7 +24,7 @@
         <preference name="android-minSdkVersion" value="19" />
         <preference name="android-targetSdkVersion" value="28" />
         <preference name="AndroidLaunchMode" value="singleTop" />
-	<preference name="AndroidPersistentFileLocation" value="Compatibility" />
+        <preference name="AndroidPersistentFileLocation" value="Compatibility" />
         <config-file mode="add" parent="./application/activity" target="AndroidManifest.xml">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -32,21 +32,16 @@
                 <data android:mimeType="application/x-sword-conf" />
             </intent-filter>
         </config-file>
-
-<!--
-   THIS DOESN'T WORK. FIXME.  FOR NOW, THIS IS ADDED MANUALLY. DON'T FORGET!
--->
-	<edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
-		<application android:usesCleartextTraffic="true" />
-	</edit-config>
-
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="local" />
     </platform>
-    <plugin name="cordova-plugin-file" />
+    <plugin name="cordova-plugin-file" spec="~5"/>
     <plugin name="cordova-plugin-inappbrowser" />
     <plugin name="cordova-plugin-globalization" />
     <plugin name="cordova-custom-config" />
