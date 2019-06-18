@@ -511,12 +511,12 @@ console.log('app.firstTime: ' + app.firstTime);
 
 		app.getLastAppVersion(function(lastVersion) {
 			if (lastVersion != app.version) {
-//				app.copyBundledResources(function() {
+				app.copyBundledResources(function() {
 					// setting an extraConfig forces a re-init and will pick up newly copied resources
-//					app.setLastAppVersion(function() {
+					app.setLastAppVersion(function() {
 						return firstCheck();
-//					});
-//				});
+					});
+				});
 			}
 			else firstCheck();
 		
