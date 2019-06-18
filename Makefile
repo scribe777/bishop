@@ -105,10 +105,9 @@ refreshplatformios:
 	cordova-icon --icon=res/swordlogo-1024.png
 	cordova-splash --splash=res/swordlogo-1024.png
 
-setup: clearplugins refreshplatform addplugins 
+setup: clearplugins refreshplatform addplugins updatelocales
 	# one last refresh platform to get the plugin patches deployed
 	make refreshplatform
-	cp -a ../sword/locales.d www/bundledResources/
 
 ###
 # Plugins should not be committed to config.xml

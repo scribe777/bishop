@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.0', // change version here and in config.xml, near top
+	version: '1.2.3', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -391,7 +391,7 @@ console.log('*** app.showingFootnotes is set to ' + app.showingFootnotes);
 		var max = $('#textDisplay').height();
 		$('.currentVerse, .verse').each(function() {
 			var verseNode = $(this);
-			if ($(verseNode).offset().top > 20 && $(verseNode).offset().top < max) {
+			if ($(verseNode).offset().top > 34 && $(verseNode).offset().top < max) {
 				app.setCurrentVerseNode(verseNode);
 				return false; // stops the iteration after the first one on screen
 			}
@@ -420,7 +420,7 @@ console.log('*** app.showingFootnotes is set to ' + app.showingFootnotes);
 		var max = $('#altDisplay').height();
 		$('.wordHeading').each(function() {
 			var wordNode = $(this);
-			if ($(wordNode).offset().top > 20 && $(wordNode).offset().top < max) {
+			if ($(wordNode).offset().top > 34 && $(wordNode).offset().top < max) {
 				app.setCurrentWordNode(wordNode);
 				return false; // stops the iteration after the first one on screen
 			}

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.crosswire.bishop" version="1.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<widget id="org.crosswire.bishop" version="1.2.3" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <name>Bishop</name>
     <description>
         A Bible Study App from CrossWire
@@ -22,8 +22,9 @@
         <icon src="res/swordlogo.png" />
         <allow-intent href="market:*" />
         <preference name="android-minSdkVersion" value="19" />
-        <preference name="android-targetSdkVersion" value="23" />
+        <preference name="android-targetSdkVersion" value="28" />
         <preference name="AndroidLaunchMode" value="singleTop" />
+        <preference name="AndroidPersistentFileLocation" value="Compatibility" />
         <config-file mode="add" parent="./application/activity" target="AndroidManifest.xml">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -31,14 +32,32 @@
                 <data android:mimeType="application/x-sword-conf" />
             </intent-filter>
         </config-file>
+
+<!--
+   THIS DOESN'T WORK. FIXME.  FOR NOW, THIS IS ADDED MANUALLY. DON'T FORGET!
+-->
 	<edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
 		<application android:usesCleartextTraffic="true" />
 	</edit-config>
+
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="local" />
+	<icon src="res/swordlogo-1024.png" width="1024" height="1024" />
     </platform>
-    <plugin name="cordova-plugin-navigationbar" spec="^1.0.31" />
+    <plugin name="cordova-plugin-file" spec="~4"/>
+    <plugin name="cordova-plugin-inappbrowser" />
+    <plugin name="cordova-plugin-globalization" />
+    <plugin name="cordova-custom-config" />
+    <plugin name="cordova-plugin-whitelist" />
+    <plugin name="com-darryncampbell-cordova-plugin-intent" />
+    <plugin name="cordova-plugin-add-swift-support" />
+    <plugin name="cordova-plugin-crosswire-sword" />
+    <plugin name="phonegap-plugin-mobile-accessibility" />
+    <plugin name="com-sarriaroman-photoviewer" />
+    <plugin name="cordova-plugin-x-toast" />
+    <plugin name="cordova-plugin-device" />
+    <plugin name="cordova-plugin-network-information" />
 </widget>

@@ -327,9 +327,9 @@ table.nobottom td, table.nobottom th {
 	position:absolute;
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
-	height:90%;
 	width:80%;
-	top:5%;
+	top:3.5em;
+	bottom:.5em;
 	left:10%;
 	z-index:10;
 }
