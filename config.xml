@@ -67,4 +67,5 @@
     <plugin name="cordova-plugin-x-toast" />
     <plugin name="cordova-plugin-device" />
     <plugin name="cordova-plugin-network-information" />
+    <plugin name="cordova-plugin-wkwebview-engine" />
 </widget>
