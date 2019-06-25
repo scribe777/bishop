@@ -246,7 +246,11 @@ console.log('*** wordStudy begin');
 									var h = '';
 									var lexUsed = null;
 									var loopFinish = function () {
-										var t = '<table class="clean" style="table-layout:fixed;width:100%;"><tbody>';
+										var t = '';
+										t += '<br/>';
+										t += '<br/>';
+										t += '<br/>';
+										t += '<table class="clean" style="table-layout:fixed;width:100%;"><tbody>';
 										t += '<tr class="roweven" onclick="return false;">';
 										t += '<td colspan="2" class="modDesc" style="width:100%;">'+ (lexUsed ? lexUsed : '&nbsp;') +'</td>';
 										t += '</tr>';
@@ -498,7 +502,11 @@ console.log('variantGraph showing...');
 		verseStudy.closeMenus();
 		setTimeout(function() {
 		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Please wait...">Please wait...</span></h3></center></div>');
-		var t = '<table class="clean" style="width:100%;"><tbody>';
+		var t = '';
+		t += '<br/>';
+		t += '<br/>';
+		t += '<br/>';
+		t += '<table class="clean" style="width:100%;"><tbody>';
 		app.setAppLocale(false, function() {
 			SWORD.mgr.getModInfoList(function(mods) {
 				function loop(i) {
