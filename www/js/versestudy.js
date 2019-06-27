@@ -362,7 +362,7 @@ console.log('****** parsed XML.');
 console.log('****** No error found.');
 					t = '<p><b><span data-english="Some Manuscript Witnesses for Verse:">Some Manuscript Witnesses for Verse:</span> ' + verseKey.shortText + '</b></p>';
 					t += '<table class="clean" width="100%">';
-					t += '<thead class="fixedHeader"><tr><th style="font-size:90%;" data-english="Manuscript">Manuscript</th><th style="font-size:90%;" data-english="Century">Century</th><th style="font-size:90%;" data-english="Folio">Folio</th><th style="font-size:90%;" data-english="Content">Content</th><th style="font-size:90%;" data-english="Image">Image</th></tr></thead>';
+					t += '<thead class="fixedHeader"><tr><th style="font-size:80%;" data-english="Manuscript">Manuscript</th><th style="font-size:80%;" data-english="Century">Century</th><th style="font-size:80%;" data-english="Folio">Folio</th><th style="font-size:80%;" data-english="Content">Content</th><th style="font-size:80%;" data-english="Image">Image</th></tr></thead>';
 					t += '<tbody class="scrollContent">';
 console.log('****** iterating manuscripts.');
 					$(xml).find('manuscript').each(function() {
