@@ -11,6 +11,10 @@ body {
     margin:0px;
     padding:0px;
     overflow:hidden;
+	padding-top: constant(safe-area-inset-top);
+	padding-top: env(safe-area-inset-top);
+	padding-bottom: constant(safe-area-inset-bottom);
+	padding-bottom: env(safe-area-inset-bottom);
 }
 
 @font-face {
@@ -82,13 +86,16 @@ body,td,div,span,p,.verse,.currentVerse {
     position: absolute;
     transition: all 0.3s;
     box-sizing: border-box;
+    overflow: hidden;
     cursor: pointer;
     z-index: 99;
     top: 1em;
+    top: calc(constant(safe-area-inset-top) + 1em);
+    top: calc(env(safe-area-inset-top) + 1em);
     left: 15px;
     height: 3em;
     width: 1.5em;
-    transform: translateY(-3em);
+    transform: translateY(-6em);
 }
 .openTopBar:checked ~ .sidebarIconToggle {
     transform: translateY(0);
@@ -98,6 +105,9 @@ body,td,div,span,p,.verse,.currentVerse {
     display: block;
     margin: 0 auto;
     width: 100%;
+    top: 0;
+    top: constant(safe-area-inset-top);
+    top: env(safe-area-inset-top);
     max-width: 100%;
     box-shadow: none;
     background-color: #0F9D58;
@@ -105,7 +115,7 @@ body,td,div,span,p,.verse,.currentVerse {
     height: 3em;
     overflow: hidden;
     z-index: 15;
-    transform: translateY(-3em);
+    transform: translateY(-6em);
     transition: transform 250ms ease-in-out;
 }
 .openTopBar:checked ~ #topBarBand {
@@ -376,18 +386,35 @@ table.clean tr.roweven {
 #footerBuffer {
 	height:0;
 }
-#footnotes {
-	position:absolute;
+
+.openFootnotes:checked ~ .footnotes {
+    transform: translateY(0);
+}
+
+.openFootnotes {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    display: none;
+}
+
+.footnotes {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+	box-shadow: none;
+	background-color: #0F9D58;
+	position: absolute;
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
-	bottom:0;
-	height:0;
+	bottom:-6em;
+	height:14em;
 	width:100%;
 	color: #000000;
 	background-color: #ffffff;
-	margin: 0px 0px 0px 0px;
 	z-index: 4;
 	-webkit-user-select: text;
+	transform: translateY(+16em);
+	transition: transform 400ms ease-in-out;
 }
 
 #client {
