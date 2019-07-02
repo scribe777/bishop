@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.7', // change version here and in config.xml, near top
+	version: '1.2.8', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -252,8 +252,8 @@ console.log("*** in show. main.length: " + main.length);
 		t += '<div id="topBarBand" class="topBarBand">';
   		t += 	'<div style="display:table-cell;width:3.8em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;">&nbsp;</div>';
   		t += 	'<div style="display:table-cell;padding-left:.2em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;" id="keyDisplay" onclick="app.closeMenu();app.closeTopBar(); app.selectKey(); return false;">&nbsp;</div>';
-  		t += 	'<div style="display:table-cell;padding-right:2em;padding-top:.2em;" onclick="app.shareVerse(); return false;"><img style="height:2.3em;opacity:0.80;" src="img/ic_action_share.png"/></div>';
-  		t += 	'<div style="display:table-cell;color:white;padding-left:.4em;padding-right:.4em;height:100%;vertical-align:middle;padding-bottom:.4em;font-size: 175%;" class="notesButton">✎</div>';
+  		t += 	'<div style="display:table-cell;padding-right:1.5em;padding-top:.2em;" onclick="app.shareVerse(); return false;"><img style="height:2.3em;opacity:0.80;" src="img/ic_action_share.png"/></div>';
+  		t += 	'<div style="display:table-cell;color:white;padding-left:.3em;padding-right:.4em;height:100%;vertical-align:middle;padding-bottom:.4em;font-size: 175%;" class="notesButton">✎</div>';
 		t += '</div>';
 		t += '<input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">';
 		t += '<label for="openSidebarMenu" class="sidebarIconToggle">';
