@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.7', // change version here and in config.xml, near top
+	version: '1.2.8', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -9,7 +9,6 @@ var app = {
 	firstTime: false,
 	waitingInstall: null,
 	lastDisplayMods: null,
-	showingFootnotes: false,
 	greekDefMods : [],
 	hebrewDefMods : [],
 	menuWidth : 16,
@@ -241,8 +240,7 @@ console.log('*********** Initially setting locale to: ' + localeName);
 			});
 		}
 		app.setAppLocale(false, function() {
-			app.showingFootnotes = window.localStorage.getItem('showingFootnotes') == 'true';
-console.log('*** read app.showingFootnotes is set to ' + app.showingFootnotes);
+			$('#openFootnotes').prop('checked', window.localStorage.getItem('showingFootnotes') == 'true'?true:false);
 			app.mainViewType = window.localStorage.getItem('mainViewType');
 			app.setCurrentKey(app.getCurrentKey());
 			app.currentWindow = app;
@@ -254,8 +252,8 @@ console.log("*** in show. main.length: " + main.length);
 		t += '<div id="topBarBand" class="topBarBand">';
   		t += 	'<div style="display:table-cell;width:3.8em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;">&nbsp;</div>';
   		t += 	'<div style="display:table-cell;padding-left:.2em;height:100%;vertical-align:middle;padding-right:.2em;padding-bottom:.4em;" id="keyDisplay" onclick="app.closeMenu();app.closeTopBar(); app.selectKey(); return false;">&nbsp;</div>';
-  		t += 	'<div style="display:table-cell;padding-right:2em;padding-top:.2em;" onclick="app.shareVerse(); return false;"><img style="height:2.3em;opacity:0.80;" src="img/ic_action_share.png"/></div>';
-  		t += 	'<div style="display:table-cell;color:white;padding-left:.4em;padding-right:.4em;height:100%;vertical-align:middle;padding-bottom:.4em;font-size: 175%;" class="notesButton">✎</div>';
+  		t += 	'<div style="display:table-cell;padding-right:1.5em;padding-top:.2em;" onclick="app.shareVerse(); return false;"><img style="height:2.3em;opacity:0.80;" src="img/ic_action_share.png"/></div>';
+  		t += 	'<div style="display:table-cell;color:white;padding-left:.3em;padding-right:.4em;height:100%;vertical-align:middle;padding-bottom:.4em;font-size: 175%;" class="notesButton">✎</div>';
 		t += '</div>';
 		t += '<input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">';
 		t += '<label for="openSidebarMenu" class="sidebarIconToggle">';
@@ -264,7 +262,8 @@ console.log("*** in show. main.length: " + main.length);
 		t += 	'<div class="spinner diagonal part-2"></div>';
 		t += '</label>';
 		t += '<div class="menupanel"></div>';
-		t += '<div id="footnotes" class="toshow"></div>';
+		t += '<input type="checkbox" class="openFootnotes" id="openFootnotes">';
+		t += '<div id="footnotes" class="footnotes toshow"></div>';
 		t += '<div id="altDisplay"></div>';
 		t += '<div id="aux" class="dropdown-content"></div>';
 /*
@@ -283,15 +282,16 @@ console.log("*** in show. main.length: " + main.length);
 <div id="textDisplay"></div>
 <div class="menupanel"></div>
 <a href="javascript:void(0);" class="menutab toshow">&nbsp;</a>
-<div id="footnotes" class="toshow"></div>
+<div id="footnotes" class="footnotes toshow"></div>
 <div id="altDisplay"></div>
 <div id="aux" class="dropdown-content"></div>';
 `;
 */
 			$(main).html(t);
 			$('.notesButton').on('click', function() {
-				if (!app.showingFootnotes)	{ app.openFootnotes();  }
-				else 				{ app.closeFootnotes(); }
+				if (!app.openFootnotes()) {
+					app.closeFootnotes();
+				}
 			});
 
 			// for old phones which need javascript help for transitions
@@ -336,10 +336,32 @@ console.log('closing topbar');
 						}, 100);
 					}
 				});
+				$('#openFootnotes').on('change', function() {
+					if ($('#openFootnotes').is(':checked')) {
+console.log('opening topbar');
+						setTimeout(function() {
+						$('.footnotes').animate({ bottom: 0 }, 250, function() { });
+						}, 100);
+						// this is for some refresh bug in older Android devices
+						$('.footnotes').css('display', 'none');
+						setTimeout(function() {
+							$('.footnotes').css('display', 'block');
+						}, 100);
+						// end of silly workaround for older Android devices
+					}
+					else {
+console.log('closing topbar');
+						setTimeout(function() {
+						$(".footnotes").animate({ top: '+16em' }, 250, function() { });
+						}, 100);
+					}
+				});
 				app.closeMenu();
 				$('#openSidebarMenu').change();
 				app.closeTopBar();
 				$('#openTopBar').change();
+				app.closeFootnotes();
+				$('#openFootnotes').change();
 			}
 
 			var textDisplay = $('#textDisplay');
@@ -353,9 +375,9 @@ console.log('closing topbar');
 					$('#currentMod1').val(app.getCurrentMod1());
 					$('#currentMod2').val(app.getCurrentMod2());
 					$('#currentMod3').val(app.getCurrentMod3());
-console.log('*** app.showingFootnotes is set to ' + app.showingFootnotes);
-					if (app.showingFootnotes) app.openFootnotes();
-					else			  app.closeFootnotes();
+					if (!app.openFootnotes()) {
+						app.closeFootnotes();
+					}
 					if (app.firstTime) app.showFirstTime();
 					else app.displayCurrentChapter(function() {
 						app.setAppLocale(false, function() {
@@ -927,8 +949,9 @@ console.log('updateMainViewSetting: ' + viewType);
 		});
 	},
 	toggleFootnotes: function() {
-		if (!app.showingFootnotes)	{ app.openFootnotes();  }
-		else 				{ app.closeFootnotes(); }
+		if (!app.openFootnotes()) {
+			app.closeFootnotes();
+		}
 	},
 	bookmarksClear: function() {
 		dataStore.deleteAllBookmarks(function() {
@@ -1122,27 +1145,34 @@ console.log("****** closing topBar");
 	},
 
 	openFootnotes: function() {
+		if ($('#openFootnotes').is(':checked')) return false;
 		$('.fn').css('display', 'initial');
 		$('.notesButton').css('background-color', '#007D48');
-		app.showingFootnotes = true;
-		window.localStorage.setItem('showingFootnotes', app.showingFootnotes?'true':'false');
+		window.localStorage.setItem('showingFootnotes', 'true');
+		$('#openFootnotes').prop('checked', true).change();
+/*
 		if ($('#footnotes').hasClass('tohide')) return;
 console.log('opening footnotes');
 		$('#footnotes').removeClass('toshow').addClass('tohide');
-		$("#footnotes, #footerBuffer").animate({ height: '8em' }, 350, function() {
+		$("#footnotes, #footerBuffer").animate({ top: '-12em' }, 350, function() {
 		});
+*/
 		app.displayFootnotes();
+		return true;
 	},
 	closeFootnotes: function() {
+		if (!$('#openFootnotes').is(':checked')) return false;
 		$('.fn').css('display', 'none');
 		$('.notesButton').css('background', 'initial');
-		app.showingFootnotes = false;
-		window.localStorage.setItem('showingFootnotes', app.showingFootnotes?'true':'false');
+		window.localStorage.setItem('showingFootnotes', 'false');
+		$('#openFootnotes').prop('checked', false).change();
+/*
 		if ($('#footnotes').hasClass('toshow')) return false;
 console.log('closing footnotes');
-		$("#footnotes, #footerBuffer").animate({ height: '0' }, 350, function() {
+		$("#footnotes, #footerBuffer").animate({ top: '+12em' }, 350, function() {
 			$('#footnotes').removeClass('tohide').addClass('toshow');    
 		});
+*/
 		return true;
 	},
 	auxDisplayCallback : null,
@@ -1182,14 +1212,23 @@ console.log('auxDisplayCountdown: ' + app.auxDisplayCountdown);
 		
 	},
 	displayFootnotes: function(callback) {
-		if ($('#footnotes').hasClass('toshow')) return callback?callback():null;
+		if (!$('#openFootnotes').is(':checked')) return callback?callback():null;
 		var t = '';
 		setTimeout(function() {
 		var modulesLoop = function(mods, i) {
 			if (!i) i = 0; if (i >= mods.length) {
 				t += '<br/>';
 				t += '<br/>';
+				t += '<br/>';
+				t += '<br/>';
+				t += '<br/>';
+				t += '<br/>';
+				t += '<br/>';
+				t += '<br/>';
+				t += '<br/>';
+				t += '<br/>';
 				$('#footnotes').html(t);
+				$('#footnotes').scrollTop(0);
 				return callback?callback():null;
 			}
 			SWORD.mgr.getModuleByName(mods[i], function(mod) {
@@ -1342,7 +1381,7 @@ console.log('parDispModules.length: ' + parDispModules.length);
 
 		var chapterDisplay = function(htmlText, mods) {
 			$('#textDisplay').html(htmlText);
-			if (!app.showingFootnotes) $('.fn').css('display', 'none');
+			if (!$('#openFootnotes').is(':checked')) $('.fn').css('display', 'none');
 			app.setAppLocale(false, function () {
 				app.lastDisplayMods=mods;
 				setTimeout(function() {
