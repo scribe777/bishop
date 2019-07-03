@@ -1,5 +1,5 @@
 var app = {
-	version: '1.2.8', // change version here and in config.xml, near top
+	version: '1.3rc1', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -340,7 +340,7 @@ console.log('closing topbar');
 					if ($('#openFootnotes').is(':checked')) {
 console.log('opening topbar');
 						setTimeout(function() {
-						$('.footnotes').animate({ bottom: 0 }, 250, function() { });
+						$('.footnotes').animate({ bottom: '-6em' }, 250, function() { });
 						}, 100);
 						// this is for some refresh bug in older Android devices
 						$('.footnotes').css('display', 'none');
@@ -352,7 +352,7 @@ console.log('opening topbar');
 					else {
 console.log('closing topbar');
 						setTimeout(function() {
-						$(".footnotes").animate({ top: '+16em' }, 250, function() { });
+						$(".footnotes").animate({ bottom: '-22em' }, 250, function() { });
 						}, 100);
 					}
 				});
@@ -824,6 +824,9 @@ console.log('Installed module: ' + mods[i].name + '; features.length: ' + mods[i
 
 				// Verse Study
 				t += '<tr class="menuLabel" onclick="verseStudy.show();return false;"><td><img src="img/ic_action_location_searching.png" style="height:1em;"/> <span id="verseStudyLabel" data-english="Verse Study">Verse Study</span></td></tr>';
+
+				// Daily Devotionals
+				t += '<tr class="menuLabel" onclick="dailyDevo.show();return false;"><td><img src="img/ic_action_about.png" style="height:1em;"/> <span id="dailyDevoLabel" data-english="Daily Devotion">Daily Devotion</span></td></tr>';
 
 				// Bookmarks
 				t += '<tr><td class="menuLabel" onclick="app.toggleBookmarks(); return false;"><img src="img/bookmarks.png" style="height:1em;"/> <span id="bookmarksLabel" data-english="Bookmarks">Bookmarks</span></td></tr>';
@@ -1697,6 +1700,9 @@ console.log('refreshing sources complete');
 			installMgr.installModule('CrossWire', 'WLC', function() { ++app.basicStartupStage; app.basicStartup() });
 			break;
 		case 7:
+			installMgr.installModule('CrossWire', 'SME', function() { ++app.basicStartupStage; app.basicStartup() });
+			break;
+		case 8:
 			app.setCurrentMod1('KJV');
 			app.setCurrentMod2('WHNU');
 			app.setCurrentMod3('WLC');
