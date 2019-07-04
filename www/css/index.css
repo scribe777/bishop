@@ -139,6 +139,8 @@ body,td,div,span,p,.verse,.currentVerse {
     left: 0;
     width: 250px;
     margin-top: 3em;
+    margin-top: calc(constant(safe-area-inset-top) + 3em);
+    margin-top: calc(env(safe-area-inset-top) + 3em);
     transform: translateX(-250px);
     transition: transform 250ms ease-in-out;
     background: linear-gradient(180deg, #FC466B 0%, #3F5EFB 100%);
@@ -151,6 +153,8 @@ body,td,div,span,p,.verse,.currentVerse {
 	width:16em;
 	float:left;
 	margin-top: 3em;
+	margin-top: calc(constant(safe-area-inset-top) + 3em);
+	margin-top: calc(env(safe-area-inset-top) + 3em);
 	background-color:#303030;
 	position:fixed;
 	left: 0;
