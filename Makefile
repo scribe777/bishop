@@ -155,3 +155,6 @@ updatelocales:
 back:
 	cp platforms/ios/Bishop/Plugins/cordova-plugin-crosswire-sword/SWORD.swift ../sword/bindings/cordova/cordova-plugin-crosswire-sword/src/ios/SWORD.swift 
 	cp platforms/ios/Bishop/Plugins/cordova-plugin-crosswire-sword/flatapi.h ../sword/include/
+
+clean:
+	rm -rf node_modules package.json package-lock.json platforms plugins
