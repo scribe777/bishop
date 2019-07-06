@@ -62,6 +62,7 @@
     <plugin name="com-darryncampbell-cordova-plugin-intent" />
     <plugin name="cordova-plugin-add-swift-support" />
     <plugin name="cordova-plugin-crosswire-sword" />
+    <plugin name="cordova-plugin-splashscreen" />
     <plugin name="phonegap-plugin-mobile-accessibility" />
     <plugin name="com-sarriaroman-photoviewer" />
     <plugin name="cordova-plugin-x-toast" />
