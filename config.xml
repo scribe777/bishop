@@ -21,7 +21,7 @@
     <preference name="phonegap-version" value="cli-8.1.1" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
-
+    <splash src="res/swordlogo-2732.png" />
     <platform name="android">
         <icon src="res/swordlogo.png" />
         <allow-intent href="market:*" />
@@ -36,25 +36,23 @@
                 <data android:mimeType="application/x-sword-conf" />
             </intent-filter>
         </config-file>
-
 <!--
    THIS DOESN'T WORK. FIXME.  FOR NOW, THIS IS ADDED MANUALLY. DON'T FORGET!
 -->
-	<edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
-		<application android:usesCleartextTraffic="true" />
-	</edit-config>
-
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="local" />
-	<splash src="res/swordlogo-2732.png" />
-	<icon src="res/swordlogo-1024.png" width="1024" height="1024" />
-	<icon src="res/swordlogo-120.png" width="120" height="120" />
-	<icon src="res/swordlogo-76.png" width="76" height="76" />
-	<icon src="res/swordlogo-152.png" width="152" height="152" />
-	<icon src="res/swordlogo-40.png" width="40" height="40" />
+        <splash src="res/swordlogo-2732.png" />
+        <icon height="1024" src="res/swordlogo-1024.png" width="1024" />
+        <icon height="120" src="res/swordlogo-120.png" width="120" />
+        <icon height="76" src="res/swordlogo-76.png" width="76" />
+        <icon height="152" src="res/swordlogo-152.png" width="152" />
+        <icon height="40" src="res/swordlogo-40.png" width="40" />
     </platform>
     <plugin name="cordova-plugin-file" />
     <plugin name="cordova-plugin-inappbrowser" />
