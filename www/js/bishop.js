@@ -288,13 +288,6 @@ console.log("*** in show. main.length: " + main.length);
 */
 			$(main).html(t);
 
-			if (window.localStorage.getItem('showingFootnotes') == 'true') {
-				app.openFootnotes(true);
-			}
-			else {
-				app.closeFootnotes(true);
-			}
-
 			$('.notesButton').on('click', function() {
 				app.toggleFootnotes();
 			});
@@ -342,7 +335,7 @@ console.log('closing topbar');
 					}
 				});
 				$('#openFootnotes').on('change', function() {
-					if ($('#openFootnotes').is(':checked')) {
+					if (app.isFootnotesOpen()) {
 console.log('opening topbar');
 						setTimeout(function() {
 						$('.footnotes').animate({ bottom: '-6em' }, 250, function() { });
@@ -365,8 +358,13 @@ console.log('closing topbar');
 				$('#openSidebarMenu').change();
 				app.closeTopBar();
 				$('#openTopBar').change();
-				app.closeFootnotes();
-				$('#openFootnotes').change();
+			}
+
+			if (window.localStorage.getItem('showingFootnotes') == 'true') {
+				app.openFootnotes(true);
+			}
+			else {
+				app.closeFootnotes(true);
 			}
 
 			var textDisplay = $('#textDisplay');

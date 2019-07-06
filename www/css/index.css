@@ -3,14 +3,14 @@
 }
 
 body {
-    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
-    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
-    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
-    height:100%;
-    width:100%;
-    margin:0px;
-    padding:0px;
-    overflow:hidden;
+	-webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+	-webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+	-webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+	height:100%;
+	width:100%;
+	margin:0px;
+	padding:0px;
+	overflow:hidden;
 	padding-top: constant(safe-area-inset-top);
 	padding-top: env(safe-area-inset-top);
 	padding-bottom: constant(safe-area-inset-bottom);
@@ -46,6 +46,8 @@ body,td,div,span,p,.verse,.currentVerse {
 }
 
 #main {
+	margin:0px;
+	padding:0px;
 	height: 100%;
 	width: 100%;
 	overflow:hidden;
@@ -54,6 +56,8 @@ body,td,div,span,p,.verse,.currentVerse {
 /* Landscape layout (with min-width) */
 @media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
     #main {
+	margin:0px;
+	padding:0px;
 	height: 100%;
 	width: 100%;
 	overflow:hidden;

@@ -19,6 +19,8 @@
     <allow-navigation href="https://*/*" />
     <allow-navigation href="data:*" />
     <preference name="phonegap-version" value="cli-8.1.1" />
+    <preference name="UIWebViewBounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
 
     <platform name="android">
         <icon src="res/swordlogo.png" />
