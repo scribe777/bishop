@@ -686,6 +686,7 @@ console.log('stopping BibleSync');
 	popupShow: function(content, skipTranslation) {
 		app.isPopupShowing = true;
 		$('#popup').html(content);
+		$('#popup').scrollTop(0);
 		if (!skipTranslation) {
 			app.setAppLocale(false, function() {
 				$('#popup').show();
