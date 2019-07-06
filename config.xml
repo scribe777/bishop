@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.crosswire.bishop" version="1.2.902" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<widget id="org.crosswire.bishop" version="1.2.903" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <name>Bishop</name>
     <description>
         A Bible Study App from CrossWire
@@ -19,6 +19,8 @@
     <allow-navigation href="https://*/*" />
     <allow-navigation href="data:*" />
     <preference name="phonegap-version" value="cli-8.1.1" />
+    <preference name="UIWebViewBounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
 
     <platform name="android">
         <icon src="res/swordlogo.png" />
@@ -62,6 +64,7 @@
     <plugin name="com-darryncampbell-cordova-plugin-intent" />
     <plugin name="cordova-plugin-add-swift-support" />
     <plugin name="cordova-plugin-crosswire-sword" />
+    <plugin name="cordova-plugin-splashscreen" />
     <plugin name="phonegap-plugin-mobile-accessibility" />
     <plugin name="com-sarriaroman-photoviewer" />
     <plugin name="cordova-plugin-x-toast" />

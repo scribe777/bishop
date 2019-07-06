@@ -1,5 +1,5 @@
 var app = {
-	version: '1.3rc2', // change version here and in config.xml, near top
+	version: '1.3rc3', // change version here and in config.xml, near top
 	backFunction: null,
 	enableBibleSync : true,
 	bibleSyncRefs : [],
@@ -240,7 +240,6 @@ console.log('*********** Initially setting locale to: ' + localeName);
 			});
 		}
 		app.setAppLocale(false, function() {
-			$('#openFootnotes').prop('checked', window.localStorage.getItem('showingFootnotes') == 'true'?true:false);
 			app.mainViewType = window.localStorage.getItem('mainViewType');
 			app.setCurrentKey(app.getCurrentKey());
 			app.currentWindow = app;
@@ -288,10 +287,9 @@ console.log("*** in show. main.length: " + main.length);
 `;
 */
 			$(main).html(t);
+
 			$('.notesButton').on('click', function() {
-				if (!app.openFootnotes()) {
-					app.closeFootnotes();
-				}
+				app.toggleFootnotes();
 			});
 
 			// for old phones which need javascript help for transitions
@@ -337,7 +335,7 @@ console.log('closing topbar');
 					}
 				});
 				$('#openFootnotes').on('change', function() {
-					if ($('#openFootnotes').is(':checked')) {
+					if (app.isFootnotesOpen()) {
 console.log('opening topbar');
 						setTimeout(function() {
 						$('.footnotes').animate({ bottom: '-6em' }, 250, function() { });
@@ -360,8 +358,13 @@ console.log('closing topbar');
 				$('#openSidebarMenu').change();
 				app.closeTopBar();
 				$('#openTopBar').change();
-				app.closeFootnotes();
-				$('#openFootnotes').change();
+			}
+
+			if (window.localStorage.getItem('showingFootnotes') == 'true') {
+				app.openFootnotes(true);
+			}
+			else {
+				app.closeFootnotes(true);
 			}
 
 			var textDisplay = $('#textDisplay');
@@ -375,9 +378,6 @@ console.log('closing topbar');
 					$('#currentMod1').val(app.getCurrentMod1());
 					$('#currentMod2').val(app.getCurrentMod2());
 					$('#currentMod3').val(app.getCurrentMod3());
-					if (!app.openFootnotes()) {
-						app.closeFootnotes();
-					}
 					if (app.firstTime) app.showFirstTime();
 					else app.displayCurrentChapter(function() {
 						app.setAppLocale(false, function() {
@@ -1147,37 +1147,29 @@ console.log("****** closing topBar");
 		return true;
 	},
 
-	openFootnotes: function() {
-		if ($('#openFootnotes').is(':checked')) return false;
+	isFootnotesOpen: function() {
+		return ($('#openFootnotes').is(':checked'));
+	},
+
+	openFootnotes: function(force) {
+		if (!force && $('#openFootnotes').is(':checked')) return false;
 		$('.fn').css('display', 'initial');
 		$('.notesButton').css('background-color', '#007D48');
 		window.localStorage.setItem('showingFootnotes', 'true');
 		$('#openFootnotes').prop('checked', true).change();
-/*
-		if ($('#footnotes').hasClass('tohide')) return;
-console.log('opening footnotes');
-		$('#footnotes').removeClass('toshow').addClass('tohide');
-		$("#footnotes, #footerBuffer").animate({ top: '-12em' }, 350, function() {
-		});
-*/
 		app.displayFootnotes();
 		return true;
 	},
-	closeFootnotes: function() {
-		if (!$('#openFootnotes').is(':checked')) return false;
+
+	closeFootnotes: function(force) {
+		if (!force && !$('#openFootnotes').is(':checked')) return false;
 		$('.fn').css('display', 'none');
 		$('.notesButton').css('background', 'initial');
 		window.localStorage.setItem('showingFootnotes', 'false');
 		$('#openFootnotes').prop('checked', false).change();
-/*
-		if ($('#footnotes').hasClass('toshow')) return false;
-console.log('closing footnotes');
-		$("#footnotes, #footerBuffer").animate({ top: '+12em' }, 350, function() {
-			$('#footnotes').removeClass('tohide').addClass('toshow');    
-		});
-*/
 		return true;
 	},
+
 	auxDisplayCallback : null,
 	auxDisplayCountdown : 0,
 	auxDisplayIntervalID : setInterval(function() {
@@ -1215,7 +1207,7 @@ console.log('auxDisplayCountdown: ' + app.auxDisplayCountdown);
 		
 	},
 	displayFootnotes: function(callback) {
-		if (!$('#openFootnotes').is(':checked')) return callback?callback():null;
+		if (!app.isFootnotesOpen()) return callback?callback():null;
 		var t = '';
 		setTimeout(function() {
 		var modulesLoop = function(mods, i) {
@@ -1384,7 +1376,7 @@ console.log('parDispModules.length: ' + parDispModules.length);
 
 		var chapterDisplay = function(htmlText, mods) {
 			$('#textDisplay').html(htmlText);
-			if (!$('#openFootnotes').is(':checked')) $('.fn').css('display', 'none');
+			if (!app.isFootnotesOpen()) $('.fn').css('display', 'none');
 			app.setAppLocale(false, function () {
 				app.lastDisplayMods=mods;
 				setTimeout(function() {
