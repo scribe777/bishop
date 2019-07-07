@@ -102,8 +102,8 @@ refreshplatformandroid:
 refreshplatformios:
 	cordova platform remove ios || true
 	cordova platform add ios || true
-	cordova-icon --icon=res/swordlogo-1024.png
-	cordova-splash --splash=res/swordlogo-1024.png
+#	cordova-icon --icon=res/swordlogo-1024.png
+#	cordova-splash --splash=res/swordlogo-1024.png
 
 setup: clearplugins refreshplatform addplugins updatelocales
 	# one last refresh platform to get the plugin patches deployed
