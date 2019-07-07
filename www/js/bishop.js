@@ -686,6 +686,7 @@ console.log('stopping BibleSync');
 	popupShow: function(content, skipTranslation) {
 		app.isPopupShowing = true;
 		$('#popup').html(content);
+		$('#popup').scrollTop(0);
 		if (!skipTranslation) {
 			app.setAppLocale(false, function() {
 				$('#popup').show();
@@ -724,10 +725,10 @@ console.log('stopping BibleSync');
 			else {
 				masterModule.getBookNames(function(books) {
 					var t = '<div class="center" style="width:100%;margin:0px;padding:0px;">';
-					var nt = false;
 					for (var i = 0; i < books.length; ++i) {
-						if (books[i] == "Matt") nt = true;
-						t += '<div class="bookButton'+(nt?' ntBook':' otBook')+'" onclick="app.selectChapter(\''+books[i]+'\'); return false;">'+books[i]+'</div> ';
+						var nt = (SWORD.osisNT.indexOf(books[i].osisName) !== -1);
+						var ot = (SWORD.osisOT.indexOf(books[i].osisName) !== -1);
+						t += '<div class="bookButton'+(nt?' ntBook':ot?' otBook':' apocBook')+'" onclick="app.selectChapter(\''+books[i].osisName+'\'); return false;">'+books[i].abbrev+'</div> ';
 					}
 					t += '</div>';
 					t += '<br/>';

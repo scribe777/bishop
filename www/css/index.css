@@ -468,6 +468,10 @@ table.clean tr.roweven {
 	border: 1px solid #00B;
 }
 
+.apocBook {
+	border: 1px solid #BB0;
+}
+
 
 .instDelta {
 	width:1em;
