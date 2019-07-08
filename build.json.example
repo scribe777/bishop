@@ -1,26 +1,42 @@
 {
-    "ios": {
-        "debug": {
-            "codeSignIdentity": "iOS Developer",
-            "developmentTeam": "J9J97ZC4K5",
-            "packageType": "development",
-            "automaticProvisioning": true,
-            "buildFlag": [
-                "EMBEDDED_CONTENT_CONTAINS_SWIFT = YES",
-                "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
-                "LD_RUNPATH_SEARCH_PATHS = \"@executable_path/Frameworks\""
-            ]
-        },
-        "release": {
-            "codeSignIdentity": "iOS Developer",
-            "developmentTeam": "J9J97ZC4K5",
-            "packageType": "app-store",
-            "automaticProvisioning": true,
-            "buildFlag": [
-                "EMBEDDED_CONTENT_CONTAINS_SWIFT = YES",
-                "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
-                "LD_RUNPATH_SEARCH_PATHS = \"@executable_path/Frameworks\""
-            ]
-        }
-    }
+	"android": {
+		"debug": {
+			"keystore": "~/doc/crosswire-development.keystore",
+			"storePassword": "xyzzy",
+			"alias": "bishop",
+			"password" : "xyzzy",
+			"keystoreType": ""
+		},
+		"release": {
+			"keystore": "~/doc/crosswire-development.keystore",
+			"storePassword": "xyzzy",
+			"alias": "bishop",
+			"password" : "xyzzy",
+			"keystoreType": ""
+		}
+	}
+	"ios": {
+		"debug": {
+			"codeSignIdentity": "iOS Developer",
+			"developmentTeam": "J9J97ZC4K5",
+			"packageType": "development",
+			"automaticProvisioning": true,
+			"buildFlag": [
+				"EMBEDDED_CONTENT_CONTAINS_SWIFT = YES",
+				"ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
+				"LD_RUNPATH_SEARCH_PATHS = \"@executable_path/Frameworks\""
+			]
+		},
+		"release": {
+			"codeSignIdentity": "iOS Developer",
+			"developmentTeam": "J9J97ZC4K5",
+			"packageType": "app-store",
+			"automaticProvisioning": true,
+			"buildFlag": [
+				"EMBEDDED_CONTENT_CONTAINS_SWIFT = YES",
+				"ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
+				"LD_RUNPATH_SEARCH_PATHS = \"@executable_path/Frameworks\""
+			]
+		}
+	}
 }

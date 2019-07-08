@@ -1,9 +1,17 @@
 var dailyDevo = {
 	show: function() {
+		var lastDevo = window.localStorage.getItem('lastDevo');
 		app.currentWindow = dailyDevo;
 		$('#main').html('<div id="toolbar"></div><div id="client"></div><div id="aux" class="dropdown-content"></div>');
-		dailyDevo.setupMenu(function() {
-			$('#devoName1').parents('button').click();
+		dailyDevo.setupMenu(function(buttonList) {
+console.log('****** buttonList: ' + buttonList);
+console.log('****** lastDevo: ' + lastDevo);
+			if (buttonList && buttonList.length && lastDevo) {
+				lastDevo = buttonList.indexOf(lastDevo);
+				if (lastDevo === -1) lastDevo = 1;
+			}
+			else lastDevo = 1;
+			$('#devoName'+lastDevo).parents('button').click();
 			app.setAppLocale();
 		});
 	},
@@ -13,22 +21,24 @@ var dailyDevo = {
 
     var t  = '<header class="toolbar" id="versestudytoolbar">';
         t += '<button class="dropbtn dropclick left" onclick="app.handleBackButton(); return false;"> <div style="height:1.5em;font-size:170%;font-weight:bold;">&lt; </div><div> <span data-english="Back">Back</span></div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveOne" onclick="dailyDevo.showDailyDevo($(this).find(\'.devoName\').text()); return false;"><div><span>&nbsp;</span></div><div><span class="devoName" id="devoName1">&nbsp;</span></div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveTwo" onclick="dailyDevo.showDailyDevo($(this).find(\'.devoName\').text()); return false;"><div><span>&nbsp;</span></div><div><span class="devoName" id="devoName2">&nbsp;</span></div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveThree" onclick="dailyDevo.showDailyDevo($(this).find(\'.devoName\').text()); return false;"><div><span>&nbsp;</span></div><div><span class="devoName" id="devoName3">&nbsp;</span></div></button>';
-        t += '<button class="dropbtn dropclick twentyFiveFour" onclick="dailyDevo.showDailyDevo($(this).find(\'.devoName\').text()); return false;"><div><span>&nbsp;</span></div><div><span class="devoName" id="devoName4">&nbsp;</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveOne" onclick="$(this).focus(); dailyDevo.showDailyDevo($(this).find(\'.devoName\').text()); return false;"><div><span>&nbsp;</span></div><div><span class="devoName" id="devoName1">&nbsp;</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveTwo" onclick="$(this).focus(); dailyDevo.showDailyDevo($(this).find(\'.devoName\').text()); return false;"><div><span>&nbsp;</span></div><div><span class="devoName" id="devoName2">&nbsp;</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveThree" onclick="$(this).focus(); dailyDevo.showDailyDevo($(this).find(\'.devoName\').text()); return false;"><div><span>&nbsp;</span></div><div><span class="devoName" id="devoName3">&nbsp;</span></div></button>';
+        t += '<button class="dropbtn dropclick twentyFiveFour" onclick="$(this).focus(); dailyDevo.showDailyDevo($(this).find(\'.devoName\').text()); return false;"><div><span>&nbsp;</span></div><div><span class="devoName" id="devoName4">&nbsp;</span></div></button>';
         t += '</header>';
         $('#toolbar').html(t);
+	var retVal = ['Back'];
 	SWORD.mgr.getModInfoList(function(mods) {
 		var j = 1;
 		for (var i = 0; i < mods.length; ++i) {
 			if (mods[i].category == SWORD.CATEGORY_DAILYDEVOS) {
 				$('#devoName'+j).text(mods[i].name);
+				retVal.push(mods[i].name);
 				++j;
 				if (j > 4) break;
 			}
 		}
-		if (callback) callback();
+		if (callback) callback(retVal);
 	});
     },
 	getDevoKey: function(day) {
@@ -89,6 +99,7 @@ var dailyDevo = {
 						t += '<div style="height:30em;">&nbsp;</div>';
 						$(target).html(t);
 						$(target).scrollTop(0);
+						window.localStorage.setItem('lastDevo', devoName);
 					});
 				});
 			});
