@@ -847,6 +847,44 @@ color:#f00;
 	background-color: #eee;
 }
 
+/* booknav */
+
+ul.booknav {
+background: #eee;
+border-top: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+margin: 0px 0px 5px 0px;
+padding: 0px 0px 0px 1em;
+text-indent: 0px;
+text-align: center;
+vertical-align: middle;
+}
+
+ul.booknav li {
+display: inline;
+list-style-type: none;
+line-height: 2em;
+font-size: 1em;
+margin: 0px 1.1em 0px 0px;
+}
+
+ul.booknav li h3 {
+display: inline;
+list-style-type: none;
+line-height: 2em;
+font-size: 1.3em;
+margin: 0px 1.1em 0px 0px;
+}
+
+ul.booknav li a {
+color:#000;
+}
+
+ul.booknav li a:hover {
+color:#f00;
+}
+
+
 /*   GenBook navigation tree  */
 #genbooknav {
 margin:0px 5px;
@@ -895,6 +933,8 @@ color:#000
 text-decoration:underline;
 color:#f00;
 }
+
+
 
 /*  RtoL stuff */
 body.rtol #header {background-position: right top;}
