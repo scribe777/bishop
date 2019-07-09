@@ -1,5 +1,7 @@
 var dailyDevo = {
+	whichDay: new Date(),
 	show: function() {
+		dailyDevo.whichDay = new Date();
 		var lastDevo = window.localStorage.getItem('lastDevo');
 		app.currentWindow = dailyDevo;
 		$('#main').html('<div id="toolbar"></div><div id="client"></div><div id="aux" class="dropdown-content"></div>');
@@ -57,8 +59,7 @@ console.log('****** lastDevo: ' + lastDevo);
 		if (!target) target = '#client';
 		setTimeout(function() {
 		$(target).html('<div style="margin:1em;"><center><image src="img/loading.gif"/></center><br/><center><h3><span data-english="Please wait...">Please wait...</span></h3></center></div>');
-		var whichDay = new Date();	// NOW for now.
-		var devoKey = dailyDevo.getDevoKey(whichDay);
+		var devoKey = dailyDevo.getDevoKey(dailyDevo.whichDay);
 		app.setAppLocale(false, function() {
 			SWORD.mgr.getModuleByName(devoName, function(mod) {
 				if (!mod) {
@@ -84,8 +85,12 @@ console.log('****** lastDevo: ' + lastDevo);
 						var t = '';
 						t += '<br/>';
 						t += '<br/>';
+						t += '<ul class="booknav">';
+						t += '<li><a href="javascript:void(0);" onclick="dailyDevo.whichDay.setDate(dailyDevo.whichDay.getDate()-1); dailyDevo.showDailyDevo(\''+devoName+'\'); return false;"><span data-english="previous day" style="white-space:nowrap">previous day</span></a></li>';
+						t += '<li><a href="javascript:void(0);" onclick="dailyDevo.whichDay.setDate(dailyDevo.whichDay.getDate()+1); dailyDevo.showDailyDevo(\''+devoName+'\'); return false;"><span data-english="next day" style="white-space:nowrap">next day</span></a></li>';
+						t += '</ul>';
 						t += '<h1 style="padding-left:.5em;">';
-						t += whichDay.toDateString();
+						t += dailyDevo.whichDay.toDateString();
 						t += '</h1>';
 						t += '<table class="clean" style="width:100%;"><tbody>';
 						t += '<tr class="roweven" onclick="return false;">';
@@ -96,6 +101,10 @@ console.log('****** lastDevo: ' + lastDevo);
 						t += '<td colspan="2" style="padding:.5em;" class="def">'+renderText+'</td>';
 						t += '</tr>';
 						t += '</tbody></table>';
+						t += '<ul class="booknav">';
+						t += '<li><a href="javascript:void(0);" onclick="dailyDevo.whichDay.setDate(dailyDevo.whichDay.getDate()-1); dailyDevo.showDailyDevo(\''+devoName+'\'); return false;"><span data-english="previous day" style="white-space:nowrap">previous day</span></a></li>';
+						t += '<li><a href="javascript:void(0);" onclick="dailyDevo.whichDay.setDate(dailyDevo.whichDay.getDate()+1); dailyDevo.showDailyDevo(\''+devoName+'\'); return false;"><span data-english="next day" style="white-space:nowrap">next day</span></a></li>';
+						t += '</ul>';
 						t += '<div style="height:30em;">&nbsp;</div>';
 						$(target).html(t);
 						$(target).scrollTop(0);
